@@ -75,4 +75,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
+  registerButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  
+  registerButtonText: {
+    color: '#007AFF',
+    fontSize: 16,
+  }
+  
 }); 

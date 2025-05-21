@@ -1,16 +1,16 @@
 import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import {
-    ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { useInicioSesion } from './hooks/useInicioSesion';
-import { styles } from './styles/LoginScreen.styles';
+import { useInicioSesion } from '../../hooks/auth/login/useInicioSesion';
+import { styles } from '../../styles/LoginScreen.styles';
 
 export default function InicioSesion() {
   const {
@@ -23,10 +23,10 @@ export default function InicioSesion() {
     manejarInicioSesion,
     manejarInicioSesionGoogle,
     manejarOlvideContrasena,
+    manejarIrARegistro,
   } = useInicioSesion();
 
   return (
-    //Asegura que el teclado no cubra el contenido
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
@@ -59,13 +59,13 @@ export default function InicioSesion() {
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         {/* Botón de inicio de sesión */}
-        // TouchableOpacity: es un componente que permite hacer clic en un elemento
+        {/*TouchableOpacity: es un componente que permite hacer clic en un elemento */}
         <TouchableOpacity
           style={styles.loginButton}
           onPress={manejarInicioSesion}
           disabled={cargando}
         >
-          //Si cargando es true se pone un loading
+          {/*Si cargando es true se pone un loading */}
           {cargando ? (
             <ActivityIndicator color="white" />
           ) : (
@@ -97,6 +97,11 @@ export default function InicioSesion() {
           
           <Text style={styles.googleButtonText}>Continuar con Google</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity onPress={manejarIrARegistro} style={styles.registerButton}>
+        <Text style={styles.registerButtonText}>¿No tienes cuenta? Regístrate</Text>
+        </TouchableOpacity>
+
       </View>
     </KeyboardAvoidingView>
   );

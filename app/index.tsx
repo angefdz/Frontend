@@ -1,17 +1,16 @@
-import { useRouter } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect } from 'react';
-import { ActivityIndicator, View } from 'react-native';
 
-export default function RedirectToLogin() {
-  const router = useRouter();
-
+export default function Index() {
   useEffect(() => {
-    router.replace('/inicio-sesion');
+    const estaLogueado = false;
+
+    if (estaLogueado) {
+      router.replace('/(tabs)/pantalla-principal');
+    } else {
+      router.replace('/inicio-sesion');
+    }
   }, []);
 
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <ActivityIndicator size="large" />
-    </View>
-  );
+  return null;
 }

@@ -22,6 +22,8 @@ export const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     padding: 10,
     borderRadius: 10,
+    marginBottom: 15,
+    marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
     width: 90,
@@ -74,5 +76,10 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#fff',
   },
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  }
   
 });

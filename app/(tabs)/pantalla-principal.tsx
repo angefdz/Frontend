@@ -1,10 +1,25 @@
-import { Feather } from '@expo/vector-icons';
-import { Text, TouchableOpacity, View } from 'react-native';
-import { pictogramas } from '../../data/pictogramas';
-import { useFrase } from '../../hooks/frase/useFrase';
-import { styles } from '../../styles/InicioScreen.styles';
+import { useNavigation } from 'expo-router';
+import React, { useLayoutEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+
+import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
+import BotonVolverCategorias from '@/components/pantallaPrincipal/BotonVolverCategorias';
+import FraseActual from '@/components/pantallaPrincipal/FraseActual';
+import GridCategorias from '@/components/pantallaPrincipal/GridCategorias';
+import GridPictogramas from '@/components/pantallaPrincipal/GridPictogramas';
+import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion';
+import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
+
+import { categorias } from '@/data/categorias';
+import { useProtegerPantalla } from '@/hooks/auth/autorizacion/useProtegerPantalla';
+import { usePictogramas } from '@/hooks/biblioteca/usePictogramas';
+import { useFrase } from '@/hooks/frase/useFrase';
+import { styles } from '@/styles/InicioScreen.styles';
 
 export default function PantallaPrincipal() {
+  const { token, cargandoToken } = useProtegerPantalla();
+  const navigation = useNavigation();
+
   const {
     frase,
     sugerencia,
@@ -15,58 +30,89 @@ export default function PantallaPrincipal() {
     usarSugerencia,
   } = useFrase();
 
+  const [modoAgrupado, setModoAgrupado] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
+
+  const { pictogramas, cargando } = usePictogramas(); // Hook que trae pictogramas del backend
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerRight: () => (
+        <MenuConfiguracion
+          modoAgrupado={modoAgrupado}
+          setModoAgrupado={setModoAgrupado}
+          resetearCategoria={() => setCategoriaSeleccionada(null)}
+          setItemsPerPage={setItemsPerPage}
+          itemsPerPage={itemsPerPage}
+        />
+      ),
+    });
+  }, [navigation, modoAgrupado, itemsPerPage]);
+
+  if (cargandoToken || cargando) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Cargando...</Text>
+      </View>
+    );
+  }
+
+  if (!token) return null;
+
+  // const pictosFiltrados = modoAgrupado
+//   ? categoriaSeleccionada
+//     ? pictogramas.filter((p) =>
+//         (p.categorias ?? []).includes(Number(categoriaSeleccionada))
+//       )
+//     : []
+//   : pictogramas;
+
+const pictosFiltrados = pictogramas; // Mostrar todos los pictogramas siempre
+
+
   return (
-    <View style={styles.container}>
-      {/* Frase construida */}
-      <View style={styles.fraseContainer}>
-        {frase.map((palabra, index) => (
-          <Text key={index} style={styles.pictogramaFrase}>
-            {palabra}
-          </Text>
-        ))}
-      </View>
+    <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+      <FraseActual frase={frase} />
 
-      {/* Botones de acción */}
-      <View style={styles.botonesFrase}>
-        <TouchableOpacity onPress={borrarUltimo} style={styles.botonIcono}>
-          <Feather name="delete" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={resetearFrase} style={styles.botonIcono}>
-          <Feather name="rotate-ccw" size={24} color="white" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={reproducirFrase} style={styles.botonIcono}>
-          <Feather name="volume-2" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
+      <BotonesFrase
+        borrarUltimo={borrarUltimo}
+        resetearFrase={resetearFrase}
+        reproducirFrase={reproducirFrase}
+      />
 
-      {/* Pictograma sugerido */}
-      {sugerencia && (
-        <TouchableOpacity
-          onPress={usarSugerencia}
-          style={[styles.pictograma, { alignSelf: 'center', marginBottom: 20 }]}
-        >
-          <Text style={styles.pictogramaEmoji}>
-  {typeof sugerencia === 'string'
-    ? pictogramas.find(p => p.palabra === sugerencia)?.imagen ?? ''
-    : ''}
-</Text>
+      <SugerenciaPictograma
+        sugerencia={sugerencia}
+        usarSugerencia={usarSugerencia}
+      />
 
-        </TouchableOpacity>
+      {modoAgrupado && !categoriaSeleccionada && (
+        <GridCategorias
+          categorias={categorias}
+          itemsPerPage={itemsPerPage}
+          onSeleccionar={(id) => setCategoriaSeleccionada(id)}
+        />
       )}
 
-      {/* Teclado de pictogramas */}
-      <View style={styles.grid}>
-        {pictogramas.map((p) => (
-          <TouchableOpacity
-            key={p.id}
-            style={styles.pictograma}
-            onPress={() => añadirPictograma(p.palabra)}
-          >
-            <Text style={styles.pictogramaEmoji}>{p.imagen}</Text>
-            <Text style={styles.pictogramaTexto}>{p.palabra}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-    </View>
+      {modoAgrupado && categoriaSeleccionada && (
+        <>
+          <BotonVolverCategorias onPress={() => setCategoriaSeleccionada(null)} />
+          <GridPictogramas
+            pictogramas={pictosFiltrados}
+            itemsPerPage={itemsPerPage}
+            onSeleccionar={añadirPictograma}
+          />
+        </>
+      )}
+
+      {!modoAgrupado && (
+        <GridPictogramas
+          pictogramas={pictosFiltrados}
+          itemsPerPage={itemsPerPage}
+          onSeleccionar={añadirPictograma}
+        />
+      )}
+    </ScrollView>
   );
 }

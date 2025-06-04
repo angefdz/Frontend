@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     padding: 20,
-    paddingTop: 70,
+    paddingTop: 40,
   },
   sectionTitle: {
     fontSize: 20,
@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
+    alignSelf: 'center',
   },
   item: {
     width: '30%',

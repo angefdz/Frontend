@@ -1,34 +1,63 @@
-import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TouchableOpacity
+} from 'react-native';
+
+import PictogramaVisual from '@/components/biblioteca/pictogramas/PictogramaVisual';
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
 import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
 import InputTexto from '@/components/comunes/InputTexto';
+import ListaGenerica from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
+
+import { categorias } from '@/data/categorias';
 import { pictogramas } from '@/data/pictogramas';
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
-export default function CrearCategoriaScreen() {
+export default function EditarCategoriaScreen() {
   const router = useRouter();
+  const { id, seleccionados } = useLocalSearchParams<{ id?: string; seleccionados?: string }>();
+
+  const categoria = categorias.find((c) => c.id === Number(id));
+
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState<number[]>([]);
 
-  const togglePictograma = (id: number) => {
-    setPictogramasSeleccionados(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : prev
-    );
-  };
+  useEffect(() => {
+    if (categoria) {
+      setNombre(categoria.nombre);
+      setImagen(categoria.imagen);
+      setPictogramasSeleccionados(categoria.pictogramas || []);
+    } else {
+      Alert.alert('Error', 'Categoría no encontrada');
+      router.back();
+    }
+  }, [categoria]);
 
-  const manejarCrear = () => {
+  useEffect(() => {
+    if (seleccionados) {
+      try {
+        const nuevos = JSON.parse(seleccionados);
+        if (Array.isArray(nuevos)) {
+          setPictogramasSeleccionados(nuevos);
+        }
+      } catch {}
+    }
+  }, [seleccionados]);
+
+  const manejarGuardar = () => {
     if (!nombre || !imagen) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
 
-    // Aquí guardarías nombre, imagen y pictogramasSeleccionados
-    Alert.alert('Éxito', 'Categoría creada correctamente');
+    // Aquí iría la lógica de guardado real en el backend o en estado global
+    Alert.alert('Éxito', 'Categoría actualizada correctamente');
     router.back();
   };
 
@@ -39,11 +68,15 @@ export default function CrearCategoriaScreen() {
     });
   };
 
-  const pictogramasMostrados = pictogramas.filter(p => pictogramasSeleccionados.includes(p.id));
+  const pictogramasMostrados = pictogramas.filter((p) =>
+    pictogramasSeleccionados.includes(p.id)
+  );
+
+  if (!categoria) return null;
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <CabeceraSeccion texto="Crear nueva categoría" />
+      <CabeceraSeccion texto="Editar categoría" />
 
       <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
 
@@ -60,30 +93,25 @@ export default function CrearCategoriaScreen() {
           No hay pictogramas añadidos aún.
         </Text>
       ) : (
-        <View style={styles.grid}>
-          {pictogramasMostrados.map(pic => (
-            <PictogramaClicable
-              key={pic.id}
-              id={pic.id}
+        <ListaGenerica
+          items={pictogramasMostrados}
+          renderItem={(pic) => (
+            <PictogramaVisual
               palabra={pic.palabra}
               imagen={pic.imagen}
-              itemStyle={{
-                ...styles.item,
-                backgroundColor: '#007AFF',
-              }}
+              itemStyle={styles.item}
               emojiStyle={styles.itemEmoji}
               textStyle={styles.itemText}
-              onPress={() => togglePictograma(pic.id)}
             />
-          ))}
-        </View>
+          )}
+        />
       )}
 
       <TouchableOpacity onPress={manejarAñadir} style={styles.verMasButton}>
         <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
       </TouchableOpacity>
 
-      <BotonPrincipal texto="Crear" onPress={manejarCrear} />
+      <BotonPrincipal texto="Guardar" onPress={manejarGuardar} />
     </ScrollView>
   );
 }

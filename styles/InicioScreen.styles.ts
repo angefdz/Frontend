@@ -1,11 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+const { width } = Dimensions.get('window');
+const MARGIN = 8;
+const NUM_COLUMNS = 3;
+const PICTO_WIDTH = (width - MARGIN * 2 * NUM_COLUMNS) / NUM_COLUMNS;
+
 
 export const styles = StyleSheet.create({
+  
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    padding: 20,
-    paddingTop: 70,
+    backgroundColor: '#fff'
   },
   fraseContainer: {
     flexDirection: 'row',
@@ -55,15 +59,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   pictograma: {
-    width: '30%',
-    aspectRatio: 1,
     backgroundColor: '#f2f2f2',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-    marginBottom: 15,
-    padding: 10,
-  },
+  },  
   pictogramaEmoji: {
     fontSize: 40,
   },
@@ -73,9 +73,29 @@ export const styles = StyleSheet.create({
     color: '#333',
   },
   pictogramaSugerido: {
-    backgroundColor: '#FFECA8', // color de fondo suave para destacar
-    borderColor: '#FFC107',     // borde dorado
-    borderWidth: 2,
+    width: 100,
+    height: 100,
+    backgroundColor: '#f2f2f2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    padding: 10,
   },
+  horizontalGrid: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 10,
+  },
+  page: {
+    width,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start', // O 'center' si prefieres centrado
+    alignItems: 'center',
+  },
+
+
+  
   
 });

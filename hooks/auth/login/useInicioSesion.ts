@@ -1,9 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useAutorizarAcceso } from '../autorizacion/useAutorizarAcceso'; // Ajusta ruta
 
 export const useInicioSesion = () => {
   const router = useRouter();
+  const { guardarToken } = useAutorizarAcceso();  // IMPORTANTE: Usamos el hook aquí
 
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -30,11 +31,21 @@ export const useInicioSesion = () => {
     setError('');
 
     try {
-      // Simula una llamada a API
-      await new Promise((res) => setTimeout(res, 1500));
+      // Aquí llama al backend con el correo y contraseña reales, p.ej:
+      const response = await fetch('http://192.168.1.216:8080/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: correo, contrasena: contrasena }),
+      });
 
-      // Simula éxito → guarda el "token"
-      await AsyncStorage.setItem('token', 'usuario_logueado');
+      if (!response.ok) {
+        throw new Error('Credenciales inválidas');
+      }
+
+      const token = await response.text();
+
+      // Guarda el token usando el hook que creamos
+      await guardarToken(token);
 
       // Redirige a la pantalla principal
       router.replace('/pantalla-principal');
@@ -45,6 +56,7 @@ export const useInicioSesion = () => {
     }
   };
 
+  // El resto igual...
   const manejarInicioSesionGoogle = () => {
     console.log('Google login (a implementar)');
   };

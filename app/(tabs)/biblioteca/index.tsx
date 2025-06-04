@@ -1,5 +1,5 @@
-import SeccionHorizontal from '@/components/biblioteca/SeccionBibliteca';
 import CategoriaClicable from '@/components/biblioteca/categorias/CategoriaClicable';
+import SeccionHorizontal from '@/components/biblioteca/pantallaPrincipal/SeccionBibliteca';
 import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
 import { categorias } from '@/data/categorias';
 import { pictogramas } from '@/data/pictogramas';
@@ -44,6 +44,12 @@ export default function BibliotecaScreen() {
             itemStyle={styles.item}
             emojiStyle={styles.itemEmoji}
             textStyle={styles.itemText}
+            onPress={() =>
+              router.push({
+                pathname: '/biblioteca/pictogramas/ver-pictograma',
+                params: { id: item.id },
+              })
+            }
           />
         )}
       />

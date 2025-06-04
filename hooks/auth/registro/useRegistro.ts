@@ -24,11 +24,33 @@ export const useRegistro = () => {
     setError('');
     setCargando(true);
 
-    // Simulación de llamada al backend
-    await new Promise((res) => setTimeout(res, 1500));
-    setCargando(false);
+    try {
+      const response = await fetch('http://192.168.1.216:8080/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          nombre,
+          email: correo,
+          contrasena,
+        }),
+      });
 
-    router.replace('/inicio-sesion');
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData || 'Error en el registro');
+        setCargando(false);
+        return;
+      }
+
+      // Registro exitoso
+      setCargando(false);
+      router.replace('/inicio-sesion');
+    } catch (e) {
+      setError('Error en la conexión con el servidor');
+      setCargando(false);
+    }
   };
 
   const manejarVolver = () => {

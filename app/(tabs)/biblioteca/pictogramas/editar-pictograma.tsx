@@ -1,11 +1,20 @@
-import CategoriaClicable from '@/components/biblioteca/categorias/CategoriaClicable';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import {
+  Alert,
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+import CategoriaSeleccionable from '@/components/biblioteca/categorias/CategoriaSeleccionable';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import { categorias } from '@/data/categorias';
 import { pictogramas } from '@/data/pictogramas';
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export default function EditarPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -14,7 +23,9 @@ export default function EditarPictogramaScreen() {
   const pictograma = pictogramas.find(p => p.id === Number(id));
 
   const [nombre, setNombre] = useState(pictograma?.palabra || '');
-  const [imagen, setImagen] = useState(pictograma?.imagen || '');
+  const [imagen, setImagen] = useState(
+    typeof pictograma?.imagen === 'string' ? pictograma.imagen : ''
+  );
   const [seleccionadas, setSeleccionadas] = useState<number[]>(pictograma?.categorias || []);
 
   useEffect(() => {
@@ -37,7 +48,7 @@ export default function EditarPictogramaScreen() {
       Alert.alert('Error', 'Completa todos los campos');
       return;
     }
-    // Aquí iría la lógica para guardar la actualización en backend o estado global
+
     Alert.alert('Éxito', 'Pictograma actualizado');
     router.back();
   };
@@ -45,40 +56,48 @@ export default function EditarPictogramaScreen() {
   if (!pictograma) return null;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Editar pictograma</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView
+        style={{ backgroundColor: '#fff' }}
+        contentContainerStyle={{ padding: 20 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <Text style={styles.sectionTitle}>Editar pictograma</Text>
 
-      <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
+        <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre del pictograma"
-        value={nombre}
-        onChangeText={setNombre}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Nombre del pictograma"
+          value={nombre}
+          onChangeText={setNombre}
+        />
 
-      <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.grid}>
-          {categorias.map(cat => (
-            <CategoriaClicable
-              key={cat.id}
-              id={cat.id}
-              nombre={cat.nombre}
-              imagen={cat.imagen}
-              itemStyle={styles.item}
-              emojiStyle={styles.itemEmoji}
-              textStyle={styles.itemText}
-              seleccionada={seleccionadas.includes(cat.id)}
-              onPress={() => toggleCategoria(cat.id)}
-            />
-          ))}
+        <Text style={styles.sectionTitle}>Categorías</Text>
+
+        <View style={{ maxHeight: 300, marginBottom: 16 }}>
+          <ScrollView showsVerticalScrollIndicator={true}>
+            <View style={styles.grid}>
+              {categorias.map(cat => (
+                <CategoriaSeleccionable
+                  key={cat.id}
+                  categoria={cat}
+                  seleccionada={seleccionadas.includes(cat.id)}
+                  onPress={() => toggleCategoria(cat.id)}
+                  itemStyle={styles.item}
+                  emojiStyle={styles.itemEmoji}
+                  textStyle={styles.itemText}
+                />
+              ))}
+            </View>
+          </ScrollView>
         </View>
-      </ScrollView>
 
-      <TouchableOpacity onPress={manejarGuardar} style={styles.verMasButton}>
-        <Text style={styles.verMasText}>Guardar</Text>
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity onPress={manejarGuardar} style={styles.verMasButton}>
+          <Text style={styles.verMasText}>Guardar</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </SafeAreaView>
   );
 }

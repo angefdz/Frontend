@@ -1,49 +1,84 @@
-import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
-import BotonPrincipal from '@/components/comunes/BotonPrincipal';
-import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
-import InputTexto from '@/components/comunes/InputTexto';
-import SelectorImagen from '@/components/comunes/SelectorImagen';
-import { pictogramas } from '@/data/pictogramas';
-import { styles } from '@/styles/BibliotecaScreen.styles';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Alert,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+
+import BotonPrincipal from '@/components/comunes/BotonPrincipal';
+import InputTexto from '@/components/comunes/InputTexto';
+import ItemSeleccionable from '@/components/comunes/ItemSeleccionable';
+import ListaItems from '@/components/comunes/ListaItems';
+import SelectorImagen from '@/components/comunes/SelectorImagen';
+import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
+
+import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { crearCategoriaUsuario } from '@/hooks/biblioteca/crearCategoriaUsuario';
+import { usePictogramasConCategorias } from '@/hooks/biblioteca/usePictogramasConCategorias';
+import { usePictogramasPorIds } from '@/hooks/biblioteca/usePictogramasPorIds';
+import { subirImagenCloudinary } from '@/hooks/utils/subirImagenCloudinary';
+
+import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function CrearCategoriaScreen() {
   const router = useRouter();
+  const { token, usuarioId } = useAutorizarAcceso();
+  const { pictogramas: pictogramasDisponibles, cargando } = usePictogramasConCategorias();
+
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');
+  const [subiendo, setSubiendo] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState<number[]>([]);
 
-  const togglePictograma = (id: number) => {
-    setPictogramasSeleccionados(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : prev
-    );
-  };
+  const { pictogramas, loading: cargandoPictos } = usePictogramasPorIds(
+    pictogramasSeleccionados,
+    token
+  );
 
-  const manejarCrear = () => {
+  const manejarCrear = async () => {
     if (!nombre || !imagen) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
 
-    // Aquí guardarías nombre, imagen y pictogramasSeleccionados
-    Alert.alert('Éxito', 'Categoría creada correctamente');
-    router.back();
-  };
+    if (!token || !usuarioId) {
+      Alert.alert('Error', 'No se puede autenticar al usuario');
+      return;
+    }
 
-  const manejarAñadir = () => {
-    router.push({
-      pathname: '/biblioteca/categorias/seleccionar-pictogramas',
-      params: { seleccionados: JSON.stringify(pictogramasSeleccionados) },
-    });
-  };
+    try {
+      setSubiendo(true);
+      let urlFinalImagen = imagen;
 
-  const pictogramasMostrados = pictogramas.filter(p => pictogramasSeleccionados.includes(p.id));
+      if (!imagen.startsWith('http')) {
+        const folder = `tfg/usuarios/${usuarioId}/categorias`;
+        urlFinalImagen = await subirImagenCloudinary(imagen, folder);
+      }
+
+      await crearCategoriaUsuario(
+        nombre,
+        urlFinalImagen,
+        usuarioId,
+        pictogramasSeleccionados,
+        token
+      );
+
+      Alert.alert('Éxito', 'Categoría creada correctamente');
+      router.back();
+    } catch (error: any) {
+      console.error('❌ Error al crear categoría:', error);
+      Alert.alert('Error', 'No se pudo crear la categoría');
+    } finally {
+      setSubiendo(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <CabeceraSeccion texto="Crear nueva categoría" />
+      <Text style={styles.sectionTitle}>Crear nueva categoría</Text>
 
       <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
 
@@ -53,37 +88,61 @@ export default function CrearCategoriaScreen() {
         setValor={setNombre}
       />
 
-      <CabeceraSeccion texto="Pictogramas en esta categoría" />
+      <Text style={styles.sectionTitle}>Pictogramas asignados</Text>
 
-      {pictogramasMostrados.length === 0 ? (
+      {cargandoPictos ? (
+        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+          Cargando pictogramas...
+        </Text>
+      ) : pictogramas.length === 0 ? (
         <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
           No hay pictogramas añadidos aún.
         </Text>
       ) : (
-        <View style={styles.grid}>
-          {pictogramasMostrados.map(pic => (
-            <PictogramaClicable
+        <ListaItems
+          items={pictogramas}
+          gap={10}
+          renderItem={(pic) => (
+            <ItemSeleccionable
               key={pic.id}
-              id={pic.id}
-              palabra={pic.palabra}
+              nombre={pic.nombre}
               imagen={pic.imagen}
-              itemStyle={{
-                ...styles.item,
-                backgroundColor: '#007AFF',
-              }}
-              emojiStyle={styles.itemEmoji}
+              seleccionado={true}
+              onPress={() =>
+                setPictogramasSeleccionados((prev) =>
+                  prev.filter((x) => x !== pic.id)
+                )
+              }
+              itemStyle={styles.item}
               textStyle={styles.itemText}
-              onPress={() => togglePictograma(pic.id)}
             />
-          ))}
-        </View>
+          )}
+        />
       )}
 
-      <TouchableOpacity onPress={manejarAñadir} style={styles.verMasButton}>
+      <TouchableOpacity
+        onPress={() => setMostrarModal(true)}
+        style={styles.verMasButton}
+      >
         <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
       </TouchableOpacity>
 
-      <BotonPrincipal texto="Crear" onPress={manejarCrear} />
+      <BotonPrincipal
+        texto={subiendo ? 'Creando...' : 'Crear categoría'}
+        onPress={manejarCrear}
+      />
+
+      <SelectorItemsModal
+        visible={mostrarModal}
+        onClose={() => setMostrarModal(false)}
+        items={pictogramasDisponibles}
+        seleccionados={pictogramasSeleccionados}
+        setSeleccionados={setPictogramasSeleccionados}
+        getId={(p) => p.id}
+        getNombre={(p) => p.nombre}
+        getImagen={(p) => p.imagen}
+        titulo="Selecciona pictogramas"
+      />
     </ScrollView>
   );
 }

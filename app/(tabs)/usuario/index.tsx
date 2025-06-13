@@ -1,10 +1,13 @@
+import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
+import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
+
 import { styles } from '@/styles/PerfilScreen.styles';
 import { Feather } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as FileSystem from 'expo-file-system';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -17,17 +20,17 @@ import {
 
 export default function PerfilScreen() {
   const router = useRouter();
-  const [nombre, setNombre] = useState('');
-  const [voz, setVoz] = useState('');
-  const correo = 'usuario@ejemplo.com';
+  const { token } = useAutorizarAcceso();
+  const { usuario, recargarUsuario } = useUsuarioActual();
+  const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
 
-  useEffect(() => {
-    const cargarDatos = async () => {
-      const vozGuardada = await AsyncStorage.getItem('voz');
-      if (vozGuardada) setVoz(vozGuardada);
-    };
-    cargarDatos();
-  }, []);
+  // ✅ Reacciona cada vez que esta pantalla entra en foco
+  useFocusEffect(
+    useCallback(() => {
+      recargarUsuario();
+      recargarConfiguracion();
+    }, [])
+  );
 
   const manejarCerrarSesion = () => {
     Alert.alert('Cerrar sesión', '¿Estás segura de que quieres cerrar sesión?', [
@@ -61,13 +64,28 @@ export default function PerfilScreen() {
       <View style={styles.avatar} />
 
       <Text style={styles.label}>Nombre</Text>
-      <TextInput style={styles.input} value={nombre} editable={false} placeholder="Nombre" />
+      <TextInput
+        style={styles.input}
+        value={usuario?.nombre ?? ''}
+        editable={false}
+        placeholder="Nombre"
+      />
 
       <Text style={styles.label}>Correo electrónico</Text>
-      <TextInput style={styles.input} value={correo} editable={false} />
+      <TextInput
+        style={styles.input}
+        value={usuario?.correo ?? ''}
+        editable={false}
+        placeholder="Correo"
+      />
 
       <Text style={styles.label}>Voz</Text>
-      <TextInput style={styles.input} value={voz} editable={false} />
+      <TextInput
+        style={styles.input}
+        value={configuracion?.tipoVoz ?? ''}
+        editable={false}
+        placeholder="Tipo de voz"
+      />
 
       <TouchableOpacity
         style={styles.button}

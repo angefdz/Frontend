@@ -1,48 +1,83 @@
-import CategoriaClicable from '@/components/biblioteca/categorias/CategoriaClicable';
 import SeccionHorizontal from '@/components/biblioteca/pantallaPrincipal/SeccionBibliteca';
-import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
-import { categorias } from '@/data/categorias';
-import { pictogramas } from '@/data/pictogramas';
+import ItemClicable from '@/components/comunes/ItemClicable';
+import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles';
+import { usePictogramasConCategorias } from '@/hooks/biblioteca/usePictogramasConCategorias';
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { useRouter } from 'expo-router';
-import { ScrollView } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
 export default function BibliotecaScreen() {
   const router = useRouter();
 
+  const {
+    categorias,
+    cargando: cargandoCategorias,
+    error: errorCategorias,
+    recargar: cargarCategorias,
+  } = useCategoriasVisibles();
+
+  const {
+    pictogramas,
+    cargando: cargandoPictogramas,
+    error: errorPictogramas,
+    cargarPictogramas,
+  } = usePictogramasConCategorias();
+
+  useFocusEffect(
+    useCallback(() => {
+      cargarCategorias();
+      cargarPictogramas();
+    }, [cargarCategorias, cargarPictogramas])
+  );
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      {errorCategorias && (
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: 'red' }}>{errorCategorias}</Text>
+        </View>
+      )}
+
       <SeccionHorizontal
         titulo="Categorías"
-        datos={categorias.slice(0, 10)}
+        datos={cargandoCategorias ? [] : categorias.slice(0, 30)}
         onAddPress={() => router.push('/biblioteca/categorias/crear-categoria')}
         onVerMasPress={() => router.push('/biblioteca/categorias/categorias')}
         renderItem={(item) => (
-          <CategoriaClicable
+          <ItemClicable
             key={item.id}
-            id={item.id}
             nombre={item.nombre}
             imagen={item.imagen}
             itemStyle={styles.item}
-            emojiStyle={styles.itemEmoji}
             textStyle={styles.itemText}
+            onPress={() =>
+              router.push({
+                pathname: '/biblioteca/categorias/pictogramas-por-categoria',
+                params: { id: item.id },
+              })
+            }
           />
         )}
       />
 
+      {errorPictogramas && (
+        <View style={{ padding: 16 }}>
+          <Text style={{ color: 'red' }}>{errorPictogramas}</Text>
+        </View>
+      )}
+
       <SeccionHorizontal
         titulo="Pictogramas"
-        datos={pictogramas.slice(0, 10)}
+        datos={cargandoPictogramas ? [] : pictogramas.slice(0, 30)}
         onAddPress={() => router.push('/biblioteca/pictogramas/crear-pictograma')}
         onVerMasPress={() => router.push('/biblioteca/pictogramas/pictogramas')}
         renderItem={(item) => (
-          <PictogramaClicable
+          <ItemClicable
             key={item.id}
-            id={item.id}
-            palabra={item.palabra}
+            nombre={item.nombre}
             imagen={item.imagen}
             itemStyle={styles.item}
-            emojiStyle={styles.itemEmoji}
             textStyle={styles.itemText}
             onPress={() =>
               router.push({

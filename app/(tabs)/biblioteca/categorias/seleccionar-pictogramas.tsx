@@ -1,11 +1,10 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { ScrollView, TextInput, View } from 'react-native';
 
-import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
-import ListaItems from '@/components/comunes/ListaItems';
-import { pictogramas } from '@/data/pictogramas';
+import ItemSeleccionable from '@/components/comunes/ItemSeleccionable';
+import { usePictogramas } from '@/hooks/biblioteca/usePictogramas';
 import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function SeleccionarPictogramasScreen() {
@@ -13,6 +12,9 @@ export default function SeleccionarPictogramasScreen() {
   const { seleccionados } = useLocalSearchParams<{ seleccionados?: string }>();
 
   const [seleccionadosIds, setSeleccionadosIds] = useState<number[]>([]);
+  const [busqueda, setBusqueda] = useState('');
+
+  const { pictogramas, cargando } = usePictogramas();
 
   useEffect(() => {
     if (seleccionados) {
@@ -26,46 +28,54 @@ export default function SeleccionarPictogramasScreen() {
   }, [seleccionados]);
 
   const toggleSeleccion = (id: number) => {
-    setSeleccionadosIds(prev =>
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    setSeleccionadosIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   };
 
   const manejarConfirmar = () => {
-    router.replace({
+    router.push({
       pathname: '/biblioteca/categorias/crear-categoria',
       params: { seleccionados: JSON.stringify(seleccionadosIds) },
     });
   };
 
+  const pictogramasFiltrados = useMemo(() => {
+    return pictogramas.filter((pic) =>
+      pic.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    );
+  }, [busqueda, pictogramas]);
+
   return (
     <View style={styles.container}>
+      <TextInput
+        placeholder="Buscar pictograma..."
+        value={busqueda}
+        onChangeText={setBusqueda}
+        style={{
+          margin: 16,
+          padding: 12,
+          borderWidth: 1,
+          borderColor: '#ccc',
+          borderRadius: 8,
+          backgroundColor: 'white',
+        }}
+      />
+
       <ScrollView showsVerticalScrollIndicator={false}>
-        <ListaItems
-          items={pictogramas}
-          renderItem={(pic) => (
-            <PictogramaClicable
+        <View style={styles.grid}>
+          {pictogramasFiltrados.map((pic) => (
+            <ItemSeleccionable
               key={pic.id}
-              id={pic.id}
-              palabra={pic.palabra}
+              nombre={pic.nombre}
               imagen={pic.imagen}
+              seleccionado={seleccionadosIds.includes(pic.id)}
               onPress={() => toggleSeleccion(pic.id)}
-              itemStyle={{
-                width: 90,
-                height: 90,
-                backgroundColor: seleccionadosIds.includes(pic.id)
-                  ? '#007AFF'
-                  : '#f2f2f2',
-                borderRadius: 8,
-                padding: 10,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              emojiStyle={styles.itemEmoji}
+              itemStyle={styles.item}
               textStyle={styles.itemText}
             />
-          )}
-        />
+          ))}
+        </View>
       </ScrollView>
 
       <BotonPrincipal texto="Confirmar selección" onPress={manejarConfirmar} />

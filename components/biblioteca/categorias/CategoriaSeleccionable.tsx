@@ -1,16 +1,16 @@
-import { Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import { Image, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Categoria {
   id: number;
   nombre: string;
-  imagen: string;
+  imagen: string; // URL de imagen
 }
 
 interface Props {
   categoria: Categoria;
   seleccionada?: boolean;
   itemStyle?: ViewStyle;
-  emojiStyle?: TextStyle;
+  emojiStyle?: any; // Para estilo de imagen, no solo texto
   textStyle?: TextStyle;
   onPress?: () => void;
 }
@@ -31,7 +31,11 @@ export default function CategoriaSeleccionable({
       ]}
       onPress={onPress}
     >
-      <Text style={emojiStyle}>{categoria.imagen}</Text>
+      <Image
+        source={{ uri: categoria.imagen }}
+        style={[{ width: 60, height: 60, borderRadius: 12, marginBottom: 8 }, emojiStyle]}
+        resizeMode="cover"
+      />
       <Text style={textStyle}>{categoria.nombre}</Text>
     </TouchableOpacity>
   );

@@ -1,12 +1,12 @@
+import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
-import { Pictograma } from '@/types';
+import { PictogramaSimple } from '@/types';
 import React from 'react';
-import { Image, Text, TouchableOpacity } from 'react-native';
 
 type Props = {
-  pictogramas: Pictograma[];
+  pictogramas: PictogramaSimple[];
   itemsPerPage: number;
-  onSeleccionar: (palabra: string) => void;
+  onSeleccionar: (pictograma: PictogramaSimple) => void; // ✅ cambia aquí
 };
 
 export default function GridPictogramas({
@@ -16,29 +16,16 @@ export default function GridPictogramas({
 }: Props) {
   return (
     <GridPaginadoHorizontal
-      items={pictogramas}
+      items={pictogramas ?? []}
       itemsPerPage={itemsPerPage}
       renderItem={(p, itemSize) =>
         p ? (
-          <TouchableOpacity
-            onPress={() => onSeleccionar(p.nombre)}
-            style={{
-              width: itemSize,
-              height: itemSize,
-              backgroundColor: '#f2f2f2',
-              borderRadius: 8,
-              justifyContent: 'center',
-              alignItems: 'center',
-              padding: 4,
-            }}
-          >
-            <Image
-              source={{ uri: p.imagen }}
-              style={{ width: itemSize * 0.7, height: itemSize * 0.7 }}
-              resizeMode="contain"
-            />
-            <Text style={{ fontSize: itemSize * 0.15 }}>{p.nombre}</Text>
-          </TouchableOpacity>
+          <GridItem
+            imagen={p.imagen}
+            nombre={p.nombre}
+            itemSize={itemSize}
+            onPress={() => onSeleccionar(p)} // ✅ y aquí
+          />
         ) : null
       }
     />

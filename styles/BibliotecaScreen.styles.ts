@@ -72,6 +72,23 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: '#fff',
   },
+  dropdown: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    marginBottom: 15,
+    zIndex: 10, // para que no se superponga mal
+  },
+  dropdownContainer: {
+    borderColor: '#ccc',
+    borderRadius: 8,
+    zIndex: 1000, // asegúrate que el contenedor tenga prioridad visual
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#333',
+  },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

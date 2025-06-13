@@ -1,6 +1,5 @@
 import { styles } from '@/styles/CabeceraPictograma.styles';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
@@ -8,6 +7,8 @@ interface Props {
   id: number;
   oculto: boolean;
   onToggleVisibilidad: () => void;
+  onEditar: () => void;
+  onEliminar?: () => void; // <-- añadido como opcional
 }
 
 export default function CabeceraPictograma({
@@ -15,16 +16,9 @@ export default function CabeceraPictograma({
   id,
   oculto,
   onToggleVisibilidad,
+  onEditar,
+  onEliminar,
 }: Props) {
-  const router = useRouter();
-
-  const manejarEditar = () => {
-    router.push({
-      pathname: '/biblioteca/pictogramas/editar-pictograma',
-      params: { id },
-    });
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>{titulo}</Text>
@@ -36,9 +30,16 @@ export default function CabeceraPictograma({
             <Feather name="eye-off" size={24} color="#DC3545" />
           )}
         </TouchableOpacity>
-        <TouchableOpacity onPress={manejarEditar} style={styles.botonIcono}>
+
+        <TouchableOpacity onPress={onEditar} style={styles.botonIcono}>
           <Feather name="edit-3" size={24} color="#28A745" />
         </TouchableOpacity>
+
+        {onEliminar && (
+          <TouchableOpacity onPress={onEliminar} style={styles.botonIcono}>
+            <Feather name="trash-2" size={24} color="#DC3545" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );

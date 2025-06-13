@@ -1,11 +1,18 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// useFrase.ts
 import * as Speech from 'expo-speech';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
+
+import { VOICES } from '@/data/vozOpciones';
 import { predecirSiguientePictograma } from './../utils/prediccion';
 
-export const useFrase = () => {
+export const useFrase = (tipoVoz: 'masculina' | 'femenina' = 'femenina') => {
   const [frase, setFrase] = useState<string[]>([]);
   const [sugerencia, setSugerencia] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Si quieres, aquí podrías resetear la frase o hacer algo cuando tipoVoz cambie
+  }, [tipoVoz]);
 
   const añadirPictograma = (palabra: string) => {
     const nuevaFrase = [...frase, palabra];
@@ -26,32 +33,40 @@ export const useFrase = () => {
 
   const reproducirFrase = async () => {
     const texto = frase.join(' ');
-    if (texto) {
-      const voz = await AsyncStorage.getItem('voz');
+    if (!texto) return;
 
-      let options: Speech.SpeechOptions = {
+    const vozIdDeseada = VOICES[tipoVoz];
+
+    try {
+      const vocesDisponibles = await Speech.getAvailableVoicesAsync();
+      const vozValida = vocesDisponibles.find((v) => v.identifier === vozIdDeseada);
+
+      const options: Speech.SpeechOptions = {
         language: 'es-ES',
         rate: 1,
-        pitch: 1,
+        pitch: tipoVoz === 'masculina' ? 0.9 : 1.2,
+        ...(vozValida && { voice: vozValida.identifier }),
       };
 
-      switch (voz) {
-        case 'masculina':
-          options.pitch = 0.9;
-          break;
-        case 'infantil':
-          options.pitch = 1.4;
-          break;
-        case 'robot':
-          options.rate = 0.8;
-          options.pitch = 0.7;
-          break;
-        default:
-          options.pitch = 1.2; // femenina o por defecto
-          break;
-      }
+      console.log('🗣️ Reproduciendo frase:', texto);
+      console.log('🎤 Tipo de voz:', tipoVoz);
+      console.log('🎧 Voz aplicada:', vozValida?.identifier ?? '(predeterminada)');
 
       Speech.speak(texto, options);
+
+      Toast.show({
+        type: 'success',
+        text1: 'Frase guardada',
+        visibilityTime: 1500,
+        position: 'bottom',
+      });
+    } catch (error) {
+      console.error('❌ Error al reproducir frase:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error al reproducir la frase',
+        text2: 'Intenta de nuevo o revisa la voz seleccionada.',
+      });
     }
   };
 

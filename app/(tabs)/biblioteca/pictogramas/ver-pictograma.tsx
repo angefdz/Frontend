@@ -1,80 +1,180 @@
-import CategoriaClicable from '@/components/biblioteca/categorias/CategoriaClicable';
-import CabeceraPictograma from '@/components/biblioteca/pictogramas/CabeceraPictograma';
-import { categorias } from '@/data/categorias';
-import { pictogramas } from '@/data/pictogramas';
+import axios from 'axios';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
+
+import CabeceraPictograma from '@/components/biblioteca/pictogramas/verPictograma/CabeceraPictograma';
+import ImagenPictograma from '@/components/biblioteca/pictogramas/verPictograma/ImagenPictograma';
+import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
+import ItemClicable from '@/components/comunes/ItemClicable';
+
+import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useCategoriasDePictograma } from '@/hooks/biblioteca/useCategoriasDePictograma';
+import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma';
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { PictogramaConCategorias } from '@/types';
 
 export default function VerPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const pictograma = pictogramas.find(p => p.id === Number(id));
+  const { token, usuarioId, cargandoToken } = useAutorizarAcceso();
+  const { eliminarPictograma } = useEliminarPictograma();
 
-  const [oculto, setOculto] = useState(pictograma?.oculto || false);
+  const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
+  const [oculto, setOculto] = useState(false);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!pictograma) {
+  const { categorias, cargando: cargandoCategorias, error: errorCategorias } =
+    useCategoriasDePictograma(pictograma?.id ?? null);
+
+  const cargarDatos = useCallback(async () => {
+    if (!id || !token || !usuarioId) return;
+
+    setCargando(true);
+    try {
+      const pictogramaRes = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setPictograma(pictogramaRes.data);
+
+      const ocultoRes = await axios.get(
+        `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/es-oculto`,
+        {
+          params: { pictogramaId: pictogramaRes.data.id, usuarioId },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setOculto(ocultoRes.data === true);
+    } catch (err: any) {
+      console.error('❌ Error al cargar datos:', err);
+      setError('No se pudo cargar el pictograma');
+    } finally {
+      setCargando(false);
+    }
+  }, [id, token, usuarioId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!cargandoToken) {
+        cargarDatos();
+      }
+    }, [cargarDatos, cargandoToken])
+  );
+
+  const manejarEditar = () => {
+    if (!pictograma?.usuarioId) {
+      Alert.alert(
+        'Pictograma general',
+        'Este pictograma no se puede editar porque es compartido por todos los usuarios.'
+      );
+      return;
+    }
+
+    router.push({
+      pathname: '/biblioteca/pictogramas/editar-pictograma',
+      params: { id: pictograma.id.toString() },
+    });
+  };
+
+  const manejarEliminar = async () => {
+    if (!pictograma) return;
+
+    const esPersonalizado = !!pictograma.usuarioId;
+    await eliminarPictograma(pictograma.id, token, esPersonalizado);
+  };
+
+  const manejarToggleVisibilidad = async () => {
+    if (!pictograma || !usuarioId) return;
+
+    const endpoint = oculto ? 'desocultar' : 'ocultar';
+    const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/${endpoint}?pictogramaId=${pictograma.id}&usuarioId=${usuarioId}`;
+
+    try {
+      if (oculto) {
+        await axios.delete(url, { headers: { Authorization: `Bearer ${token}` } });
+        Alert.alert('✅ Pictograma visible', 'El pictograma se ha desocultado correctamente.');
+      } else {
+        await axios.post(url, null, { headers: { Authorization: `Bearer ${token}` } });
+        Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.');
+      }
+
+      setOculto((prev) => !prev);
+    } catch (err) {
+      console.error('❌ Error cambiando visibilidad:', err);
+      Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
+    }
+  };
+
+  if (cargando || cargandoToken) {
     return (
       <View style={styles.container}>
-        <Text style={styles.sectionTitle}>Pictograma no encontrado</Text>
+        <ActivityIndicator size="large" color="#999" style={{ marginTop: 32 }} />
       </View>
     );
   }
 
-  const categoriasAsignadas = categorias.filter(c =>
-    pictograma.categorias?.includes(c.id)
-  );
-
-  const manejarToggleVisibilidad = () => {
-    Alert.alert(
-      oculto ? 'Mostrar pictograma' : 'Ocultar pictograma',
-      `¿Seguro que quieres ${oculto ? 'mostrar' : 'ocultar'} este pictograma?`,
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: oculto ? 'Mostrar' : 'Ocultar',
-          onPress: () => {
-            setOculto(!oculto);
-            // Aquí puedes llamar a la API o actualizar la base de datos para persistir el cambio
-            console.log(`Pictograma ${!oculto ? 'ocultado' : 'visible'}`);
-          },
-        },
-      ]
+  if (error || !pictograma) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ textAlign: 'center', marginTop: 32, color: 'red' }}>
+          {error ?? 'Pictograma no encontrado'}
+        </Text>
+      </View>
     );
-  };
+  }
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <CabeceraPictograma
-        titulo={pictograma.palabra}
+        titulo={pictograma.nombre}
         id={pictograma.id}
         oculto={oculto}
         onToggleVisibilidad={manejarToggleVisibilidad}
+        onEditar={manejarEditar}
+        onEliminar={manejarEliminar}
       />
 
-      {/* Imagen del pictograma */}
-      <View style={{ alignItems: 'center', marginBottom: 20 }}>
-        <Text style={styles.itemEmoji}>{pictograma.imagen}</Text>
-      </View>
+      <ImagenPictograma uri={pictograma.imagen} />
 
-      {/* Categorías en grid con wrap */}
-      <Text style={styles.sectionTitle}>Categorías</Text>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <CabeceraSeccion texto="Categorías del pictograma" />
+
+      {cargandoCategorias ? (
+        <ActivityIndicator style={{ marginTop: 16 }} />
+      ) : errorCategorias ? (
+        <Text style={{ color: 'red', marginHorizontal: 16 }}>{errorCategorias}</Text>
+      ) : categorias.length === 0 ? (
+        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+          Este pictograma no está asignado a ninguna categoría.
+        </Text>
+      ) : (
         <View style={styles.grid}>
-          {categoriasAsignadas.map((cat) => (
-            <CategoriaClicable
+          {categorias.map((cat) => (
+            <ItemClicable
               key={cat.id}
-              id={cat.id}
               nombre={cat.nombre}
               imagen={cat.imagen}
               itemStyle={styles.item}
-              emojiStyle={styles.itemEmoji}
               textStyle={styles.itemText}
+              onPress={() =>
+                router.push({
+                  pathname: '/biblioteca/categorias/pictogramas-por-categoria',
+                  params: { id: cat.id },
+                })
+              }
             />
           ))}
         </View>
-      </ScrollView>
-    </View>
+      )}
+    </ScrollView>
   );
 }

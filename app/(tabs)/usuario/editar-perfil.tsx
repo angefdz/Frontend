@@ -1,5 +1,4 @@
 import { styles } from '@/styles/PerfilScreen.styles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import {
@@ -13,33 +12,73 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
+import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
+import { useOpcionesTipoVoz } from '@/hooks/configuracion/useOpcionesTipoVoz';
+import { guardarUsuarioActual } from '@/hooks/usuario/guardarUsuarioActual';
+import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
+
 export default function EditarPerfilScreen() {
   const router = useRouter();
+  const { token, usuarioId } = useAutorizarAcceso();
+
+  // Ahora extraemos la función recargarConfiguracion del hook
+  const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
+
+  // Extraemos la función recargarUsuario del hook de usuario
+  const { usuario, recargarUsuario } = useUsuarioActual();
+
+  const { opciones, loading: cargandoOpciones } = useOpcionesTipoVoz(token);
 
   const [nombre, setNombre] = useState('');
-  const correo = 'usuario@ejemplo.com';
-
-  const [voz, setVoz] = useState('femenina');
+  const [voz, setVoz] = useState<string>('femenina');
   const [open, setOpen] = useState(false);
-  const [opciones, setOpciones] = useState([
-    { label: 'Femenina', value: 'femenina' },
-    { label: 'Masculina', value: 'masculina' },
-    { label: 'Robot', value: 'robot' },
-    { label: 'Infantil', value: 'infantil' },
-  ]);
 
   useEffect(() => {
-    const cargarDatos = async () => {
-      const vozGuardada = await AsyncStorage.getItem('voz');
-      if (vozGuardada) setVoz(vozGuardada);
-    };
-    cargarDatos();
-  }, []);
+    if (configuracion) {
+      setVoz(configuracion.tipoVoz);
+    }
+  }, [configuracion]);
+
+  useEffect(() => {
+    if (usuario?.nombre) {
+      setNombre(usuario.nombre);
+    }
+  }, [usuario]);
 
   const guardarCambios = async () => {
-    await AsyncStorage.setItem('voz', voz);
-    Alert.alert('Perfil actualizado', 'Los cambios se han guardado correctamente');
-    router.back(); // Vuelve a la pantalla anterior
+    if (!configuracion || !usuarioId || !token || !usuario) {
+      Alert.alert('Error', 'No se pudo guardar la configuración.');
+      return;
+    }
+
+    try {
+      // Guardar configuración tipo voz
+      await guardarConfiguracionUsuario(token, {
+        id: configuracion.id,
+        botonesPorPantalla: configuracion.botonesPorPantalla,
+        mostrarPorCategoria: configuracion.mostrarPorCategoria,
+        tipoVoz: voz,
+      });
+
+      // Guardar nombre del usuario
+      await guardarUsuarioActual(token, {
+        id: usuarioId,
+        nombre,
+        correo: usuario.correo,
+      });
+
+      // Forzar recarga inmediata para que la vista se actualice
+      await recargarConfiguracion();
+      await recargarUsuario();
+
+      Alert.alert('Perfil actualizado', 'Los cambios se han guardado correctamente');
+      router.back();
+    } catch (error) {
+      Alert.alert('Error', 'No se pudo guardar los cambios.');
+      console.error('Error al guardar el perfil:', error);
+    }
   };
 
   return (
@@ -58,7 +97,11 @@ export default function EditarPerfilScreen() {
       />
 
       <Text style={styles.label}>Correo electrónico</Text>
-      <TextInput style={styles.input} value={correo} editable={false} />
+      <TextInput
+        style={[styles.input, { color: '#555' }]}
+        value={usuario?.correo ?? ''}
+        editable={false}
+      />
 
       <Text style={styles.label}>Voz</Text>
       <DropDownPicker
@@ -66,16 +109,13 @@ export default function EditarPerfilScreen() {
         value={voz}
         items={opciones}
         setOpen={setOpen}
-        setValue={(callback) => {
-          const newValue = callback(voz); // obtiene el nuevo valor del combo
-          setVoz(newValue);
-          AsyncStorage.setItem('voz', newValue);
-        }}
-        setItems={setOpciones}
+        setValue={setVoz}
+        setItems={() => {}}
         placeholder="Selecciona un tipo de voz"
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}
         textStyle={styles.dropdownText}
+        disabled={cargandoOpciones}
       />
 
       <TouchableOpacity style={styles.button} onPress={guardarCambios}>

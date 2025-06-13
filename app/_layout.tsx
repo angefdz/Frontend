@@ -4,6 +4,7 @@ import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message'; // 👈 AÑADIDO
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -18,8 +19,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot /> {/* Deja que Expo Router maneje el layout según la ruta */}
+      <Slot />
       <StatusBar style="auto" />
+      <Toast /> {/* 👈 AÑADIDO AQUÍ */}
     </ThemeProvider>
   );
 }

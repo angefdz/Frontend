@@ -1,24 +1,32 @@
 import { Pictograma } from '@/types';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const usePictogramas = () => {
   const [pictogramas, setPictogramas] = useState<Pictograma[]>([]);
   const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const cargar = async () => {
-      try {
-        const res = await axios.get('http://192.168.1.216:8080/pictogramas');
-        setPictogramas(res.data);
-      } catch (e) {
-        console.error('Error cargando pictogramas:', e);
-      } finally {
-        setCargando(false);
-      }
-    };
-    cargar();
+  const cargarPictogramas = useCallback(async () => {
+    try {
+      setCargando(true);
+      console.log('📥 Solicitando pictogramas desde:', `${API_BASE_URL}/pictogramas`);
+      const res = await axios.get(`${API_BASE_URL}/pictogramas`);
+      setPictogramas(res.data);
+      console.log('✅ Pictogramas cargados correctamente:', res.data);
+    } catch (e: any) {
+      console.error('❌ Error cargando pictogramas:', e.message);
+      setError('No se pudieron cargar los pictogramas');
+    } finally {
+      setCargando(false);
+    }
   }, []);
 
-  return { pictogramas, cargando };
+  useEffect(() => {
+    cargarPictogramas();
+  }, [cargarPictogramas]);
+
+  return { pictogramas, cargando, error, cargarPictogramas };
 };

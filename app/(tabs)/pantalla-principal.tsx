@@ -1,40 +1,151 @@
-import { useNavigation } from 'expo-router';
-import React, { useLayoutEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useFocusEffect, useNavigation } from 'expo-router';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
+import ModalConjugadorVerbo from '@/components/conjugador/ModalConjugadorVerbo';
 import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
 import BotonVolverCategorias from '@/components/pantallaPrincipal/BotonVolverCategorias';
-import FraseActual from '@/components/pantallaPrincipal/FraseActual';
 import GridCategorias from '@/components/pantallaPrincipal/GridCategorias';
 import GridPictogramas from '@/components/pantallaPrincipal/GridPictogramas';
 import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion';
 import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
+import TextoFraseExpandibleAnimado from '@/components/pantallaPrincipal/TextoFraseExpandible';
 
-import { categorias } from '@/data/categorias';
-import { useProtegerPantalla } from '@/hooks/auth/autorizacion/useProtegerPantalla';
-import { usePictogramas } from '@/hooks/biblioteca/usePictogramas';
+import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles';
+import { usePictogramasVisibles } from '@/hooks/biblioteca/usePictogramasVisibles';
+import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
+import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useFrase } from '@/hooks/frase/useFrase';
+import { usePictogramasPorCategoria } from '@/hooks/pantallaPrincipal/usePictogramasPorCategoria';
+
 import { styles } from '@/styles/InicioScreen.styles';
+import { PictogramaSimple } from '@/types';
 
 export default function PantallaPrincipal() {
-  const { token, cargandoToken } = useProtegerPantalla();
+  const { token, usuarioId, cargandoToken } = useAutorizarAcceso();
   const navigation = useNavigation();
 
   const {
+    configuracion,
+    cargandoConfiguracion,
+    errorConfiguracion,
+  } = useConfiguracionUsuario(token);
+
+  const tipoVoz = configuracion?.tipoVoz ?? 'femenina';
+
+  const {
     frase,
-    sugerencia,
     añadirPictograma,
     borrarUltimo,
     resetearFrase,
     reproducirFrase,
     usarSugerencia,
-  } = useFrase();
+  } = useFrase(tipoVoz);
 
   const [modoAgrupado, setModoAgrupado] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [verboModal, setVerboModal] = useState<string | null>(null);
 
-  const { pictogramas, cargando } = usePictogramas(); // Hook que trae pictogramas del backend
+  const sugerencia = {
+    id: 999,
+    nombre: 'Comer',
+    imagen: 'https://static.arasaac.org/pictograms/38351/38351_500.png',
+    tipo: 'verbo',
+  };
+  const {
+    categorias,
+    cargando: cargandoCategorias,
+    error: errorCategorias,
+    recargar: cargarCategorias,
+  } = useCategoriasVisibles();
+
+  const {
+    pictogramas: pictosSinFiltro,
+    cargando: cargandoSinFiltro,
+    error: errorSinFiltro,
+    recargar: recargarSinFiltro,
+  } = usePictogramasVisibles();
+
+  const {
+    pictogramas: pictosFiltrados,
+    cargando: cargandoFiltrados,
+    error: errorFiltrados,
+    recargar: recargarFiltrados,
+  } = usePictogramasPorCategoria(categoriaSeleccionada);
+
+  const pictogramas = categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro;
+  const cargandoPictos = categoriaSeleccionada ? cargandoFiltrados : cargandoSinFiltro;
+  const errorPictogramas = categoriaSeleccionada ? errorFiltrados : errorSinFiltro;
+
+  const [configAplicada, setConfigAplicada] = useState(false);
+  const [todoListo, setTodoListo] = useState(false);
+
+  useEffect(() => {
+    if (
+      !cargandoToken &&
+      !cargandoConfiguracion &&
+      !cargandoCategorias &&
+      !cargandoPictos &&
+      !errorConfiguracion &&
+      !errorCategorias &&
+      !errorPictogramas &&
+      token &&
+      usuarioId
+    ) {
+      setTodoListo(true);
+    } else {
+      setTodoListo(false);
+    }
+  }, [
+    cargandoToken,
+    cargandoConfiguracion,
+    cargandoCategorias,
+    cargandoPictos,
+    errorConfiguracion,
+    errorCategorias,
+    errorPictogramas,
+    token,
+    usuarioId,
+  ]);
+
+  useFocusEffect(
+    useCallback(() => {
+      cargarCategorias();
+    }, [cargarCategorias])
+  );
+
+  useEffect(() => {
+    if (categoriaSeleccionada) {
+      recargarFiltrados();
+    } else {
+      recargarSinFiltro();
+    }
+  }, [categoriaSeleccionada, recargarFiltrados, recargarSinFiltro]);
+
+  useEffect(() => {
+    if (configuracion && !configAplicada) {
+      setModoAgrupado(configuracion.mostrarPorCategoria);
+      setItemsPerPage(configuracion.botonesPorPantalla);
+      setConfigAplicada(true);
+    }
+  }, [configuracion, configAplicada]);
+
+  useEffect(() => {
+    if (!configAplicada || !configuracion || !usuarioId || !token) return;
+
+    const nuevaConfig = {
+      id: configuracion.id,
+      botonesPorPantalla: itemsPerPage,
+      mostrarPorCategoria: modoAgrupado,
+      tipoVoz: configuracion.tipoVoz,
+    };
+
+    guardarConfiguracionUsuario(token, nuevaConfig).catch((err) => {
+      console.error('❌ Error al actualizar configuración:', err);
+    });
+  }, [itemsPerPage, modoAgrupado, configuracion, usuarioId, token, configAplicada]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -51,68 +162,98 @@ export default function PantallaPrincipal() {
     });
   }, [navigation, modoAgrupado, itemsPerPage]);
 
-  if (cargandoToken || cargando) {
+  const manejarSeleccion = (p: PictogramaSimple) => {
+    if (p.tipo === 'verbo') {
+      setVerboModal(p.nombre);
+    } else {
+      añadirPictograma(p.nombre);
+    }
+  };
+
+  if (!todoListo) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Cargando...</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <Text>Cargando configuración...</Text>
       </View>
     );
   }
 
-  if (!token) return null;
-
-  // const pictosFiltrados = modoAgrupado
-//   ? categoriaSeleccionada
-//     ? pictogramas.filter((p) =>
-//         (p.categorias ?? []).includes(Number(categoriaSeleccionada))
-//       )
-//     : []
-//   : pictogramas;
-
-const pictosFiltrados = pictogramas; // Mostrar todos los pictogramas siempre
-
+  if (!token || !usuarioId || errorConfiguracion || errorCategorias || errorPictogramas) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#fff' }}>
+        <Text style={{ color: 'red' }}>Error al cargar datos del usuario.</Text>
+      </View>
+    );
+  }
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
-      <FraseActual frase={frase} />
+    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+        <TextoFraseExpandibleAnimado frase={frase} />
 
-      <BotonesFrase
-        borrarUltimo={borrarUltimo}
-        resetearFrase={resetearFrase}
-        reproducirFrase={reproducirFrase}
-      />
-
-      <SugerenciaPictograma
-        sugerencia={sugerencia}
-        usarSugerencia={usarSugerencia}
-      />
-
-      {modoAgrupado && !categoriaSeleccionada && (
-        <GridCategorias
-          categorias={categorias}
-          itemsPerPage={itemsPerPage}
-          onSeleccionar={(id) => setCategoriaSeleccionada(id)}
+        <BotonesFrase
+          borrarUltimo={borrarUltimo}
+          resetearFrase={resetearFrase}
+          reproducirFrase={reproducirFrase}
         />
-      )}
 
-      {modoAgrupado && categoriaSeleccionada && (
-        <>
-          <BotonVolverCategorias onPress={() => setCategoriaSeleccionada(null)} />
-          <GridPictogramas
-            pictogramas={pictosFiltrados}
+        <SugerenciaPictograma
+          sugerencia={sugerencia}
+          usarSugerencia={() =>
+            sugerencia.tipo === 'verbo'
+              ? setVerboModal(sugerencia.nombre)
+              : añadirPictograma(sugerencia.nombre)
+          }
+          itemsPerPage={itemsPerPage}
+        />
+
+        {modoAgrupado && !categoriaSeleccionada && (
+          <GridCategorias
+            categorias={categorias}
             itemsPerPage={itemsPerPage}
-            onSeleccionar={añadirPictograma}
+            onSeleccionar={(id) => setCategoriaSeleccionada(id)}
           />
-        </>
-      )}
+        )}
+        {modoAgrupado && categoriaSeleccionada && (
+          <>
+            <BotonVolverCategorias onPress={() => setCategoriaSeleccionada(null)} />
+            {cargandoPictos ? (
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                <ActivityIndicator size="large" color="#007AFF" />
+                <Text style={{ marginTop: 10 }}>Cargando pictogramas...</Text>
+              </View>
+            ) : pictogramas.length === 0 ? (
+              <View style={{ alignItems: 'center', marginTop: 20 }}>
+                <Text style={{ fontSize: 16, color: '#666', fontStyle: 'italic' }}>
+                  No hay pictogramas en esta categoría.
+                </Text>
+              </View>
+            ) : (
+              <GridPictogramas
+                pictogramas={pictogramas}
+                itemsPerPage={itemsPerPage}
+                onSeleccionar={manejarSeleccion}
+              />
+            )}
+          </>
+        )}
+        {!modoAgrupado && (
+          <GridPictogramas
+            pictogramas={pictogramas}
+            itemsPerPage={itemsPerPage}
+            onSeleccionar={manejarSeleccion}
+          />
+        )}
+      </ScrollView>
 
-      {!modoAgrupado && (
-        <GridPictogramas
-          pictogramas={pictosFiltrados}
-          itemsPerPage={itemsPerPage}
-          onSeleccionar={añadirPictograma}
+      {verboModal && (
+        <ModalConjugadorVerbo
+          visible={true}
+          verbo={verboModal}
+          onClose={() => setVerboModal(null)}
+          onConfirm={(forma) => añadirPictograma(forma)}
         />
       )}
-    </ScrollView>
+    </View>
   );
 }

@@ -1,45 +1,71 @@
-import { useRouter } from 'expo-router';
+// src/app/biblioteca/pictogramas/PictogramasOcultosScreen.tsx
+import { useFocusEffect, useRouter } from 'expo-router';
+import React, { useCallback } from 'react';
 import { Text, View } from 'react-native';
 
-import PictogramaClicable from '@/components/biblioteca/pictogramas/PictogramaClicable';
+import ItemClicable from '@/components/comunes/ItemClicable';
 import ListaGenerica from '@/components/comunes/ListaItems';
-import { styles } from '@/styles/PictogramasOucltosScreen.styles';
-
-// Pictogramas ocultos de prueba
-const pictogramasOcultos = [
-  { id: 101, palabra: 'Silencio', imagen: '🤫' },
-  { id: 102, palabra: 'Privado', imagen: '🔒' },
-  { id: 103, palabra: 'Secreto', imagen: '🤐' },
-];
+import { usePictogramasOcultos } from '@/hooks/ocultos/usePictogramasOcultos';
+import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function PictogramasOcultosScreen() {
   const router = useRouter();
+  const { pictogramas, cargando, error, recargarPictogramas } = usePictogramasOcultos();
+
+  useFocusEffect(
+    useCallback(() => {
+      recargarPictogramas();
+    }, [])
+  );
+
+  if (cargando) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginTop: 32 }}>
+          Cargando...
+        </Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ fontSize: 16, color: 'red', textAlign: 'center', marginTop: 32 }}>
+          {error}
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Pictogramas ocultos</Text>
+      <Text style={styles.sectionTitle}>Pictogramas ocultos</Text>
 
-      {pictogramasOcultos.length === 0 ? (
+      {pictogramas.length === 0 ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={styles.mensaje}>No tienes pictogramas ocultos.</Text>
+          <Text style={{ fontSize: 16, color: '#666', textAlign: 'center' }}>
+            No tienes pictogramas ocultos.
+          </Text>
         </View>
       ) : (
         <ListaGenerica
-          items={pictogramasOcultos}
+          items={pictogramas}
           renderItem={(p) => (
-            <PictogramaClicable
-              id={p.id}
-              palabra={p.palabra}
+            <ItemClicable
+              nombre={p.nombre}
               imagen={p.imagen}
+              itemStyle={styles.item}
+              textStyle={styles.itemText}
               onPress={() =>
                 router.push({
                   pathname: '/biblioteca/pictogramas/ver-pictograma',
-                  params: { id: p.id },
+                  params: {
+                    id: p.id,
+                    origen: 'ocultos', // 👈 identificamos que viene desde aquí
+                  },
                 })
               }
-              itemStyle={styles.item}
-              emojiStyle={styles.itemEmoji}
-              textStyle={styles.itemText}
             />
           )}
         />

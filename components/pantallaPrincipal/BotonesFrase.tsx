@@ -1,5 +1,3 @@
-// components/frase/BotonesFrase.tsx
-
 import { styles } from '@/styles/InicioScreen.styles';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
@@ -21,10 +19,22 @@ export default function BotonesFrase({
       <TouchableOpacity onPress={borrarUltimo} style={styles.botonIcono}>
         <Feather name="delete" size={24} color="white" />
       </TouchableOpacity>
+
       <TouchableOpacity onPress={resetearFrase} style={styles.botonIcono}>
         <Feather name="rotate-ccw" size={24} color="white" />
       </TouchableOpacity>
-      <TouchableOpacity onPress={reproducirFrase} style={styles.botonIcono}>
+
+      <TouchableOpacity
+        onPress={() => {
+          console.log('📣 Botón de reproducir pulsado');
+          try {
+            reproducirFrase();
+          } catch (e) {
+            console.error('❌ Error al ejecutar reproducirFrase():', e);
+          }
+        }}
+        style={styles.botonIcono}
+      >
         <Feather name="volume-2" size={24} color="white" />
       </TouchableOpacity>
     </View>

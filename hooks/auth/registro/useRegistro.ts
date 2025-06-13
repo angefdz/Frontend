@@ -1,6 +1,10 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
+// Asegúrate de que esta variable de entorno esté configurada en tu proyecto Expo
+// Por ejemplo, en un archivo .env o en app.config.js de Expo
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
+
 export const useRegistro = () => {
   const router = useRouter();
   const [nombre, setNombre] = useState('');
@@ -25,21 +29,30 @@ export const useRegistro = () => {
     setCargando(true);
 
     try {
-      const response = await fetch('http://192.168.1.216:8080/auth/register', {
+      // Usamos API_BASE_URL para construir la URL de registro
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           nombre,
-          email: correo,
+          email: correo, // Asegúrate de que tu backend espera 'email' y no 'correo'
           contrasena,
         }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData || 'Error en el registro');
+        let errorMessage = 'Error en el registro';
+        try {
+          const errorData = await response.json();
+          // Intentamos obtener un mensaje de error más específico si el backend lo envía
+          errorMessage = errorData.message || errorData.error || JSON.stringify(errorData);
+        } catch (jsonError) {
+          // Si la respuesta no es un JSON válido, usamos el estado de la respuesta
+          errorMessage = `Error ${response.status}: ${response.statusText}`;
+        }
+        setError(errorMessage);
         setCargando(false);
         return;
       }
@@ -48,7 +61,9 @@ export const useRegistro = () => {
       setCargando(false);
       router.replace('/inicio-sesion');
     } catch (e) {
-      setError('Error en la conexión con el servidor');
+      // Manejo de errores de red o cualquier otra excepción durante la petición
+      console.error('Error en la conexión con el servidor:', e);
+      setError('Error en la conexión con el servidor. Por favor, intenta de nuevo.');
       setCargando(false);
     }
   };

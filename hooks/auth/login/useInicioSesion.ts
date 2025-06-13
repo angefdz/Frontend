@@ -1,10 +1,11 @@
+import { guardarCredenciales } from '@/hooks/utils/seguridad'; // ✅ aquí importamos la función buena
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
-import { useAutorizarAcceso } from '../autorizacion/useAutorizarAcceso'; // Ajusta ruta
+
+const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const useInicioSesion = () => {
   const router = useRouter();
-  const { guardarToken } = useAutorizarAcceso();  // IMPORTANTE: Usamos el hook aquí
 
   const [correo, setCorreo] = useState('');
   const [contrasena, setContrasena] = useState('');
@@ -31,32 +32,28 @@ export const useInicioSesion = () => {
     setError('');
 
     try {
-      // Aquí llama al backend con el correo y contraseña reales, p.ej:
-      const response = await fetch('http://192.168.1.216:8080/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: correo, contrasena: contrasena }),
+        body: JSON.stringify({ email: correo, contrasena }),
       });
 
       if (!response.ok) {
         throw new Error('Credenciales inválidas');
       }
 
-      const token = await response.text();
+      const { token, usuarioId } = await response.json();
+      await guardarCredenciales(token, usuarioId); // ✅ usamos esta función en lugar de guardarToken
 
-      // Guarda el token usando el hook que creamos
-      await guardarToken(token);
-
-      // Redirige a la pantalla principal
       router.replace('/pantalla-principal');
     } catch (e) {
+      console.error('Error al iniciar sesión:', e);
       setError('Error al iniciar sesión. Intenta de nuevo.');
     } finally {
       setCargando(false);
     }
   };
 
-  // El resto igual...
   const manejarInicioSesionGoogle = () => {
     console.log('Google login (a implementar)');
   };

@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -14,68 +14,86 @@ import ImagenPictograma from '@/components/biblioteca/pictogramas/verPictograma/
 import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
 import ItemClicable from '@/components/comunes/ItemClicable';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext';
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 import { useCategoriasDePictograma } from '@/hooks/biblioteca/useCategoriasDePictograma';
 import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma';
+
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { PictogramaConCategorias } from '@/types';
 
 export default function VerPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { token, usuarioId, cargandoToken } = useAutorizarAcceso();
+
+  const { token, usuarioId } = useAuth();
   const { eliminarPictograma } = useEliminarPictograma();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
   const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
   const [oculto, setOculto] = useState(false);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const { categorias, cargando: cargandoCategorias, error: errorCategorias } =
-    useCategoriasDePictograma(pictograma?.id ?? null);
+  const {
+    categorias,
+    cargando: cargandoCategorias,
+    error: errorCategorias,
+    refetch: refetchCategorias,
+  } = useCategoriasDePictograma(pictograma?.id ?? null);
 
-  const cargarDatos = useCallback(async () => {
+  useEffect(() => {
     if (!id || !token || !usuarioId) return;
 
-    setCargando(true);
-    try {
-      const pictogramaRes = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setPictograma(pictogramaRes.data);
+    const cargarDatos = async () => {
+      setCargando(true);
+      try {
+        const pictogramaRes = await axios.get(
+          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setPictograma(pictogramaRes.data);
 
-      const ocultoRes = await axios.get(
-        `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/es-oculto`,
-        {
-          params: { pictogramaId: pictogramaRes.data.id, usuarioId },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      setOculto(ocultoRes.data === true);
-    } catch (err: any) {
-      console.error('❌ Error al cargar datos:', err);
-      setError('No se pudo cargar el pictograma');
-    } finally {
-      setCargando(false);
-    }
-  }, [id, token, usuarioId]);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (!cargandoToken) {
-        cargarDatos();
+        const ocultoRes = await axios.get(
+          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/es-oculto`,
+          {
+            params: { pictogramaId: pictogramaRes.data.id, usuarioId },
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setOculto(ocultoRes.data === true);
+        refetchCategorias();
+      } catch (err: any) {
+        console.error('❌ Error al cargar datos:', err);
+        setError('No se pudo cargar el pictograma');
+      } finally {
+        setCargando(false);
       }
-    }, [cargarDatos, cargandoToken])
-  );
+    };
+
+    cargarDatos();
+  }, [id, token, usuarioId, refetchCategorias]);
 
   const manejarEditar = () => {
-    if (!pictograma?.usuarioId) {
+    if (!pictograma) return;
+
+    if (!pictograma.usuarioId) {
       Alert.alert(
         'Pictograma general',
-        'Este pictograma no se puede editar porque es compartido por todos los usuarios.'
+        'Este pictograma es compartido por todos los usuarios. Solo se permite modificar las categorías a las que pertenece, no su nombre, imagen ni tipo.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Editar categorías',
+            onPress: () =>
+              router.push({
+                pathname: '/biblioteca/pictogramas/editar-pictograma',
+                params: { id: pictograma.id.toString() },
+              }),
+          },
+        ]
       );
       return;
     }
@@ -90,32 +108,41 @@ export default function VerPictogramaScreen() {
     if (!pictograma) return;
 
     const esPersonalizado = !!pictograma.usuarioId;
-    await eliminarPictograma(pictograma.id, token, esPersonalizado);
+    await eliminarPictograma(pictograma.id, token, esPersonalizado, () => {
+      marcarPictogramasComoDesactualizados();
+      marcarCategoriasComoDesactualizadas();
+    });
   };
 
   const manejarToggleVisibilidad = async () => {
     if (!pictograma || !usuarioId) return;
 
     const endpoint = oculto ? 'desocultar' : 'ocultar';
-    const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/${endpoint}?pictogramaId=${pictograma.id}&usuarioId=${usuarioId}`;
+    const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/${endpoint}?pictogramaId=${pictograma.id}`;
 
     try {
       if (oculto) {
-        await axios.delete(url, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.delete(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         Alert.alert('✅ Pictograma visible', 'El pictograma se ha desocultado correctamente.');
       } else {
-        await axios.post(url, null, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.post(url, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.');
       }
 
       setOculto((prev) => !prev);
+      marcarPictogramasComoDesactualizados();
+      marcarCategoriasComoDesactualizadas();
     } catch (err) {
       console.error('❌ Error cambiando visibilidad:', err);
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };
 
-  if (cargando || cargandoToken) {
+  if (cargando) {
     return (
       <View style={styles.container}>
         <ActivityIndicator size="large" color="#999" style={{ marginTop: 32 }} />

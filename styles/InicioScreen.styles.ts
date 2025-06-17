@@ -94,8 +94,12 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start', // O 'center' si prefieres centrado
     alignItems: 'center',
   },
-
-
+  center: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+  },
   
   
 });

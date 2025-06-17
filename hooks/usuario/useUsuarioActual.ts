@@ -1,5 +1,5 @@
 // src/hooks/usuario/useUsuarioActual.ts
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext';
 import axios from '@/hooks/utils/axiosInstance';
 import { useEffect, useState } from 'react';
 
@@ -10,7 +10,7 @@ export interface UsuarioSimple {
 }
 
 export const useUsuarioActual = () => {
-  const { token, cargandoToken } = useAutorizarAcceso();
+  const { token } = useAuth(); // ✅ Solo token
   const [usuario, setUsuario] = useState<UsuarioSimple | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,10 +34,10 @@ export const useUsuarioActual = () => {
   };
 
   useEffect(() => {
-    if (!cargandoToken) {
+    if (token) {
       fetchUsuario();
     }
-  }, [token, cargandoToken]);
+  }, [token]); // ✅ Ya no se usa cargandoToken
 
   return { usuario, cargando, error, recargarUsuario: fetchUsuario };
 };

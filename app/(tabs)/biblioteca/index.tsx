@@ -1,35 +1,48 @@
+// src/app/biblioteca/BibliotecaScreen.tsx
 import SeccionHorizontal from '@/components/biblioteca/pantallaPrincipal/SeccionBibliteca';
 import ItemClicable from '@/components/comunes/ItemClicable';
-import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles';
-import { usePictogramasConCategorias } from '@/hooks/biblioteca/usePictogramasConCategorias';
+import { useAuth } from '@/context/AuthContext'; // ✅ ahora usamos tu AuthContext
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback } from 'react';
+import { useRouter } from 'expo-router';
+import { useEffect } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 
 export default function BibliotecaScreen() {
   const router = useRouter();
 
+  const { token, usuarioId, cargandoAuth } = useAuth(); // ✅ sustituido
+
   const {
     categorias,
     cargando: cargandoCategorias,
     error: errorCategorias,
-    recargar: cargarCategorias,
-  } = useCategoriasVisibles();
+    recargar: recargarCategorias,
+  } = useCategoriasContext();
 
   const {
     pictogramas,
     cargando: cargandoPictogramas,
     error: errorPictogramas,
-    cargarPictogramas,
-  } = usePictogramasConCategorias();
+    recargar: recargarPictogramas,
+  } = usePictogramasContext();
 
-  useFocusEffect(
-    useCallback(() => {
-      cargarCategorias();
-      cargarPictogramas();
-    }, [cargarCategorias, cargarPictogramas])
-  );
+  // Reaccionamos al cambio de usuario o token
+  useEffect(() => {
+    if (token && usuarioId) {
+      recargarCategorias();
+      recargarPictogramas();
+    }
+  }, [token, usuarioId]);
+
+  if (cargandoAuth) {
+    return (
+      <View style={styles.container}>
+        <Text>Cargando datos de usuario...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>

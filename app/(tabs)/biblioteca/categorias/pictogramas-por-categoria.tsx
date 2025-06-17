@@ -1,48 +1,52 @@
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 
 import CabeceraCategoria from '@/components/biblioteca/categorias/CabeceraCategoria';
+import BarraBusqueda from '@/components/comunes/BarraBusqueda';
 import ItemClicable from '@/components/comunes/ItemClicable';
 import ListaGenerica from '@/components/comunes/ListaItems';
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
-import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles';
+
+import { useAuth } from '@/context/AuthContext'; // ✅ CAMBIO
+import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasPorCategoria } from '@/hooks/pantallaPrincipal/usePictogramasPorCategoria';
+
 import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function PictogramasPorCategoriaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
-  const { token } = useAutorizarAcceso();
+  const { token } = useAuth(); // ✅ CAMBIO
 
   const {
     categorias,
     cargando: cargandoCategorias,
-    recargar: cargarCategorias
-  } = useCategoriasVisibles();
+    marcarCategoriasComoDesactualizadas,
+  } = useCategoriasContext();
 
   const {
     pictogramas,
     cargando: cargandoPictos,
-    error: errorPictos
+    error: errorPictos,
+    recargar: recargarPictogramas,
   } = usePictogramasPorCategoria(id ?? null);
 
-  const categoria = categorias.find((c) => c.id === Number(id));
+  const [busqueda, setBusqueda] = useState('');
 
   useFocusEffect(
     useCallback(() => {
-      cargarCategorias();
-    }, [cargarCategorias])
+      if (recargarPictogramas) {
+        recargarPictogramas();
+      }
+    }, [recargarPictogramas])
   );
 
-  const manejarEditarCategoria = () => {
-    if (!categoria?.usuarioId) {
-      Alert.alert('No permitido', 'No se puede editar una categoría general.');
-      return;
-    }
+  const categoria = categorias.find((c) => c.id === Number(id));
+  const esGeneral = !categoria?.usuarioId;
 
+  const manejarEditarCategoria = () => {
     router.push({
       pathname: '/biblioteca/categorias/editar-categoria',
       params: { id },
@@ -73,6 +77,8 @@ export default function PictogramasPorCategoriaScreen() {
                   headers: { Authorization: `Bearer ${token}` },
                 }
               );
+
+              marcarCategoriasComoDesactualizadas();
               Alert.alert('Eliminada', 'La categoría se ha eliminado correctamente.');
               router.back();
             } catch (error) {
@@ -95,6 +101,10 @@ export default function PictogramasPorCategoriaScreen() {
     );
   }
 
+  const filtrados = pictogramas.filter((p) =>
+    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
   return (
     <View style={styles.container}>
       <CabeceraCategoria
@@ -103,19 +113,28 @@ export default function PictogramasPorCategoriaScreen() {
         onEliminar={manejarEliminarCategoria}
       />
 
+      {esGeneral && (
+        <Text style={{ color: '#666', fontStyle: 'italic', marginBottom: 12, textAlign: 'center' }}>
+          Esta es una categoría general. Solo puedes modificar los pictogramas asociados.
+        </Text>
+      )}
+
+      <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
+
       {errorPictos ? (
         <Text style={{ color: 'red', marginTop: 24 }}>{errorPictos}</Text>
-      ) : pictogramas.length === 0 ? (
+      ) : filtrados.length === 0 ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ fontSize: 16, color: '#666', textAlign: 'center' }}>
-            No hay pictogramas en esta categoría.
+            No hay pictogramas que coincidan con tu búsqueda.
           </Text>
         </View>
       ) : (
         <ListaGenerica
-          items={pictogramas}
+          items={filtrados}
           renderItem={(p) => (
             <ItemClicable
+              key={p.id}
               nombre={p.nombre}
               imagen={p.imagen}
               itemStyle={styles.item}

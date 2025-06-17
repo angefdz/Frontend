@@ -15,7 +15,7 @@ export default function PictogramasOcultosScreen() {
   useFocusEffect(
     useCallback(() => {
       recargarPictogramas();
-    }, [])
+    }, [recargarPictogramas])
   );
 
   if (cargando) {
@@ -53,6 +53,7 @@ export default function PictogramasOcultosScreen() {
           items={pictogramas}
           renderItem={(p) => (
             <ItemClicable
+              key={p.id}  // <-- Aquí añadí el key
               nombre={p.nombre}
               imagen={p.imagen}
               itemStyle={styles.item}

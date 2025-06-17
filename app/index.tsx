@@ -1,22 +1,23 @@
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+// src/app/index.tsx
+import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 
 export default function Index() {
-  const { token, cargandoToken } = useAutorizarAcceso();
+  const { token, cargandoAuth } = useAuth();
 
   useEffect(() => {
-    if (!cargandoToken) {
+    if (!cargandoAuth) {
       if (token) {
         router.replace('/(tabs)/pantalla-principal');
       } else {
         router.replace('/inicio-sesion');
       }
     }
-  }, [token, cargandoToken]);
+  }, [token, cargandoAuth]);
 
-  if (cargandoToken) {
+  if (cargandoAuth) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, ScrollView, View, ViewStyle } from 'react-native';
+import { ScrollView, View, ViewStyle } from 'react-native';
 
 interface Item {
   id: number;
@@ -19,13 +19,6 @@ export default function ListaItems<T extends Item>({
   gap = 10,
   containerStyle,
 }: Props<T>) {
-  const screenWidth = Dimensions.get('window').width;
-
-  const itemSize = 90 + gap; // asumimos 90px + gap
-  const itemsPerRow = Math.floor((screenWidth + gap) / itemSize);
-  const totalUsedWidth = itemsPerRow * itemSize - gap;
-  const sidePadding = Math.max((screenWidth - totalUsedWidth) / 2, 0);
-
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View
@@ -33,9 +26,7 @@ export default function ListaItems<T extends Item>({
           {
             flexDirection: 'row',
             flexWrap: 'wrap',
-            justifyContent: 'flex-start', // ítems alineados a la izquierda
-            paddingLeft: sidePadding,     // centrado total del grid
-            paddingRight: sidePadding,
+            justifyContent: 'flex-start', // Alineación a la izquierda
             rowGap: gap,
             columnGap: gap,
             paddingBottom: 24,

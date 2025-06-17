@@ -1,23 +1,30 @@
+import BarraBusqueda from '@/components/comunes/BarraBusqueda';
 import ItemClicable from '@/components/comunes/ItemClicable';
-import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles'; // ✅ actualizado
+import { useCategoriasContext } from '@/context/CategoriasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
+import React, { useState } from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 
 export default function CategoriasScreen() {
   const router = useRouter();
-  const { categorias, cargando, error, recargar: cargarCategorias } = useCategoriasVisibles(); // ✅ actualizado
+  const { categorias, cargando, error } = useCategoriasContext();
+  const [busqueda, setBusqueda] = useState('');
 
-  useFocusEffect(
-    useCallback(() => {
-      cargarCategorias();
-    }, [cargarCategorias])
+  const filtradas = categorias.filter((item) =>
+    item.nombre.toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Todas las categorías</Text>
+
+      <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
       {cargando ? (
         <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
@@ -26,7 +33,7 @@ export default function CategoriasScreen() {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.grid}>
-            {categorias.map((item) => (
+            {filtradas.map((item) => (
               <ItemClicable
                 key={item.id}
                 nombre={item.nombre}

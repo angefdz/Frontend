@@ -1,4 +1,4 @@
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
 
@@ -7,7 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 import { useFocusEffect, useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   Alert,
   KeyboardAvoidingView,
@@ -18,13 +18,22 @@ import {
   View,
 } from 'react-native';
 
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
+
 export default function PerfilScreen() {
   const router = useRouter();
-  const { token } = useAutorizarAcceso();
+  const { token, cerrarSesion } = useAuth(); // ← CAMBIO
   const { usuario, recargarUsuario } = useUsuarioActual();
   const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
 
-  // ✅ Reacciona cada vez que esta pantalla entra en foco
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+
+  useEffect(() => {
+    console.log('Token actual en PerfilScreen:', token);
+  }, [token]);
+
   useFocusEffect(
     useCallback(() => {
       recargarUsuario();
@@ -38,7 +47,12 @@ export default function PerfilScreen() {
       {
         text: 'Sí',
         style: 'destructive',
-        onPress: () => router.replace('/inicio-sesion'),
+        onPress: () => {
+          cerrarSesion(); // ← ya no es async
+          marcarCategoriasComoDesactualizadas();
+          marcarPictogramasComoDesactualizados();
+          router.replace('/inicio-sesion');
+        },
       },
     ]);
   };
@@ -48,6 +62,43 @@ export default function PerfilScreen() {
     const path = FileSystem.documentDirectory + 'historial.txt';
     await FileSystem.writeAsStringAsync(path, contenido);
     await Sharing.shareAsync(path);
+  };
+
+  const manejarEliminarCuenta = () => {
+    Alert.alert(
+      'Eliminar cuenta',
+      '¿Estás segura de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const response = await fetch(
+                `${process.env.EXPO_PUBLIC_API_BASE_URL}/usuarios/me`,
+                {
+                  method: 'DELETE',
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+
+              if (response.status === 204) {
+                Alert.alert('Cuenta eliminada', 'Tu cuenta ha sido eliminada correctamente.');
+                router.replace('/inicio-sesion');
+              } else {
+                Alert.alert('Error', 'No se pudo eliminar la cuenta.');
+              }
+            } catch (error) {
+              console.error('Error al eliminar cuenta:', error);
+              Alert.alert('Error', 'Hubo un problema al eliminar la cuenta.');
+            }
+          },
+        },
+      ]
+    );
   };
 
   return (
@@ -60,8 +111,6 @@ export default function PerfilScreen() {
           <Feather name="edit-2" size={24} color="#007AFF" />
         </TouchableOpacity>
       </View>
-
-      <View style={styles.avatar} />
 
       <Text style={styles.label}>Nombre</Text>
       <TextInput
@@ -99,10 +148,24 @@ export default function PerfilScreen() {
       </TouchableOpacity>
 
       <TouchableOpacity
+        style={styles.button}
+        onPress={() => router.push('/usuario/cambiar-password')}
+      >
+        <Text style={styles.buttonText}>Cambiar contraseña</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         style={[styles.button, { backgroundColor: '#FF3B30' }]}
         onPress={manejarCerrarSesion}
       >
         <Text style={[styles.buttonText, { color: '#fff' }]}>Cerrar sesión</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: '#8E8E93' }]}
+        onPress={manejarEliminarCuenta}
+      >
+        <Text style={[styles.buttonText, { color: '#fff' }]}>Eliminar cuenta</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );

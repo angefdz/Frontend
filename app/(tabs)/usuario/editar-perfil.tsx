@@ -8,11 +8,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext';
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useOpcionesTipoVoz } from '@/hooks/configuracion/useOpcionesTipoVoz';
@@ -21,14 +20,10 @@ import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
 
 export default function EditarPerfilScreen() {
   const router = useRouter();
-  const { token, usuarioId } = useAutorizarAcceso();
+  const { token, usuarioId } = useAuth(); // ← CAMBIO
 
-  // Ahora extraemos la función recargarConfiguracion del hook
   const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
-
-  // Extraemos la función recargarUsuario del hook de usuario
   const { usuario, recargarUsuario } = useUsuarioActual();
-
   const { opciones, loading: cargandoOpciones } = useOpcionesTipoVoz(token);
 
   const [nombre, setNombre] = useState('');
@@ -54,7 +49,6 @@ export default function EditarPerfilScreen() {
     }
 
     try {
-      // Guardar configuración tipo voz
       await guardarConfiguracionUsuario(token, {
         id: configuracion.id,
         botonesPorPantalla: configuracion.botonesPorPantalla,
@@ -62,14 +56,12 @@ export default function EditarPerfilScreen() {
         tipoVoz: voz,
       });
 
-      // Guardar nombre del usuario
       await guardarUsuarioActual(token, {
         id: usuarioId,
         nombre,
         correo: usuario.correo,
       });
 
-      // Forzar recarga inmediata para que la vista se actualice
       await recargarConfiguracion();
       await recargarUsuario();
 
@@ -86,8 +78,6 @@ export default function EditarPerfilScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      <View style={styles.avatar} />
-
       <Text style={styles.label}>Nombre</Text>
       <TextInput
         style={styles.input}
@@ -110,7 +100,7 @@ export default function EditarPerfilScreen() {
         items={opciones}
         setOpen={setOpen}
         setValue={setVoz}
-        setItems={() => {}}
+        setItems={() => {}} // <- no lo usas porque las opciones ya están precargadas
         placeholder="Selecciona un tipo de voz"
         style={styles.dropdown}
         dropDownContainerStyle={styles.dropdownContainer}

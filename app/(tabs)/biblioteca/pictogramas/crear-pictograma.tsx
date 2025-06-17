@@ -4,7 +4,8 @@ import {
   Alert,
   ScrollView,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -16,18 +17,23 @@ import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext';
 import { crearPictogramaUsuario } from '@/hooks/biblioteca/crearPictogramaUsuario';
-import { useCategoriasPorIds } from '@/hooks/biblioteca/useCategoriaPorIds';
-import { useCategoriasConPictogramas } from '@/hooks/biblioteca/useCategoriasConPictogramas';
 import { subirImagenCloudinary } from '@/hooks/utils/subirImagenCloudinary';
+
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function CrearPictogramaScreen() {
   const router = useRouter();
-  const { token, usuarioId } = useAutorizarAcceso();
-  const { categorias: categoriasDisponibles } = useCategoriasConPictogramas();
+  const { token, usuarioId } = useAuth();
+  const cargandoToken = !token || !usuarioId;
+
+  const { categorias: categoriasDisponibles } = useCategoriasContext();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');
@@ -38,9 +44,8 @@ export default function CrearPictogramaScreen() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState<number[]>([]);
 
-  const { categorias, loading: cargandoCats } = useCategoriasPorIds(
-    categoriasSeleccionadas,
-    token
+  const categoriasAsignadas = categoriasDisponibles.filter(cat =>
+    categoriasSeleccionadas.includes(cat.id)
   );
 
   const manejarCrear = async () => {
@@ -49,8 +54,8 @@ export default function CrearPictogramaScreen() {
       return;
     }
 
-    if (!token || !usuarioId) {
-      Alert.alert('Error', 'No se pudo autenticar al usuario');
+    if (cargandoToken) {
+      Alert.alert('Espere', 'Autenticando usuario, inténtalo de nuevo en un momento');
       return;
     }
 
@@ -66,11 +71,13 @@ export default function CrearPictogramaScreen() {
       await crearPictogramaUsuario(
         nombre,
         urlFinalImagen,
-        tipo,
-        usuarioId,
+        tipo, // <- ¡esto es lo que faltaba antes!
         categoriasSeleccionadas,
         token
       );
+
+      marcarPictogramasComoDesactualizados();
+      marcarCategoriasComoDesactualizadas();
 
       Alert.alert('Éxito', 'Pictograma creado correctamente');
       router.back();
@@ -81,6 +88,16 @@ export default function CrearPictogramaScreen() {
       setSubiendo(false);
     }
   };
+
+  if (cargandoToken) {
+    return (
+      <View style={styles.container}>
+        <Text style={{ marginTop: 32, textAlign: 'center' }}>
+          Cargando datos de usuario...
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -113,17 +130,13 @@ export default function CrearPictogramaScreen() {
 
       <Text style={styles.sectionTitle}>Categorías asignadas</Text>
 
-      {cargandoCats ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          Cargando categorías...
-        </Text>
-      ) : categorias.length === 0 ? (
+      {categoriasAsignadas.length === 0 ? (
         <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
           No hay categorías añadidas aún.
         </Text>
       ) : (
         <ListaItems
-          items={categorias}
+          items={categoriasAsignadas}
           gap={10}
           renderItem={(cat) => (
             <ItemSeleccionable
@@ -132,8 +145,8 @@ export default function CrearPictogramaScreen() {
               imagen={cat.imagen}
               seleccionado={true}
               onPress={() =>
-                setCategoriasSeleccionadas((prev) =>
-                  prev.filter((x) => x !== cat.id)
+                setCategoriasSeleccionadas(prev =>
+                  prev.filter(id => id !== cat.id)
                 )
               }
               itemStyle={styles.item}
@@ -150,11 +163,6 @@ export default function CrearPictogramaScreen() {
         <Text style={styles.verMasText}>+ Añadir categorías</Text>
       </TouchableOpacity>
 
-      <BotonPrincipal
-        texto={subiendo ? 'Creando...' : 'Crear pictograma'}
-        onPress={manejarCrear}
-      />
-
       <SelectorItemsModal
         visible={mostrarModal}
         onClose={() => setMostrarModal(false)}
@@ -165,6 +173,11 @@ export default function CrearPictogramaScreen() {
         getNombre={(c) => c.nombre}
         getImagen={(c) => c.imagen}
         titulo="Selecciona categorías"
+      />
+
+      <BotonPrincipal
+        texto={subiendo ? 'Creando...' : 'Crear pictograma'}
+        onPress={manejarCrear}
       />
     </ScrollView>
   );

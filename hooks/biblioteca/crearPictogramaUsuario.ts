@@ -6,7 +6,6 @@ export async function crearPictogramaUsuario(
   nombre: string,
   imagen: string,
   tipo: 'verbo' | 'sustantivo',
-  usuarioId: number,
   categorias: number[],
   token: string
 ) {
@@ -18,11 +17,11 @@ export async function crearPictogramaUsuario(
   };
 
   const response = await axios.post(
-    `${API_BASE_URL}/pictogramas/usuarios/${usuarioId}`,
+    `${API_BASE_URL}/pictogramas/yo`, // Endpoint sin usuarioId en la URL
     payload,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`, // El backend obtiene usuarioId del token
       },
     }
   );

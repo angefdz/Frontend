@@ -1,15 +1,15 @@
-// components/SelectorImagen.tsx
-
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect } from 'react';
-import { Alert, Button, Image, View } from 'react-native';
+import { Alert, Button, Image, Text, View } from 'react-native';
 
 export default function SelectorImagen({
   uriImagen,
   setUriImagen,
+  disabled = false,
 }: {
   uriImagen: string;
   setUriImagen: (uri: string) => void;
+  disabled?: boolean;
 }) {
   useEffect(() => {
     (async () => {
@@ -22,6 +22,8 @@ export default function SelectorImagen({
   }, []);
 
   const mostrarOpcionesImagen = () => {
+    if (disabled) return;
+
     Alert.alert('Seleccionar imagen', '¿De dónde quieres sacar la imagen?', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Galería', onPress: elegirDesdeGaleria },
@@ -63,10 +65,18 @@ export default function SelectorImagen({
             borderRadius: 15,
             marginBottom: 10,
             resizeMode: 'cover',
+            opacity: disabled ? 0.5 : 1,
           }}
         />
       ) : null}
-      <Button title="Seleccionar imagen" onPress={mostrarOpcionesImagen} />
+
+      {disabled ? (
+        <Text style={{ color: '#888', fontStyle: 'italic', marginBottom: 10 }}>
+          Imagen no editable
+        </Text>
+      ) : (
+        <Button title="Seleccionar imagen" onPress={mostrarOpcionesImagen} />
+      )}
     </View>
   );
 }

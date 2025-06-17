@@ -1,6 +1,10 @@
-import { guardarCredenciales } from '@/hooks/utils/seguridad'; // ✅ aquí importamos la función buena
+import { guardarCredenciales } from '@/hooks/utils/seguridad';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+
+import { useAuth } from '@/context/AuthContext'; // <-- Importa el hook global de autenticación
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
@@ -11,6 +15,10 @@ export const useInicioSesion = () => {
   const [contrasena, setContrasena] = useState('');
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
+
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { setAuthData } = useAuth(); // <-- Hook para actualizar contexto global
 
   const manejarCambioCorreo = (texto: string) => {
     setCorreo(texto);
@@ -43,7 +51,15 @@ export const useInicioSesion = () => {
       }
 
       const { token, usuarioId } = await response.json();
-      await guardarCredenciales(token, usuarioId); // ✅ usamos esta función en lugar de guardarToken
+
+      await guardarCredenciales(token, usuarioId);
+
+      // Actualiza el contexto global para que todas las pantallas usen el token actualizado
+      setAuthData({ token, usuarioId });
+
+      // Marca categorías y pictogramas como desactualizados para recarga
+      marcarCategoriasComoDesactualizadas();
+      marcarPictogramasComoDesactualizados();
 
       router.replace('/pantalla-principal');
     } catch (e) {

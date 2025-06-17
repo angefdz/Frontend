@@ -1,6 +1,6 @@
-import { useFocusEffect, useNavigation } from 'expo-router';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import { useNavigation } from 'expo-router';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 
 import ModalConjugadorVerbo from '@/components/conjugador/ModalConjugadorVerbo';
 import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
@@ -11,19 +11,19 @@ import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion'
 import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
 import TextoFraseExpandibleAnimado from '@/components/pantallaPrincipal/TextoFraseExpandible';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
-import { useCategoriasVisibles } from '@/hooks/biblioteca/useCategoriasVisibles';
-import { usePictogramasVisibles } from '@/hooks/biblioteca/usePictogramasVisibles';
+import { useAuth } from '@/context/AuthContext'; // <--- Usa contexto global
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useFrase } from '@/hooks/frase/useFrase';
-import { usePictogramasPorCategoria } from '@/hooks/pantallaPrincipal/usePictogramasPorCategoria';
+
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/InicioScreen.styles';
 import { PictogramaSimple } from '@/types';
 
 export default function PantallaPrincipal() {
-  const { token, usuarioId, cargandoToken } = useAutorizarAcceso();
+  const { token, usuarioId } = useAuth(); // <--- extraemos token y usuarioId del contexto global
   const navigation = useNavigation();
 
   const {
@@ -32,97 +32,68 @@ export default function PantallaPrincipal() {
     errorConfiguracion,
   } = useConfiguracionUsuario(token);
 
-  const tipoVoz = configuracion?.tipoVoz ?? 'femenina';
-
-  const {
-    frase,
-    añadirPictograma,
-    borrarUltimo,
-    resetearFrase,
-    reproducirFrase,
-    usarSugerencia,
-  } = useFrase(tipoVoz);
-
-  const [modoAgrupado, setModoAgrupado] = useState(false);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
-  const [itemsPerPage, setItemsPerPage] = useState(9);
-  const [verboModal, setVerboModal] = useState<string | null>(null);
-
-  const sugerencia = {
-    id: 999,
-    nombre: 'Comer',
-    imagen: 'https://static.arasaac.org/pictograms/38351/38351_500.png',
-    tipo: 'verbo',
-  };
   const {
     categorias,
     cargando: cargandoCategorias,
     error: errorCategorias,
     recargar: cargarCategorias,
-  } = useCategoriasVisibles();
+  } = useCategoriasContext();
 
   const {
     pictogramas: pictosSinFiltro,
     cargando: cargandoSinFiltro,
     error: errorSinFiltro,
-    recargar: recargarSinFiltro,
-  } = usePictogramasVisibles();
+  } = usePictogramasContext();
 
   const {
-    pictogramas: pictosFiltrados,
-    cargando: cargandoFiltrados,
-    error: errorFiltrados,
-    recargar: recargarFiltrados,
-  } = usePictogramasPorCategoria(categoriaSeleccionada);
+    frase,
+    sugerencia,
+    añadirPictograma,
+    borrarUltimo,
+    resetearFrase,
+    reproducirFrase,
+    usarSugerencia,
+  } = useFrase(pictosSinFiltro);
 
-  const pictogramas = categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro;
-  const cargandoPictos = categoriaSeleccionada ? cargandoFiltrados : cargandoSinFiltro;
-  const errorPictogramas = categoriaSeleccionada ? errorFiltrados : errorSinFiltro;
-
+  const [modoAgrupado, setModoAgrupado] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
+  const [itemsPerPage, setItemsPerPage] = useState(9);
+  const [verboModal, setVerboModal] = useState<string | null>(null);
   const [configAplicada, setConfigAplicada] = useState(false);
   const [todoListo, setTodoListo] = useState(false);
 
+  const tipoVoz = configuracion?.tipoVoz ?? 'femenina';
+
+  const pictosFiltrados = categoriaSeleccionada
+    ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
+    : [];
+
+  const pictogramas = categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro;
+  const cargandoPictos = categoriaSeleccionada ? false : cargandoSinFiltro;
+  const errorPictogramas = categoriaSeleccionada ? null : errorSinFiltro;
+
   useEffect(() => {
-    if (
-      !cargandoToken &&
+    setTodoListo(
+      !!token &&
+      !!usuarioId &&
       !cargandoConfiguracion &&
       !cargandoCategorias &&
       !cargandoPictos &&
+      !cargandoConfiguracion &&
       !errorConfiguracion &&
       !errorCategorias &&
-      !errorPictogramas &&
-      token &&
-      usuarioId
-    ) {
-      setTodoListo(true);
-    } else {
-      setTodoListo(false);
-    }
+      !errorPictogramas
+    );
   }, [
-    cargandoToken,
+    token,
+    usuarioId,
     cargandoConfiguracion,
     cargandoCategorias,
     cargandoPictos,
     errorConfiguracion,
     errorCategorias,
     errorPictogramas,
-    token,
-    usuarioId,
   ]);
-
-  useFocusEffect(
-    useCallback(() => {
-      cargarCategorias();
-    }, [cargarCategorias])
-  );
-
-  useEffect(() => {
-    if (categoriaSeleccionada) {
-      recargarFiltrados();
-    } else {
-      recargarSinFiltro();
-    }
-  }, [categoriaSeleccionada, recargarFiltrados, recargarSinFiltro]);
 
   useEffect(() => {
     if (configuracion && !configAplicada) {
@@ -188,6 +159,11 @@ export default function PantallaPrincipal() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
+      {/* Mostrar usuarioId para depuración */}
+      <View style={{ padding: 10, backgroundColor: '#eee' }}>
+        <Text style={{ fontSize: 16, color: '#333' }}>Usuario ID: {usuarioId}</Text>
+      </View>
+
       <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         <TextoFraseExpandibleAnimado frase={frase} />
 
@@ -217,12 +193,7 @@ export default function PantallaPrincipal() {
         {modoAgrupado && categoriaSeleccionada && (
           <>
             <BotonVolverCategorias onPress={() => setCategoriaSeleccionada(null)} />
-            {cargandoPictos ? (
-              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
-                <ActivityIndicator size="large" color="#007AFF" />
-                <Text style={{ marginTop: 10 }}>Cargando pictogramas...</Text>
-              </View>
-            ) : pictogramas.length === 0 ? (
+            {pictogramas.length === 0 ? (
               <View style={{ alignItems: 'center', marginTop: 20 }}>
                 <Text style={{ fontSize: 16, color: '#666', fontStyle: 'italic' }}>
                   No hay pictogramas en esta categoría.

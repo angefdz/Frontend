@@ -1,15 +1,14 @@
-// src/components/comunes/SelectorItemsModal.tsx
-
 import React, { useMemo, useState } from 'react';
 import {
-    Modal,
-    ScrollView,
-    Text,
-    TextInput,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
+import Modal from 'react-native-modal';
 
-import { styles } from '@/styles/BibliotecaScreen.styles';
+import { styles as bibliotecaStyles } from '@/styles/BibliotecaScreen.styles';
+import BarraBusqueda from './BarraBusqueda'; // <-- Asegúrate de tener esta ruta bien
 import BotonPrincipal from './BotonPrincipal';
 import ItemSeleccionable from './ItemSeleccionable';
 
@@ -51,28 +50,20 @@ export default function SelectorItemsModal<T>({
   };
 
   return (
-    <Modal visible={visible} animationType="slide">
-      <View style={[styles.container, { paddingTop: 40 }]}>
-        <Text style={{ fontSize: 18, fontWeight: 'bold', marginLeft: 16, marginBottom: 10 }}>
-          {titulo}
-        </Text>
+    <Modal
+      isVisible={visible}
+      onBackdropPress={onClose}
+      onSwipeComplete={onClose}
+      swipeDirection="down"
+      style={modalStyles.modal}
+    >
+      <View style={[modalStyles.modalContent, bibliotecaStyles.container]}>
+        <Text style={modalStyles.titulo}>{titulo}</Text>
 
-        <TextInput
-          placeholder="Buscar..."
-          value={busqueda}
-          onChangeText={setBusqueda}
-          style={{
-            margin: 16,
-            padding: 12,
-            borderWidth: 1,
-            borderColor: '#ccc',
-            borderRadius: 8,
-            backgroundColor: 'white',
-          }}
-        />
+        <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={styles.grid}>
+          <View style={bibliotecaStyles.grid}>
             {filtrados.map((item) => {
               const id = getId(item);
               return (
@@ -82,8 +73,8 @@ export default function SelectorItemsModal<T>({
                   imagen={getImagen(item)}
                   seleccionado={seleccionados.includes(id)}
                   onPress={() => toggleSeleccion(id)}
-                  itemStyle={styles.item}
-                  textStyle={styles.itemText}
+                  itemStyle={bibliotecaStyles.item}
+                  textStyle={bibliotecaStyles.itemText}
                 />
               );
             })}
@@ -95,3 +86,24 @@ export default function SelectorItemsModal<T>({
     </Modal>
   );
 }
+
+const modalStyles = StyleSheet.create({
+  modal: {
+    justifyContent: 'flex-end',
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    paddingTop: 30,
+    paddingBottom: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: '90%',
+  },
+  titulo: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 16,
+    marginBottom: 10,
+  },
+});

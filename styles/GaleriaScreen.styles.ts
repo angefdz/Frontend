@@ -16,8 +16,9 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    alignSelf: 'center',
+    width: '100%', // ⬅️ se asegura de que el grid use todo el ancho
   },
+  
   item: {
     width: '30%',
     aspectRatio: 1,

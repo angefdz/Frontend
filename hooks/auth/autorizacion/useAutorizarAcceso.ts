@@ -16,7 +16,6 @@ export const useAutorizarAcceso = () => {
 
         if (!t || !id) throw new Error('Faltan datos');
 
-        // Aquí puedes hacer una verificación opcional del JWT con una llamada al backend si quieres
         setToken(t);
         setUsuarioId(parseInt(id));
       } catch (err) {
@@ -31,5 +30,13 @@ export const useAutorizarAcceso = () => {
     cargarToken();
   }, []);
 
-  return { token, usuarioId, cargandoToken };
+  // Esta función solo limpia token y redirige
+  const cerrarSesion = async () => {
+    await AsyncStorage.clear();
+    setToken(null);
+    setUsuarioId(null);
+    router.replace('/inicio-sesion');
+  };
+
+  return { token, usuarioId, cargandoToken, cerrarSesion };
 };

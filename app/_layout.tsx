@@ -4,7 +4,12 @@ import { useFonts } from 'expo-font';
 import { Slot } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
-import Toast from 'react-native-toast-message'; // 👈 AÑADIDO
+import Toast from 'react-native-toast-message';
+
+// 👉 Importa los contextos
+import { AuthProvider } from '@/context/AuthContext'; // <== Añadido contexto Auth
+import { CategoriasProvider } from '@/context/CategoriasContext';
+import { PictogramasProvider } from '@/context/PictogramasContext';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -19,9 +24,15 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Slot />
-      <StatusBar style="auto" />
-      <Toast /> {/* 👈 AÑADIDO AQUÍ */}
+      <AuthProvider> {/* Envuelve toda la app para autenticación global */}
+        <CategoriasProvider>
+          <PictogramasProvider>
+            <Slot />
+            <StatusBar style="auto" />
+            <Toast />
+          </PictogramasProvider>
+        </CategoriasProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 }

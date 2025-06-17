@@ -1,12 +1,10 @@
-// src/components/pantallaPrincipal/GridCategorias.tsx
-
 import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
-import { CategoriaSimple } from '@/types';
+import { CategoriaConPictogramas } from '@/types'; // <-- actualizado
 import React from 'react';
 
 type Props = {
-  categorias: CategoriaSimple[]; // ✅ actualizado
+  categorias: CategoriaConPictogramas[]; // <-- actualizado
   itemsPerPage: number;
   onSeleccionar: (id: string) => void;
 };

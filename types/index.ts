@@ -43,6 +43,12 @@ export type PictogramaConCategorias = {
   categorias: CategoriaSimple[];
   usuarioId?: any ;
 };
+export interface Configuracion {
+  id: number;
+  botonesPorPantalla: number;
+  mostrarPorCategoria: boolean;
+  tipoVoz: 'masculina' | 'femenina';
+}
 
 
 export type ConfiguracionPayload  = {
@@ -57,8 +63,9 @@ export interface CategoriaConPictogramas {
   nombre: string;
   imagen: string;
   pictogramas: PictogramaSimple[];
-  usuarioId?: number | null;
+  usuarioId: number | null; // No es opcional si siempre se devuelve (aunque sea null)
 }
+
 
 export interface UsuarioSimple{
   id: number;

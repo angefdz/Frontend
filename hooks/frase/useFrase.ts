@@ -1,58 +1,64 @@
-// useFrase.ts
 import * as Speech from 'expo-speech';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
-import { VOICES } from '@/data/vozOpciones';
-import { predecirSiguientePictograma } from './../utils/prediccion';
+import { PictogramaSimple } from '@/types';
+import { usePrediccionPictograma } from '../utils/prediccion';
 
-export const useFrase = (tipoVoz: 'masculina' | 'femenina' = 'femenina') => {
+export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
+  const pictogramaHola = pictogramasDisponibles.find(
+    p => p.nombre.toLowerCase() === 'hola'
+  );
+
   const [frase, setFrase] = useState<string[]>([]);
-  const [sugerencia, setSugerencia] = useState<string | null>(null);
+  const [sugerencia, setSugerencia] = useState<PictogramaSimple>(
+    pictogramaHola!
+  );
+
+  const { sugerencia: sugerenciaTexto } = usePrediccionPictograma(frase);
 
   useEffect(() => {
-    // Si quieres, aquí podrías resetear la frase o hacer algo cuando tipoVoz cambie
-  }, [tipoVoz]);
+    if (!sugerenciaTexto || frase.length === 0) {
+      setSugerencia(pictogramaHola!);
+      return;
+    }
+
+    const sugerido = pictogramasDisponibles.find(
+      p => p.nombre.toLowerCase() === sugerenciaTexto.toLowerCase()
+    );
+
+    setSugerencia(sugerido ?? pictogramaHola!);
+  }, [frase, sugerenciaTexto, pictogramasDisponibles]);
 
   const añadirPictograma = (palabra: string) => {
-    const nuevaFrase = [...frase, palabra];
-    setFrase(nuevaFrase);
-    actualizarSugerencia(nuevaFrase);
+    setFrase(prev => {
+      const nuevaPalabra =
+        prev.length === 0
+          ? palabra.charAt(0).toUpperCase() + palabra.slice(1).toLowerCase()
+          : palabra.toLowerCase();
+      return [...prev, nuevaPalabra];
+    });
   };
 
   const borrarUltimo = () => {
-    const nuevaFrase = frase.slice(0, -1);
-    setFrase(nuevaFrase);
-    actualizarSugerencia(nuevaFrase);
+    setFrase(prev => prev.slice(0, -1));
   };
 
   const resetearFrase = () => {
     setFrase([]);
-    setSugerencia(null);
   };
 
   const reproducirFrase = async () => {
     const texto = frase.join(' ');
     if (!texto) return;
 
-    const vozIdDeseada = VOICES[tipoVoz];
-
     try {
-      const vocesDisponibles = await Speech.getAvailableVoicesAsync();
-      const vozValida = vocesDisponibles.find((v) => v.identifier === vozIdDeseada);
-
-      const options: Speech.SpeechOptions = {
+      await Speech.stop();
+      Speech.speak(texto, {
         language: 'es-ES',
         rate: 1,
-        pitch: tipoVoz === 'masculina' ? 0.9 : 1.2,
-        ...(vozValida && { voice: vozValida.identifier }),
-      };
-
-      console.log('🗣️ Reproduciendo frase:', texto);
-      console.log('🎤 Tipo de voz:', tipoVoz);
-      console.log('🎧 Voz aplicada:', vozValida?.identifier ?? '(predeterminada)');
-
-      Speech.speak(texto, options);
+        pitch: 1.1,
+      });
 
       Toast.show({
         type: 'success',
@@ -65,19 +71,13 @@ export const useFrase = (tipoVoz: 'masculina' | 'femenina' = 'femenina') => {
       Toast.show({
         type: 'error',
         text1: 'Error al reproducir la frase',
-        text2: 'Intenta de nuevo o revisa la voz seleccionada.',
       });
     }
   };
 
-  const actualizarSugerencia = (fraseActual: string[]) => {
-    const sugerido = predecirSiguientePictograma(fraseActual);
-    setSugerencia(sugerido);
-  };
-
   const usarSugerencia = () => {
     if (sugerencia) {
-      añadirPictograma(sugerencia);
+      añadirPictograma(sugerencia.nombre);
     }
   };
 

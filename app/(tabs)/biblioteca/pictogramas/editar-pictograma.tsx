@@ -6,7 +6,7 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
@@ -18,17 +18,24 @@ import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
+import { useAuth } from '@/context/AuthContext'; // ✅ NUEVO
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
+
 import { useCategoriasPorIds } from '@/hooks/biblioteca/useCategoriaPorIds';
 import { useCategoriasConPictogramas } from '@/hooks/biblioteca/useCategoriasConPictogramas';
+
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { PictogramaConCategorias } from '@/types';
 
 export default function EditarPictogramaScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { token } = useAutorizarAcceso();
+  const { token } = useAuth(); // ✅ CAMBIO
+
   const { categorias: categoriasDisponibles } = useCategoriasConPictogramas();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
   const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
   const [nombre, setNombre] = useState('');
@@ -44,6 +51,8 @@ export default function EditarPictogramaScreen() {
     token
   );
 
+  const esPersonalizado = Boolean(pictograma?.usuarioId);
+
   useEffect(() => {
     const cargarDatos = async () => {
       if (!id || !token) return;
@@ -58,15 +67,6 @@ export default function EditarPictogramaScreen() {
         );
 
         const data: PictogramaConCategorias = res.data;
-
-        if (!data.usuarioId) {
-          Alert.alert(
-            'No permitido',
-            'No puedes editar pictogramas generales.'
-          );
-          router.back();
-          return;
-        }
 
         setPictograma(data);
         setNombre(data.nombre);
@@ -106,6 +106,9 @@ export default function EditarPictogramaScreen() {
         }
       );
 
+      marcarPictogramasComoDesactualizados();
+      marcarCategoriasComoDesactualizadas();
+
       Alert.alert('Éxito', 'Pictograma actualizado correctamente');
       router.back();
     } catch (error) {
@@ -126,12 +129,17 @@ export default function EditarPictogramaScreen() {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <CabeceraSeccion texto="Editar pictograma" />
 
-      <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
+      <SelectorImagen
+        uriImagen={imagen}
+        setUriImagen={setImagen}
+        disabled={!esPersonalizado}
+      />
 
       <InputTexto
         placeholder="Nombre del pictograma"
         valor={nombre}
         setValor={setNombre}
+        disabled={!esPersonalizado}
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
@@ -146,9 +154,16 @@ export default function EditarPictogramaScreen() {
         setValue={setTipo}
         setItems={() => {}}
         placeholder="Selecciona tipo"
-        style={styles.dropdown}
+        style={[
+          styles.dropdown,
+          !esPersonalizado && { backgroundColor: '#F0F0F0' },
+        ]}
         dropDownContainerStyle={styles.dropdownContainer}
-        textStyle={styles.dropdownText}
+        textStyle={[
+          styles.dropdownText,
+          !esPersonalizado && { color: '#999999' },
+        ]}
+        disabled={!esPersonalizado}
       />
 
       <CabeceraSeccion texto="Categorías asignadas" />

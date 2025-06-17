@@ -1,16 +1,12 @@
 // src/hooks/configuracion/useConfiguracionUsuario.ts
 import axiosInstance from '@/hooks/utils/axiosInstance'; // tu instancia personalizada
+import { Configuracion } from '@/types';
 import { isAxiosError } from 'axios'; // función original para detectar errores de axios
 import { useEffect, useState } from 'react';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-interface Configuracion {
-  id: number;
-  botonesPorPantalla: number;
-  mostrarPorCategoria: boolean;
-  tipoVoz: 'masculina' | 'femenina';
-}
+
 
 interface UseConfiguracionUsuarioResult {
   configuracion: Configuracion | null;

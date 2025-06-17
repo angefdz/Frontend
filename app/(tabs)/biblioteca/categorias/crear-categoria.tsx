@@ -16,27 +16,35 @@ import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 
 import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
 import { crearCategoriaUsuario } from '@/hooks/biblioteca/crearCategoriaUsuario';
-import { usePictogramasConCategorias } from '@/hooks/biblioteca/usePictogramasConCategorias';
 import { usePictogramasPorIds } from '@/hooks/biblioteca/usePictogramasPorIds';
 import { subirImagenCloudinary } from '@/hooks/utils/subirImagenCloudinary';
+
+import { useCategoriasContext } from '@/context/CategoriasContext';
+import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function CrearCategoriaScreen() {
   const router = useRouter();
   const { token, usuarioId } = useAutorizarAcceso();
-  const { pictogramas: pictogramasDisponibles, cargando } = usePictogramasConCategorias();
+  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
+  const {
+    pictogramas: pictogramasDisponibles,
+    cargando: cargandoDisponibles,
+    marcarPictogramasComoDesactualizados,
+  } = usePictogramasContext();
 
-  const [nombre, setNombre] = useState('');
-  const [imagen, setImagen] = useState('');
-  const [subiendo, setSubiendo] = useState(false);
-  const [mostrarModal, setMostrarModal] = useState(false);
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState<number[]>([]);
 
   const { pictogramas, loading: cargandoPictos } = usePictogramasPorIds(
     pictogramasSeleccionados,
     token
   );
+
+  const [nombre, setNombre] = useState('');
+  const [imagen, setImagen] = useState('');
+  const [subiendo, setSubiendo] = useState(false);
+  const [mostrarModal, setMostrarModal] = useState(false);
 
   const manejarCrear = async () => {
     if (!nombre || !imagen) {
@@ -66,9 +74,12 @@ export default function CrearCategoriaScreen() {
         token
       );
 
+      marcarCategoriasComoDesactualizadas();
+      marcarPictogramasComoDesactualizados();
+
       Alert.alert('Éxito', 'Categoría creada correctamente');
       router.back();
-    } catch (error: any) {
+    } catch (error) {
       console.error('❌ Error al crear categoría:', error);
       Alert.alert('Error', 'No se pudo crear la categoría');
     } finally {

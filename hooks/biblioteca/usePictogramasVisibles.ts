@@ -40,7 +40,8 @@ export const usePictogramasVisibles = () => {
         id: p.id,
         nombre: p.nombre,
         imagen: p.imagen,
-        tipo: p.tipo
+        tipo: p.tipo,
+        usuarioId: p.usuarioId??null
       }));
 
       setPictogramas(pictogramasSimples);

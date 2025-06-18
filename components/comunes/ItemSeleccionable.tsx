@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-    Image,
-    StyleProp,
-    Text,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle,
+  Image,
+  StyleProp,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native';
 
 type Props = {
@@ -18,7 +18,7 @@ type Props = {
   textStyle?: StyleProp<TextStyle>;
 };
 
-export default function ItemSeleccionable({
+function ItemSeleccionable({
   nombre,
   imagen,
   seleccionado,
@@ -40,7 +40,7 @@ export default function ItemSeleccionable({
           },
           itemStyle,
           {
-            backgroundColor: seleccionado ? '#007AFF' : '#eee', // SE APLICA AL FINAL
+            backgroundColor: seleccionado ? '#007AFF' : '#eee',
           },
         ]}
       >
@@ -49,8 +49,12 @@ export default function ItemSeleccionable({
           style={{ width: 40, height: 40, marginBottom: 5 }}
           resizeMode="contain"
         />
-        <Text style={[{ fontSize: 12, textAlign: 'center' }, textStyle]}>{nombre}</Text>
+        <Text style={[{ fontSize: 12, textAlign: 'center' }, textStyle]}>
+          {nombre}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 }
+
+export default React.memo(ItemSeleccionable);

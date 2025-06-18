@@ -32,6 +32,7 @@ export type PictogramaSimple = {
   nombre: string;
   imagen: string;
   tipo: string;
+  usuarioId?: number | null;
 
 };
 

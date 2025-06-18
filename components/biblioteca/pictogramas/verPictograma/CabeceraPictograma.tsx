@@ -7,8 +7,8 @@ interface Props {
   id: number;
   oculto: boolean;
   onToggleVisibilidad: () => void;
-  onEditar: () => void;
-  onEliminar?: () => void; // <-- añadido como opcional
+  onEditar?: () => void;
+  onEliminar?: () => void;
 }
 
 export default function CabeceraPictograma({
@@ -31,9 +31,11 @@ export default function CabeceraPictograma({
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onEditar} style={styles.botonIcono}>
-          <Feather name="edit-3" size={24} color="#28A745" />
-        </TouchableOpacity>
+        {onEditar && (
+          <TouchableOpacity onPress={onEditar} style={styles.botonIcono}>
+            <Feather name="edit-3" size={24} color="#28A745" />
+          </TouchableOpacity>
+        )}
 
         {onEliminar && (
           <TouchableOpacity onPress={onEliminar} style={styles.botonIcono}>

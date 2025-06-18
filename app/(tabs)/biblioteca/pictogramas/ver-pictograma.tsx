@@ -1,6 +1,7 @@
-import axios from 'axios';
+// app/biblioteca/pictogramas/ver-pictograma.tsx
+
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -17,11 +18,10 @@ import ItemClicable from '@/components/comunes/ItemClicable';
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
-import { useCategoriasDePictograma } from '@/hooks/biblioteca/useCategoriasDePictograma';
 import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { PictogramaConCategorias } from '@/types';
+import { CategoriaConPictogramas, PictogramaSimple } from '@/types';
 
 export default function VerPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,74 +29,44 @@ export default function VerPictogramaScreen() {
 
   const { token, usuarioId } = useAuth();
   const { eliminarPictograma } = useEliminarPictograma();
-  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
-  const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
+  const { pictogramas, marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { categorias, cargando, error, marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
-  const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
+  const pictograma: PictogramaSimple | undefined = pictogramas.find(
+    (p) => p.id === Number(id)
+  );
   const [oculto, setOculto] = useState(false);
-  const [cargando, setCargando] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  const {
-    categorias,
-    cargando: cargandoCategorias,
-    error: errorCategorias,
-    refetch: refetchCategorias,
-  } = useCategoriasDePictograma(pictograma?.id ?? null);
+  const categoriasDelPictograma: CategoriaConPictogramas[] = useMemo(() => {
+    if (!pictograma) return [];
+    return categorias.filter((cat) =>
+      cat.pictogramas?.some((p: PictogramaSimple) => p.id === pictograma.id)
+    );
+  }, [categorias, pictograma?.id]);
 
   useEffect(() => {
-    if (!id || !token || !usuarioId) return;
+    const comprobarOculto = async () => {
+      if (!pictograma || !usuarioId) return;
 
-    const cargarDatos = async () => {
-      setCargando(true);
       try {
-        const pictogramaRes = await axios.get(
-          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setPictograma(pictogramaRes.data);
-
-        const ocultoRes = await axios.get(
-          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/es-oculto`,
+        const res = await fetch(
+          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/es-oculto?pictogramaId=${pictograma.id}&usuarioId=${usuarioId}`,
           {
-            params: { pictogramaId: pictogramaRes.data.id, usuarioId },
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setOculto(ocultoRes.data === true);
-        refetchCategorias();
-      } catch (err: any) {
-        console.error('❌ Error al cargar datos:', err);
-        setError('No se pudo cargar el pictograma');
-      } finally {
-        setCargando(false);
+        const data = await res.json();
+        setOculto(data === true);
+      } catch (error) {
+        console.error('Error al comprobar visibilidad del pictograma', error);
       }
     };
 
-    cargarDatos();
-  }, [id, token, usuarioId, refetchCategorias]);
+    comprobarOculto();
+  }, [pictograma?.id, usuarioId]);
 
   const manejarEditar = () => {
     if (!pictograma) return;
-
-    if (!pictograma.usuarioId) {
-      Alert.alert(
-        'Pictograma general',
-        'Este pictograma es compartido por todos los usuarios. Solo se permite modificar las categorías a las que pertenece, no su nombre, imagen ni tipo.',
-        [
-          { text: 'Cancelar', style: 'cancel' },
-          {
-            text: 'Editar categorías',
-            onPress: () =>
-              router.push({
-                pathname: '/biblioteca/pictogramas/editar-pictograma',
-                params: { id: pictograma.id.toString() },
-              }),
-          },
-        ]
-      );
-      return;
-    }
 
     router.push({
       pathname: '/biblioteca/pictogramas/editar-pictograma',
@@ -116,24 +86,39 @@ export default function VerPictogramaScreen() {
 
   const manejarToggleVisibilidad = async () => {
     if (!pictograma || !usuarioId) return;
-
+  
     const endpoint = oculto ? 'desocultar' : 'ocultar';
     const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/${endpoint}?pictogramaId=${pictograma.id}`;
-
+  
     try {
       if (oculto) {
-        await axios.delete(url, {
+        await fetch(url, {
+          method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });
         Alert.alert('✅ Pictograma visible', 'El pictograma se ha desocultado correctamente.');
+        setOculto(false);
       } else {
-        await axios.post(url, null, {
+        await fetch(url, {
+          method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.');
+  
+        // Mostramos el mensaje y luego vamos hacia atrás
+        Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.', [
+          {
+            text: 'OK',
+            onPress: () => {
+              setOculto(true);
+              marcarPictogramasComoDesactualizados();
+              marcarCategoriasComoDesactualizadas();
+              router.back(); 
+            },
+          },
+        ]);
+        return;
       }
-
-      setOculto((prev) => !prev);
+  
       marcarPictogramasComoDesactualizados();
       marcarCategoriasComoDesactualizadas();
     } catch (err) {
@@ -141,20 +126,13 @@ export default function VerPictogramaScreen() {
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };
+  
 
-  if (cargando) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#999" style={{ marginTop: 32 }} />
-      </View>
-    );
-  }
-
-  if (error || !pictograma) {
+  if (!pictograma) {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: 'center', marginTop: 32, color: 'red' }}>
-          {error ?? 'Pictograma no encontrado'}
+          Pictograma no encontrado
         </Text>
       </View>
     );
@@ -175,17 +153,17 @@ export default function VerPictogramaScreen() {
 
       <CabeceraSeccion texto="Categorías del pictograma" />
 
-      {cargandoCategorias ? (
+      {cargando ? (
         <ActivityIndicator style={{ marginTop: 16 }} />
-      ) : errorCategorias ? (
-        <Text style={{ color: 'red', marginHorizontal: 16 }}>{errorCategorias}</Text>
-      ) : categorias.length === 0 ? (
+      ) : error ? (
+        <Text style={{ color: 'red', marginHorizontal: 16 }}>{error}</Text>
+      ) : categoriasDelPictograma.length === 0 ? (
         <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
           Este pictograma no está asignado a ninguna categoría.
         </Text>
       ) : (
         <View style={styles.grid}>
-          {categorias.map((cat) => (
+          {categoriasDelPictograma.map((cat) => (
             <ItemClicable
               key={cat.id}
               nombre={cat.nombre}
@@ -195,7 +173,7 @@ export default function VerPictogramaScreen() {
               onPress={() =>
                 router.push({
                   pathname: '/biblioteca/categorias/pictogramas-por-categoria',
-                  params: { id: cat.id },
+                  params: { id: cat.id.toString() },
                 })
               }
             />

@@ -1,22 +1,36 @@
 // src/app/biblioteca/pictogramas/PictogramasOcultosScreen.tsx
-import { useFocusEffect, useRouter } from 'expo-router';
-import React, { useCallback } from 'react';
+import { useFocusEffect } from 'expo-router';
+import React, { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import ItemClicable from '@/components/comunes/ItemClicable';
 import ListaGenerica from '@/components/comunes/ListaItems';
+import ModalVerPictograma from '@/components/ocultos/ModalVerPictograma';
 import { usePictogramasOcultos } from '@/hooks/ocultos/usePictogramasOcultos';
 import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function PictogramasOcultosScreen() {
-  const router = useRouter();
   const { pictogramas, cargando, error, recargarPictogramas } = usePictogramasOcultos();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [pictogramaSeleccionadoId, setPictogramaSeleccionadoId] = useState<number | null>(null);
 
   useFocusEffect(
     useCallback(() => {
       recargarPictogramas();
     }, [recargarPictogramas])
   );
+
+  const abrirModal = (id: number) => {
+    setPictogramaSeleccionadoId(id);
+    setModalVisible(true);
+  };
+
+  const cerrarModal = () => {
+    setModalVisible(false);
+    setPictogramaSeleccionadoId(null);
+    recargarPictogramas(); // por si se desocultó
+  };
 
   if (cargando) {
     return (
@@ -53,22 +67,22 @@ export default function PictogramasOcultosScreen() {
           items={pictogramas}
           renderItem={(p) => (
             <ItemClicable
-              key={p.id}  // <-- Aquí añadí el key
+              key={p.id}
               nombre={p.nombre}
               imagen={p.imagen}
               itemStyle={styles.item}
               textStyle={styles.itemText}
-              onPress={() =>
-                router.push({
-                  pathname: '/biblioteca/pictogramas/ver-pictograma',
-                  params: {
-                    id: p.id,
-                    origen: 'ocultos', // 👈 identificamos que viene desde aquí
-                  },
-                })
-              }
+              onPress={() => abrirModal(p.id)}
             />
           )}
+        />
+      )}
+
+      {pictogramaSeleccionadoId !== null && (
+        <ModalVerPictograma
+          visible={modalVisible}
+          onClose={cerrarModal}
+          pictogramaId={pictogramaSeleccionadoId}
         />
       )}
     </View>

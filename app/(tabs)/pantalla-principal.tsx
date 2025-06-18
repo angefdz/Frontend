@@ -1,6 +1,6 @@
 import { useNavigation } from 'expo-router';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
 
 import ModalConjugadorVerbo from '@/components/conjugador/ModalConjugadorVerbo';
 import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
@@ -11,7 +11,7 @@ import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion'
 import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
 import TextoFraseExpandibleAnimado from '@/components/pantallaPrincipal/TextoFraseExpandible';
 
-import { useAuth } from '@/context/AuthContext'; // <--- Usa contexto global
+import { useAuth } from '@/context/AuthContext';
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useFrase } from '@/hooks/frase/useFrase';
@@ -23,27 +23,12 @@ import { styles } from '@/styles/InicioScreen.styles';
 import { PictogramaSimple } from '@/types';
 
 export default function PantallaPrincipal() {
-  const { token, usuarioId } = useAuth(); // <--- extraemos token y usuarioId del contexto global
+  const { token, usuarioId } = useAuth();
   const navigation = useNavigation();
 
-  const {
-    configuracion,
-    cargandoConfiguracion,
-    errorConfiguracion,
-  } = useConfiguracionUsuario(token);
-
-  const {
-    categorias,
-    cargando: cargandoCategorias,
-    error: errorCategorias,
-    recargar: cargarCategorias,
-  } = useCategoriasContext();
-
-  const {
-    pictogramas: pictosSinFiltro,
-    cargando: cargandoSinFiltro,
-    error: errorSinFiltro,
-  } = usePictogramasContext();
+  const { configuracion, cargandoConfiguracion, errorConfiguracion } = useConfiguracionUsuario(token);
+  const { categorias, cargando: cargandoCategorias, error: errorCategorias } = useCategoriasContext();
+  const { pictogramas: pictosSinFiltro, cargando: cargandoSinFiltro, error: errorSinFiltro } = usePictogramasContext();
 
   const {
     frase,
@@ -52,10 +37,10 @@ export default function PantallaPrincipal() {
     borrarUltimo,
     resetearFrase,
     reproducirFrase,
-    usarSugerencia,
   } = useFrase(pictosSinFiltro);
 
   const [modoAgrupado, setModoAgrupado] = useState(false);
+  const [transicionando, setTransicionando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(9);
   const [verboModal, setVerboModal] = useState<string | null>(null);
@@ -79,7 +64,6 @@ export default function PantallaPrincipal() {
       !cargandoConfiguracion &&
       !cargandoCategorias &&
       !cargandoPictos &&
-      !cargandoConfiguracion &&
       !errorConfiguracion &&
       !errorCategorias &&
       !errorPictogramas
@@ -106,6 +90,8 @@ export default function PantallaPrincipal() {
   useEffect(() => {
     if (!configAplicada || !configuracion || !usuarioId || !token) return;
 
+    setTransicionando(true);
+
     const nuevaConfig = {
       id: configuracion.id,
       botonesPorPantalla: itemsPerPage,
@@ -113,10 +99,39 @@ export default function PantallaPrincipal() {
       tipoVoz: configuracion.tipoVoz,
     };
 
-    guardarConfiguracionUsuario(token, nuevaConfig).catch((err) => {
-      console.error('❌ Error al actualizar configuración:', err);
-    });
+    guardarConfiguracionUsuario(token, nuevaConfig)
+      .catch((err) => {
+        console.error('❌ Error al actualizar configuración:', err);
+      })
+      .finally(() => {
+        setTimeout(() => setTransicionando(false), 200);
+      });
   }, [itemsPerPage, modoAgrupado, configuracion, usuarioId, token, configAplicada]);
+
+  const manejarCambioAgrupado = (nuevoValor: boolean) => {
+    setTransicionando(true);
+    setCategoriaSeleccionada(null);
+    setTimeout(() => {
+      setModoAgrupado(nuevoValor);
+      setTransicionando(false);
+    }, 150);
+  };
+
+  const manejarSeleccionCategoria = (id: string) => {
+    setTransicionando(true);
+    setTimeout(() => {
+      setCategoriaSeleccionada(id);
+      setTransicionando(false);
+    }, 150);
+  };
+
+  const manejarVolverCategorias = () => {
+    setTransicionando(true);
+    setTimeout(() => {
+      setCategoriaSeleccionada(null);
+      setTransicionando(false);
+    }, 150);
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -124,8 +139,8 @@ export default function PantallaPrincipal() {
       headerRight: () => (
         <MenuConfiguracion
           modoAgrupado={modoAgrupado}
-          setModoAgrupado={setModoAgrupado}
-          resetearCategoria={() => setCategoriaSeleccionada(null)}
+          setModoAgrupado={manejarCambioAgrupado}
+          resetearCategoria={manejarVolverCategorias}
           setItemsPerPage={setItemsPerPage}
           itemsPerPage={itemsPerPage}
         />
@@ -159,7 +174,6 @@ export default function PantallaPrincipal() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      {/* Mostrar usuarioId para depuración */}
       <View style={{ padding: 10, backgroundColor: '#eee' }}>
         <Text style={{ fontSize: 16, color: '#333' }}>Usuario ID: {usuarioId}</Text>
       </View>
@@ -183,23 +197,38 @@ export default function PantallaPrincipal() {
           itemsPerPage={itemsPerPage}
         />
 
-        {modoAgrupado && !categoriaSeleccionada && (
-          <GridCategorias
-            categorias={categorias}
-            itemsPerPage={itemsPerPage}
-            onSeleccionar={(id) => setCategoriaSeleccionada(id)}
-          />
-        )}
-        {modoAgrupado && categoriaSeleccionada && (
+        {transicionando ? (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>
+            <ActivityIndicator size="large" color="#666" />
+          </View>
+        ) : (
           <>
-            <BotonVolverCategorias onPress={() => setCategoriaSeleccionada(null)} />
-            {pictogramas.length === 0 ? (
-              <View style={{ alignItems: 'center', marginTop: 20 }}>
-                <Text style={{ fontSize: 16, color: '#666', fontStyle: 'italic' }}>
-                  No hay pictogramas en esta categoría.
-                </Text>
-              </View>
-            ) : (
+            {modoAgrupado && !categoriaSeleccionada && (
+              <GridCategorias
+                categorias={categorias}
+                itemsPerPage={itemsPerPage}
+                onSeleccionar={manejarSeleccionCategoria}
+              />
+            )}
+            {modoAgrupado && categoriaSeleccionada && (
+              <>
+                <BotonVolverCategorias onPress={manejarVolverCategorias} />
+                {pictogramas.length === 0 ? (
+                  <View style={{ alignItems: 'center', marginTop: 20 }}>
+                    <Text style={{ fontSize: 16, color: '#666', fontStyle: 'italic' }}>
+                      No hay pictogramas en esta categoría.
+                    </Text>
+                  </View>
+                ) : (
+                  <GridPictogramas
+                    pictogramas={pictogramas}
+                    itemsPerPage={itemsPerPage}
+                    onSeleccionar={manejarSeleccion}
+                  />
+                )}
+              </>
+            )}
+            {!modoAgrupado && (
               <GridPictogramas
                 pictogramas={pictogramas}
                 itemsPerPage={itemsPerPage}
@@ -207,13 +236,6 @@ export default function PantallaPrincipal() {
               />
             )}
           </>
-        )}
-        {!modoAgrupado && (
-          <GridPictogramas
-            pictogramas={pictogramas}
-            itemsPerPage={itemsPerPage}
-            onSeleccionar={manejarSeleccion}
-          />
         )}
       </ScrollView>
 

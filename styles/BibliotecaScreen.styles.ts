@@ -95,6 +95,11 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 10,
   },
+  flat: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    gap: 10, // si usas gap en react-native-web o versión nueva
+    },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',

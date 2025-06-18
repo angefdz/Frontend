@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
-  ScrollView,
+  FlatList,
   StyleSheet,
   Text,
   View,
@@ -8,7 +8,7 @@ import {
 import Modal from 'react-native-modal';
 
 import { styles as bibliotecaStyles } from '@/styles/BibliotecaScreen.styles';
-import BarraBusqueda from './BarraBusqueda'; // <-- Asegúrate de tener esta ruta bien
+import BarraBusqueda from './BarraBusqueda';
 import BotonPrincipal from './BotonPrincipal';
 import ItemSeleccionable from './ItemSeleccionable';
 
@@ -43,11 +43,28 @@ export default function SelectorItemsModal<T>({
     );
   }, [items, busqueda]);
 
-  const toggleSeleccion = (id: number) => {
+  const toggleSeleccion = useCallback((id: number) => {
     setSeleccionados((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
-  };
+  }, [setSeleccionados]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: T }) => {
+      const id = getId(item);
+      return (
+        <ItemSeleccionable
+          nombre={getNombre(item)}
+          imagen={getImagen(item)}
+          seleccionado={seleccionados.includes(id)}
+          onPress={() => toggleSeleccion(id)}
+          itemStyle={bibliotecaStyles.item}
+          textStyle={bibliotecaStyles.itemText}
+        />
+      );
+    },
+    [seleccionados, getId, getNombre, getImagen, toggleSeleccion]
+  );
 
   return (
     <Modal
@@ -62,24 +79,16 @@ export default function SelectorItemsModal<T>({
 
         <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={bibliotecaStyles.grid}>
-            {filtrados.map((item) => {
-              const id = getId(item);
-              return (
-                <ItemSeleccionable
-                  key={id}
-                  nombre={getNombre(item)}
-                  imagen={getImagen(item)}
-                  seleccionado={seleccionados.includes(id)}
-                  onPress={() => toggleSeleccion(id)}
-                  itemStyle={bibliotecaStyles.item}
-                  textStyle={bibliotecaStyles.itemText}
-                />
-              );
-            })}
-          </View>
-        </ScrollView>
+        <FlatList
+          data={filtrados}
+          keyExtractor={(item) => getId(item).toString()}
+          renderItem={renderItem}
+          numColumns={3}
+          columnWrapperStyle={{ justifyContent: 'flex-start' }}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={bibliotecaStyles.flat}
+          extraData={seleccionados} // 👈 Esto ayuda a que se actualice eficientemente
+        />
 
         <BotonPrincipal texto="Confirmar selección" onPress={onClose} />
       </View>

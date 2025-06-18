@@ -20,8 +20,6 @@ import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
-import { useCategoriasConPictogramas } from '@/hooks/biblioteca/useCategoriasConPictogramas';
-import { usePictogramasPorIds } from '@/hooks/biblioteca/usePictogramasPorIds';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { CategoriaConPictogramas } from '@/types';
@@ -32,7 +30,6 @@ export default function EditarCategoriaScreen() {
   const { token } = useAuth();
   const { categorias: categoriasDisponibles, marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const { pictogramas: pictogramasDisponibles, marcarPictogramasComoDesactualizados } = usePictogramasContext();
-  const { categorias } = useCategoriasConPictogramas();
 
   const [categoria, setCategoria] = useState<CategoriaConPictogramas | null>(null);
   const [nombre, setNombre] = useState('');
@@ -41,18 +38,14 @@ export default function EditarCategoriaScreen() {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [datosInicializados, setDatosInicializados] = useState(false);
 
-  const { pictogramas: pictogramasAsignados, loading: cargandoPictos, error } =
-    usePictogramasPorIds(pictogramasSeleccionados); // ✅ token eliminado
-
   useEffect(() => {
     if (!categoria && id) {
-      const encontrada = categorias.find((c) => c.id === Number(id));
+      const encontrada = categoriasDisponibles.find((c) => c.id === Number(id));
       if (encontrada) {
-        console.log('🧩 Pictogramas de la categoría encontrada:', encontrada.pictogramas);
         setCategoria(encontrada);
       }
     }
-  }, [categorias, id, categoria]);
+  }, [categoriasDisponibles, id, categoria]);
 
   useEffect(() => {
     if (categoria && !datosInicializados) {
@@ -64,20 +57,8 @@ export default function EditarCategoriaScreen() {
     }
   }, [categoria, datosInicializados]);
 
-  const esGeneral = !categoria?.usuarioId;
-
   const manejarGuardar = async () => {
     if (!id || !token || !categoria) return;
-
-    if (esGeneral) {
-      Alert.alert('No permitido', 'No se puede editar el nombre ni la imagen de una categoría general.');
-      return;
-    }
-
-    if (!nombre.trim() || !imagen.trim()) {
-      Alert.alert('Error', 'Por favor completa todos los campos');
-      return;
-    }
 
     try {
       await axios.put(
@@ -112,6 +93,17 @@ export default function EditarCategoriaScreen() {
       </View>
     );
   }
+
+  const esGeneral = !categoria.usuarioId;
+
+  const pictogramasSeleccionadosDatos = pictogramasDisponibles.filter((p) =>
+    pictogramasSeleccionados.includes(p.id)
+  );
+
+  const pictogramasOrdenados = [
+    ...pictogramasSeleccionadosDatos,
+    ...pictogramasDisponibles.filter((p) => !pictogramasSeleccionados.includes(p.id)),
+  ];
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -148,19 +140,13 @@ export default function EditarCategoriaScreen() {
 
       <CabeceraSeccion texto="Pictogramas asignados" />
 
-      {cargandoPictos ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          Cargando pictogramas...
-        </Text>
-      ) : error ? (
-        <Text style={{ marginHorizontal: 16, color: 'red' }}>{error}</Text>
-      ) : pictogramasAsignados.length === 0 ? (
+      {pictogramasSeleccionadosDatos.length === 0 ? (
         <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
           No hay pictogramas añadidos aún.
         </Text>
       ) : (
         <ListaItems
-          items={pictogramasAsignados}
+          items={pictogramasSeleccionadosDatos}
           gap={10}
           renderItem={(pic) => (
             <ItemSeleccionable
@@ -192,7 +178,7 @@ export default function EditarCategoriaScreen() {
       <SelectorItemsModal
         visible={mostrarModal}
         onClose={() => setMostrarModal(false)}
-        items={pictogramasDisponibles}
+        items={pictogramasOrdenados}
         seleccionados={pictogramasSeleccionados}
         setSeleccionados={setPictogramasSeleccionados}
         getId={(p) => p.id}

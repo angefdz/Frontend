@@ -14,11 +14,10 @@ import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 
-import { useAutorizarAcceso } from '@/hooks/auth/autorizacion/useAutorizarAcceso';
 import { crearCategoriaUsuario } from '@/hooks/biblioteca/crearCategoriaUsuario';
-import { usePictogramasPorIds } from '@/hooks/biblioteca/usePictogramasPorIds';
 import { subirImagenCloudinary } from '@/hooks/utils/subirImagenCloudinary';
 
+import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
@@ -26,7 +25,7 @@ import { styles } from '@/styles/BibliotecaScreen.styles';
 
 export default function CrearCategoriaScreen() {
   const router = useRouter();
-  const { token, usuarioId } = useAutorizarAcceso();
+  const { token, usuarioId } = useAuth();
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const {
     pictogramas: pictogramasDisponibles,
@@ -35,11 +34,10 @@ export default function CrearCategoriaScreen() {
   } = usePictogramasContext();
 
   const [pictogramasSeleccionados, setPictogramasSeleccionados] = useState<number[]>([]);
-
-  const { pictogramas, loading: cargandoPictos } = usePictogramasPorIds(
-    pictogramasSeleccionados,
-    token
+  const pictogramas = pictogramasDisponibles.filter((p) =>
+    pictogramasSeleccionados.includes(p.id)
   );
+  const cargandoPictos = cargandoDisponibles;
 
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');

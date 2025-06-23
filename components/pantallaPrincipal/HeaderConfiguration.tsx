@@ -2,11 +2,11 @@ import React from 'react';
 import MenuConfiguracion from './MenuConfiguracion';
 
 type Props = {
-  modoAgrupado: boolean;
-  manejarCambioAgrupado: (nuevo: boolean) => void;
-  manejarVolverCategorias: () => void;
-  setItemsPerPage: (valor: number) => void;
-  itemsPerPage: number;
+  readonly modoAgrupado: boolean;
+  readonly manejarCambioAgrupado: (nuevo: boolean) => void;
+  readonly manejarVolverCategorias: () => void;
+  readonly setItemsPerPage: (valor: number) => void;
+  readonly itemsPerPage: number;
 };
 
 const HeaderConfiguracion = React.memo(function HeaderConfiguracion({

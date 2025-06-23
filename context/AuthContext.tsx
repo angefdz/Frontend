@@ -1,6 +1,6 @@
 // src/context/AuthContext.tsx
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type AuthData = {
   token: string | null;
@@ -10,7 +10,7 @@ type AuthData = {
 type AuthContextType = {
   token: string | null;
   usuarioId: number | null;
-  cargandoAuth: boolean; // ⬅️ Añadimos esto
+  cargandoAuth: boolean;
   setAuthData: (data: AuthData) => void;
   cerrarSesion: () => void;
 };
@@ -20,7 +20,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [usuarioId, setUsuarioId] = useState<number | null>(null);
-  const [cargandoAuth, setCargandoAuth] = useState(true); // ⬅️ Nuevo estado
+  const [cargandoAuth, setCargandoAuth] = useState(true);
 
   useEffect(() => {
     const cargarDatos = async () => {
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       } catch (e) {
         console.error('❌ Error al cargar datos del usuario:', e);
       } finally {
-        setCargandoAuth(false); // ⬅️ Finaliza carga
+        setCargandoAuth(false);
       }
     };
 
@@ -68,8 +68,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUsuarioId(null);
   };
 
+  const value = useMemo(
+    () => ({
+      token,
+      usuarioId,
+      cargandoAuth,
+      setAuthData,
+      cerrarSesion,
+    }),
+    [token, usuarioId, cargandoAuth]
+  );
+
   return (
-    <AuthContext.Provider value={{ token, usuarioId, cargandoAuth, setAuthData, cerrarSesion }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

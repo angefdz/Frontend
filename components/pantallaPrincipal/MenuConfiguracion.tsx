@@ -9,11 +9,11 @@ import {
 } from 'react-native-popup-menu';
 
 type Props = {
-  modoAgrupado: boolean;
-  setModoAgrupado: (valor: boolean) => void;
-  resetearCategoria: () => void;
-  setItemsPerPage: (num: number) => void;
-  itemsPerPage: number;
+  readonly modoAgrupado: boolean;
+  readonly setModoAgrupado: (valor: boolean) => void;
+  readonly resetearCategoria: () => void;
+  readonly setItemsPerPage: (num: number) => void;
+  readonly itemsPerPage: number;
 };
 
 export default function MenuConfiguracion({

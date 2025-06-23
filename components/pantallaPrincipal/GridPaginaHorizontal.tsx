@@ -7,11 +7,11 @@ import {
 } from 'react-native';
 
 type Props<T extends { id?: string | number }> = {
-  items: T[];
-  itemsPerPage: number;
-  renderItem: (item: T | null, size: number) => React.ReactNode;
-  spacing?: number;
-  availableHeight?: number; // NUEVO
+  readonly items: T[];
+  readonly itemsPerPage: number;
+  readonly renderItem: (item: T | null, size: number) => React.ReactNode;
+  readonly spacing?: number;
+  readonly availableHeight?: number; // NUEVO
 };
 
 function GridPaginadoHorizontalInner<T extends { id?: string | number }>({

@@ -37,6 +37,7 @@ export default function ModalConjugadorVerbo({
         personaIdx
       ) ?? '';
     } catch (err) {
+      console.error('Error al conjugar el verbo:', err);
       return '';
     }
   }, [verbo, tiempoIndex, personaIndex]);
@@ -80,7 +81,7 @@ export default function ModalConjugadorVerbo({
           </ScrollView>
 
           <Text style={styles.conjugacion}>
-            Resultado: <Text style={styles.verbo}>{formaConjugada || '-'}</Text>
+            Resultado: <Text style={styles.verbo}>{formaConjugada.trim()? formaConjugada: '-'}</Text>
           </Text>
 
           <View style={styles.botones}>

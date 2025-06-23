@@ -20,9 +20,9 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 import { PictogramaConCategorias } from '@/types';
 
 type Props = {
-  visible: boolean;
-  onClose: () => void;
-  pictogramaId: number;
+  readonly visible: boolean;
+  readonly onClose: () => void;
+  readonly pictogramaId: number;
 };
 
 export default function ModalVerPictograma({ visible, onClose, pictogramaId }: Props) {
@@ -57,6 +57,7 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
         );
         setOculto(ocultoRes.data === true);
       } catch (err) {
+        console.error('❌ Error al cargar el pictograma:', err);
         setError('No se pudo cargar el pictograma');
       } finally {
         setCargando(false);
@@ -93,6 +94,27 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
     }
   };
 
+  let contenido: React.ReactNode;
+  if (cargando) {
+    contenido = <ActivityIndicator />;
+  } else if (error) {
+    contenido = <Text style={{ color: 'red' }}>{error}</Text>;
+  } else if (pictograma) {
+    contenido = (
+      <ScrollView style={{ padding: 16 }}>
+        <CabeceraPictograma
+          titulo={pictograma.nombre}
+          id={pictograma.id}
+          oculto={oculto}
+          onToggleVisibilidad={manejarToggleVisibilidad}
+        />
+        <ImagenPictograma uri={pictograma.imagen} nombre={pictograma.nombre} />
+      </ScrollView>
+    );
+  } else {
+    contenido = <Text>No hay datos</Text>;
+  }
+
   return (
     <Modal
       isVisible={visible}
@@ -101,25 +123,7 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
       swipeDirection="down"
       style={styles.modal}
     >
-      <View style={styles.modalContent}>
-        {cargando ? (
-          <ActivityIndicator />
-        ) : error ? (
-          <Text style={{ color: 'red' }}>{error}</Text>
-        ) : pictograma ? (
-          <ScrollView style={{ padding: 16 }}>
-            <CabeceraPictograma
-              titulo={pictograma.nombre}
-              id={pictograma.id}
-              oculto={oculto}
-              onToggleVisibilidad={manejarToggleVisibilidad}
-            />
-            <ImagenPictograma uri={pictograma.imagen} nombre={ pictograma.nombre} />
-          </ScrollView>
-        ) : (
-          <Text>No hay datos</Text>
-        )}
-      </View>
+      <View style={styles.modalContent}>{contenido}</View>
     </Modal>
   );
 }

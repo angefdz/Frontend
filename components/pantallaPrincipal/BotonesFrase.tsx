@@ -4,9 +4,9 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 
 type Props = {
-  borrarUltimo: () => void;
-  resetearFrase: () => void;
-  reproducirFrase: () => void;
+  readonly borrarUltimo: () => void;
+  readonly resetearFrase: () => void;
+  readonly reproducirFrase: () => void;
 };
 
 export default function BotonesFrase({

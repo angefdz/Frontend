@@ -5,10 +5,8 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
 import InputTexto from '@/components/comunes/InputTexto';
@@ -38,7 +36,6 @@ export default function CrearPictogramaScreen() {
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');
   const [tipo, setTipo] = useState<'verbo' | 'sustantivo'>('sustantivo');
-  const [openTipo, setOpenTipo] = useState(false);
 
   const [subiendo, setSubiendo] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -116,22 +113,40 @@ export default function CrearPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <View accessible={true} accessibilityLabel="Selector de tipo de palabra">
-        <DropDownPicker
-          open={openTipo}
-          value={tipo}
-          items={[
-            { label: 'Verbo', value: 'verbo' },
-            { label: 'Sustantivo', value: 'sustantivo' },
-          ]}
-          setOpen={setOpenTipo}
-          setValue={setTipo}
-          setItems={() => {}}
-          placeholder="Selecciona el tipo"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          textStyle={styles.dropdownText}
-        />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginBottom: 20,
+        }}
+        accessible
+        accessibilityLabel="Selecciona el tipo de palabra"
+      >
+        {['verbo', 'sustantivo'].map((opcion) => (
+          <TouchableOpacity
+            key={opcion}
+            onPress={() => setTipo(opcion as 'verbo' | 'sustantivo')}
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: tipo === opcion ? '#007AFF' : '#ccc',
+              backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
+            }}
+            accessibilityRole="button"
+            accessibilityLabel={`Seleccionar tipo ${opcion}`}
+          >
+            <Text
+              style={{
+                color: tipo === opcion ? '#fff' : '#333',
+                fontWeight: 'bold',
+              }}
+            >
+              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
       </View>
 
       <Text style={styles.sectionTitle}>Categorías asignadas</Text>

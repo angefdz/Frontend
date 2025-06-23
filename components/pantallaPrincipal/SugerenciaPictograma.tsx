@@ -10,9 +10,9 @@ import {
 } from 'react-native';
 
 interface Props {
-  sugerencia: PictogramaSimple | null;
-  usarSugerencia: () => void;
-  itemsPerPage: number;
+  readonly sugerencia: PictogramaSimple | null;
+  readonly usarSugerencia: () => void;
+  readonly itemsPerPage: number;
 }
 
 export default function SugerenciaPictograma({

@@ -2,10 +2,10 @@ import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type Props = {
-  imagen: string;
-  nombre: string;
-  itemSize: number;
-  onPress: () => void;
+  readonly imagen: string;
+  readonly nombre: string;
+  readonly itemSize: number;
+  readonly onPress: () => void;
 };
 
 export default function GridItem({ imagen, nombre, itemSize, onPress }: Props) {

@@ -5,9 +5,9 @@ import React, { useCallback } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 type Props = {
-  pictogramas: PictogramaSimple[];
-  itemsPerPage: number;
-  onSeleccionar: (pictograma: PictogramaSimple) => void;
+  readonly pictogramas: PictogramaSimple[];
+  readonly itemsPerPage: number;
+  readonly onSeleccionar: (pictograma: PictogramaSimple) => void;
 };
 
 function GridPictogramas({

@@ -3,11 +3,11 @@ import { useCategoriasConPictogramas as useCategoriasHook } from '@/hooks/biblio
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type CategoriasContextType = {
-  categorias: any[];
-  cargando: boolean;
-  error: string | null;
-  recargar: () => void;
-  marcarCategoriasComoDesactualizadas: () => void;
+  readonly categorias: any[];
+  readonly cargando: boolean;
+  readonly error: string | null;
+  readonly recargar: () => void;
+  readonly marcarCategoriasComoDesactualizadas: () => void;
 };
 
 const CategoriasContext = createContext<CategoriasContextType | undefined>(undefined);

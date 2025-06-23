@@ -1,6 +1,6 @@
 // src/context/VozContext.tsx
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './AuthContext';
 
 type VozContextType = {
@@ -21,8 +21,13 @@ export const VozProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [configuracion]);
 
+  const value = useMemo(
+    () => ({ tipoVoz, setTipoVoz }),
+    [tipoVoz]
+  );
+
   return (
-    <VozContext.Provider value={{ tipoVoz, setTipoVoz }}>
+    <VozContext.Provider value={value}>
       {children}
     </VozContext.Provider>
   );

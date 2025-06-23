@@ -5,7 +5,7 @@ import React from 'react';
 import { Text, View } from 'react-native';
 
 type Props = {
-  frase: string[];
+  readonly frase: string[];
 };
 
 export default function FraseActual({ frase }: Props) {

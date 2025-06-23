@@ -52,19 +52,17 @@ export const useRegistro = () => {
       });
 
       if (!response.ok) {
-        let errorMessage = 'Error en el registro';
         try {
           const errorData = await response.json();
-          // Intentamos obtener un mensaje de error más específico si el backend lo envía
-          errorMessage = errorData.message || errorData.error || JSON.stringify(errorData);
+          const errorMessage = errorData.message || errorData.error || JSON.stringify(errorData);
+          setError(errorMessage);
         } catch (jsonError) {
-          // Si la respuesta no es un JSON válido, usamos el estado de la respuesta
-          errorMessage = `Error ${response.status}: ${response.statusText}`;
+          setError(`Error ${response.status}: ${response.statusText}`);
         }
-        setError(errorMessage);
         setCargando(false);
         return;
       }
+      
 
       // Registro exitoso
       setCargando(false);

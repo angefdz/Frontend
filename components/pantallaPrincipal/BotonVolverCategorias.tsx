@@ -4,7 +4,7 @@ import React from 'react';
 import { Text, TouchableOpacity } from 'react-native';
 
 type Props = {
-  onPress: () => void;
+  readonly onPress: () => void;
 };
 
 export default function BotonVolverCategorias({ onPress }: Props) {

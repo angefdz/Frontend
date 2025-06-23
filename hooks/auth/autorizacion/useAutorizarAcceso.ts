@@ -20,7 +20,11 @@ export const useAutorizarAcceso = () => {
         setUsuarioId(parseInt(id));
       } catch (err) {
         console.warn('Token inválido o expirado. Redirigiendo a login...');
-        await AsyncStorage.clear();
+        try {
+          await AsyncStorage.clear();
+        } catch (clearErr) {
+          console.error('❌ Error al limpiar AsyncStorage:', clearErr);
+        }
         router.replace('/inicio-sesion');
       } finally {
         setCargandoToken(false);
@@ -30,9 +34,12 @@ export const useAutorizarAcceso = () => {
     cargarToken();
   }, []);
 
-  // Esta función solo limpia token y redirige
   const cerrarSesion = async () => {
-    await AsyncStorage.clear();
+    try {
+      await AsyncStorage.clear();
+    } catch (err) {
+      console.error('❌ Error al cerrar sesión limpiando AsyncStorage:', err);
+    }
     setToken(null);
     setUsuarioId(null);
     router.replace('/inicio-sesion');

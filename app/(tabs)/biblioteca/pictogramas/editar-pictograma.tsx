@@ -6,9 +6,8 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
 import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
@@ -41,7 +40,6 @@ export default function EditarPictogramaScreen() {
   const [nombre, setNombre] = useState('');
   const [imagen, setImagen] = useState('');
   const [tipo, setTipo] = useState<'verbo' | 'sustantivo'>('sustantivo');
-  const [openTipo, setOpenTipo] = useState(false);
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState<number[]>([]);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [cargando, setCargando] = useState(true);
@@ -197,28 +195,45 @@ export default function EditarPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <DropDownPicker
-        open={openTipo}
-        value={tipo}
-        items={[
-          { label: 'Verbo', value: 'verbo' },
-          { label: 'Sustantivo', value: 'sustantivo' },
-        ]}
-        setOpen={setOpenTipo}
-        setValue={setTipo}
-        setItems={() => {}}
-        placeholder="Selecciona tipo"
-        style={[
-          styles.dropdown,
-          !esPersonalizado && { backgroundColor: '#F0F0F0' },
-        ]}
-        dropDownContainerStyle={styles.dropdownContainer}
-        textStyle={[
-          styles.dropdownText,
-          !esPersonalizado && { color: '#999999' },
-        ]}
-        disabled={!esPersonalizado}
-      />
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-around',
+          marginBottom: 20,
+          opacity: esPersonalizado ? 1 : 0.5,
+        }}
+        accessible
+        accessibilityLabel="Selecciona el tipo de palabra"
+      >
+        {['verbo', 'sustantivo'].map((opcion) => (
+          <TouchableOpacity
+            key={opcion}
+            onPress={() =>
+              esPersonalizado && setTipo(opcion as 'verbo' | 'sustantivo')
+            }
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: tipo === opcion ? '#007AFF' : '#ccc',
+              backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
+            }}
+            disabled={!esPersonalizado}
+            accessibilityRole="button"
+            accessibilityLabel={`Seleccionar tipo ${opcion}`}
+          >
+            <Text
+              style={{
+                color: tipo === opcion ? '#fff' : '#333',
+                fontWeight: 'bold',
+              }}
+            >
+              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       <CabeceraSeccion texto="Categorías asignadas" />
       {contenidoCategorias}

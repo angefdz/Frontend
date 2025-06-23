@@ -1,12 +1,12 @@
 import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
-import { CategoriaConPictogramas } from '@/types'; // <-- actualizado
+import { CategoriaSimple } from '@/types'; // <-- actualizado
 import React from 'react';
 
 type Props = {
-  categorias: CategoriaConPictogramas[]; // <-- actualizado
-  itemsPerPage: number;
-  onSeleccionar: (id: string) => void;
+  readonly categorias: CategoriaSimple[]; 
+  readonly itemsPerPage: number;
+  readonly onSeleccionar: (id: string) => void;
 };
 
 export default function GridCategorias({

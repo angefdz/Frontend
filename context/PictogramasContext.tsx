@@ -3,12 +3,12 @@ import { usePictogramasVisibles as usePictogramasHook } from '@/hooks/biblioteca
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type PictogramasContextType = {
-  pictogramas: any[];
-  cargando: boolean;
-  error: string | null;
-  recargar: () => void;
-  marcarPictogramasComoDesactualizados: () => void;
-  usuarioId: number | null; // 👈 nuevo campo
+  readonly pictogramas: any[];
+  readonly cargando: boolean;
+  readonly error: string | null;
+  readonly recargar: () => void;
+  readonly marcarPictogramasComoDesactualizados: () => void;
+  readonly usuarioId: number | null; 
 };
 
 const PictogramasContext = createContext<PictogramasContextType | undefined>(undefined);

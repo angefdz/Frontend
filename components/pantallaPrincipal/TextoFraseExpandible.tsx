@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-    Animated,
-    LayoutChangeEvent,
-    StyleSheet,
-    Text,
-    View,
+  Animated,
+  LayoutChangeEvent,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 
 interface Props {
-  frase: string[];
+  readonly frase: string[];
 }
 
 export default function TextoFraseExpandibleAnimado({ frase }: Props) {

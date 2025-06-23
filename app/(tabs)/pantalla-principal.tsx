@@ -196,15 +196,18 @@ export default function PantallaPrincipal() {
           reproducirFrase={reproducirFrase}
         />
 
-        <SugerenciaPictograma
-          sugerencia={sugerencia}
-          usarSugerencia={() =>
-            sugerencia.tipo === 'verbo'
-              ? setVerboModal(sugerencia.nombre)
-              : añadirPictograma(sugerencia.nombre)
-          }
-          itemsPerPage={itemsPerPage}
-        />
+{sugerencia && (
+  <SugerenciaPictograma
+    sugerencia={sugerencia}
+    usarSugerencia={() =>
+      sugerencia.tipo === 'verbo'
+        ? setVerboModal(sugerencia.nombre)
+        : añadirPictograma(sugerencia.nombre)
+    }
+    itemsPerPage={itemsPerPage}
+  />
+)}
+
 
         {transicionando ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>

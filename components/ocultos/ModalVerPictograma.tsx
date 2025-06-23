@@ -114,7 +114,7 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
               oculto={oculto}
               onToggleVisibilidad={manejarToggleVisibilidad}
             />
-            <ImagenPictograma uri={pictograma.imagen} />
+            <ImagenPictograma uri={pictograma.imagen} nombre={ pictograma.nombre} />
           </ScrollView>
         ) : (
           <Text>No hay datos</Text>

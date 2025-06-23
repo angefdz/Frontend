@@ -45,6 +45,8 @@ export default function CambiarPasswordScreen() {
         placeholder="Contraseña actual"
         value={passwordActual}
         onChangeText={setPasswordActual}
+        accessibilityLabel="Campo de contraseña actual"
+  accessibilityHint="Introduce tu contraseña actual"
       />
 
       <Text style={styles.label}>Nueva contraseña</Text>
@@ -54,6 +56,8 @@ export default function CambiarPasswordScreen() {
         placeholder="Nueva contraseña"
         value={nuevaPassword}
         onChangeText={setNuevaPassword}
+        accessibilityLabel="Campo de nueva contraseña"
+  accessibilityHint="Introduce tu nueva contraseña"
       />
 
       <Text style={styles.label}>Confirmar nueva contraseña</Text>
@@ -63,9 +67,12 @@ export default function CambiarPasswordScreen() {
         placeholder="Confirmar contraseña"
         value={confirmarPassword}
         onChangeText={setConfirmarPassword}
+        accessibilityLabel="Campo para confirmar la nueva contraseña"
+  accessibilityHint="Vuelve a escribir tu nueva contraseña para confirmar"
       />
 
-      <TouchableOpacity style={styles.button} onPress={manejarCambioPassword}>
+      <TouchableOpacity style={styles.button} onPress={manejarCambioPassword} accessibilityLabel="Actualizar contraseña"
+  accessibilityRole="button">
         <Text style={styles.buttonText}>Actualizar contraseña</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>

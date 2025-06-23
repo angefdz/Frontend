@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     aspectRatio: 1,
     backgroundColor: '#f2f2f2',
     marginRight: 10,
-    marginBottom: 15,
+    marginBottom: 10,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,

@@ -16,11 +16,13 @@ export default function BotonesFrase({
 }: Props) {
   return (
     <View style={styles.botonesFrase}>
-      <TouchableOpacity onPress={borrarUltimo} style={styles.botonIcono}>
+      <TouchableOpacity onPress={borrarUltimo} style={styles.botonIcono} accessible accessibilityLabel="Borrar último pictograma"
+        accessibilityRole="button" >
         <Feather name="delete" size={24} color="white" />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={resetearFrase} style={styles.botonIcono}>
+      <TouchableOpacity onPress={resetearFrase} style={styles.botonIcono} accessibilityLabel="Borrar toda la frase"
+        accessibilityRole="button">
         <Feather name="rotate-ccw" size={24} color="white" />
       </TouchableOpacity>
 
@@ -33,7 +35,8 @@ export default function BotonesFrase({
             console.error('❌ Error al ejecutar reproducirFrase():', e);
           }
         }}
-        style={styles.botonIcono}
+        style={styles.botonIcono} accessibilityLabel="Reproducir frase"
+        accessibilityRole="button"
       >
         <Feather name="volume-2" size={24} color="white" />
       </TouchableOpacity>

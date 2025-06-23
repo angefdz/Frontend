@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 10,
+    color: '#1A1A1A',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -25,11 +26,13 @@ export const styles = StyleSheet.create({
     color: '#007AFF',
     fontWeight: 'bold',
     marginLeft: 10,
+    minHeight: 48,
+    minWidth: 48,
   },
   horizontalRow: {
     flexDirection: 'row',
     marginBottom: 10,
-    gap: 10, // si tu versión de RN lo permite; si no, añade marginRight al item
+    gap: 10,
   },
   item: {
     width: 100,
@@ -38,6 +41,8 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    minHeight: 48,
+    minWidth: 48,
   },
   itemEmoji: {
     fontSize: 30,
@@ -46,7 +51,7 @@ export const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 16,
-    color: '#333',
+    color: '#1A1A1A', // mejor contraste
     textAlign: 'center',
   },
   verMasButton: {
@@ -57,6 +62,9 @@ export const styles = StyleSheet.create({
     backgroundColor: '#007AFF',
     borderRadius: 8,
     alignSelf: 'flex-start',
+    minHeight: 48,
+    justifyContent: 'center', // ← Añadido
+  alignItems: 'center',
   },
   verMasText: {
     color: '#fff',
@@ -65,29 +73,31 @@ export const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: '#999', // mejor contraste
     borderRadius: 8,
     padding: 12,
     fontSize: 16,
     marginBottom: 15,
     backgroundColor: '#fff',
+    minHeight: 48,
+    color: '#1A1A1A',
   },
   dropdown: {
-    borderColor: '#ccc',
+    borderColor: '#999',
     borderRadius: 8,
     paddingHorizontal: 12,
     backgroundColor: '#fff',
     marginBottom: 15,
-    zIndex: 10, // para que no se superponga mal
+    zIndex: 10,
   },
   dropdownContainer: {
-    borderColor: '#ccc',
+    borderColor: '#999',
     borderRadius: 8,
-    zIndex: 1000, // asegúrate que el contenedor tenga prioridad visual
+    zIndex: 1000,
   },
   dropdownText: {
     fontSize: 16,
-    color: '#333',
+    color: '#1A1A1A',
   },
   grid: {
     flexDirection: 'row',
@@ -98,8 +108,8 @@ export const styles = StyleSheet.create({
   flat: {
     paddingHorizontal: 16,
     paddingBottom: 20,
-    gap: 10, // si usas gap en react-native-web o versión nueva
-    },
+    gap: 10,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',

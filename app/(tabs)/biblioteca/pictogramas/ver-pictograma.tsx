@@ -1,5 +1,4 @@
-// app/biblioteca/pictogramas/ver-pictograma.tsx
-
+import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -21,7 +20,7 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { CategoriaConPictogramas, PictogramaSimple } from '@/types';
+import { CategoriaConPictogramas, PictogramaConCategorias, PictogramaSimple } from '@/types';
 
 export default function VerPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,20 +28,35 @@ export default function VerPictogramaScreen() {
 
   const { token, usuarioId } = useAuth();
   const { eliminarPictograma } = useEliminarPictograma();
-  const { pictogramas, marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
   const { categorias, cargando, error, marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
-  const pictograma: PictogramaSimple | undefined = pictogramas.find(
-    (p) => p.id === Number(id)
-  );
+  const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
   const [oculto, setOculto] = useState(false);
+  const [cargandoPictograma, setCargandoPictograma] = useState(true);
 
-  const categoriasDelPictograma: CategoriaConPictogramas[] = useMemo(() => {
-    if (!pictograma) return [];
-    return categorias.filter((cat) =>
-      cat.pictogramas?.some((p: PictogramaSimple) => p.id === pictograma.id)
-    );
-  }, [categorias, pictograma?.id]);
+  useEffect(() => {
+    const cargarPictograma = async () => {
+      if (!id || !token) return;
+      setCargandoPictograma(true);
+
+      try {
+        const res = await axios.get(
+          `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}/con-categorias`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setPictograma(res.data);
+      } catch (err) {
+        console.error('❌ Error al cargar pictograma:', err);
+        Alert.alert('Error', 'No se pudo cargar el pictograma.');
+        router.back();
+      } finally {
+        setCargandoPictograma(false);
+      }
+    };
+
+    cargarPictograma();
+  }, [id, token]);
 
   useEffect(() => {
     const comprobarOculto = async () => {
@@ -65,9 +79,15 @@ export default function VerPictogramaScreen() {
     comprobarOculto();
   }, [pictograma?.id, usuarioId]);
 
+  const categoriasDelPictograma: CategoriaConPictogramas[] = useMemo(() => {
+    if (!pictograma) return [];
+    return categorias.filter((cat) =>
+      cat.pictogramas?.some((p: PictogramaSimple) => p.id === pictograma.id)
+    );
+  }, [categorias, pictograma?.id]);
+
   const manejarEditar = () => {
     if (!pictograma) return;
-
     router.push({
       pathname: '/biblioteca/pictogramas/editar-pictograma',
       params: { id: pictograma.id.toString() },
@@ -78,6 +98,12 @@ export default function VerPictogramaScreen() {
     if (!pictograma) return;
 
     const esPersonalizado = !!pictograma.usuarioId;
+
+    if (!esPersonalizado) {
+      Alert.alert('No se puede eliminar', 'Este pictograma es general y no se puede eliminar.');
+      return;
+    }
+
     await eliminarPictograma(pictograma.id, token, esPersonalizado, () => {
       marcarPictogramasComoDesactualizados();
       marcarCategoriasComoDesactualizadas();
@@ -86,10 +112,10 @@ export default function VerPictogramaScreen() {
 
   const manejarToggleVisibilidad = async () => {
     if (!pictograma || !usuarioId) return;
-  
+
     const endpoint = oculto ? 'desocultar' : 'ocultar';
     const url = `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas-ocultos/${endpoint}?pictogramaId=${pictograma.id}`;
-  
+
     try {
       if (oculto) {
         await fetch(url, {
@@ -103,8 +129,7 @@ export default function VerPictogramaScreen() {
           method: 'POST',
           headers: { Authorization: `Bearer ${token}` },
         });
-  
-        // Mostramos el mensaje y luego vamos hacia atrás
+
         Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.', [
           {
             text: 'OK',
@@ -112,13 +137,13 @@ export default function VerPictogramaScreen() {
               setOculto(true);
               marcarPictogramasComoDesactualizados();
               marcarCategoriasComoDesactualizadas();
-              router.back(); 
+              router.back();
             },
           },
         ]);
         return;
       }
-  
+
       marcarPictogramasComoDesactualizados();
       marcarCategoriasComoDesactualizadas();
     } catch (err) {
@@ -126,13 +151,12 @@ export default function VerPictogramaScreen() {
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };
-  
 
-  if (!pictograma) {
+  if (cargandoPictograma || !pictograma) {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: 'center', marginTop: 32, color: 'red' }}>
-          Pictograma no encontrado
+          Cargando pictograma...
         </Text>
       </View>
     );
@@ -148,9 +172,28 @@ export default function VerPictogramaScreen() {
         onEditar={manejarEditar}
         onEliminar={manejarEliminar}
       />
+{!pictograma.usuarioId && (
+  <Text
+    style={{
+      color: '#666',
+      fontStyle: 'italic',
+      marginBottom: 12,
+      textAlign: 'center',
+      backgroundColor: '#f0f0f0',
+      padding: 10,
+      borderRadius: 5,
+    }}
+  >
+    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+  </Text>
+)}
 
-      <ImagenPictograma uri={pictograma.imagen} />
-
+      <ImagenPictograma uri={pictograma.imagen} nombre = {pictograma.nombre}/>
+      
+      <Text style={styles.sectionTitle}>Tipo:</Text>
+      <Text style={{ fontSize: 16 }}>
+    {pictograma.tipo === 'verbo' ? 'Verbo' : 'Sustantivo'}
+  </Text>
       <CabeceraSeccion texto="Categorías del pictograma" />
 
       {cargando ? (

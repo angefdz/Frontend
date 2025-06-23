@@ -12,12 +12,17 @@ export const styles = StyleSheet.create({
   titulo: {
     fontSize: 20,
     fontWeight: 'bold',
+    color: '#1A1A1A', // ✅ buen contraste
   },
   iconos: {
     flexDirection: 'row',
-    gap: 15,
+    gap: 2, // ✅ si está soportado
   },
   botonIcono: {
-    padding: 5,
+    padding: 10,
+    minWidth: 48,
+    minHeight: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

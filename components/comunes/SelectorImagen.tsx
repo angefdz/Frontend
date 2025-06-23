@@ -75,7 +75,8 @@ export default function SelectorImagen({
           Imagen no editable
         </Text>
       ) : (
-        <Button title="Seleccionar imagen" onPress={mostrarOpcionesImagen} />
+        <Button title="Seleccionar imagen" onPress={mostrarOpcionesImagen}accessibilityLabel="Seleccionar imagen"
+        />
       )}
     </View>
   );

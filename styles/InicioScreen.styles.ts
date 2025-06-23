@@ -1,15 +1,14 @@
 import { Dimensions, StyleSheet } from 'react-native';
+
 const { width } = Dimensions.get('window');
 const MARGIN = 8;
 const NUM_COLUMNS = 3;
 const PICTO_WIDTH = (width - MARGIN * 2 * NUM_COLUMNS) / NUM_COLUMNS;
 
-
 export const styles = StyleSheet.create({
-  
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   fraseContainer: {
     flexDirection: 'row',
@@ -52,25 +51,32 @@ export const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
-  
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
   },
   pictograma: {
+    width: PICTO_WIDTH,
+    height: PICTO_WIDTH,
     backgroundColor: '#f2f2f2',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 8,
-  },  
+    padding: 8,
+    overflow: 'hidden',
+  },
   pictogramaEmoji: {
-    fontSize: 40,
+    fontSize: 36,
+    textAlign: 'center',
   },
   pictogramaTexto: {
     fontSize: 14,
     marginTop: 5,
     color: '#333',
+    textAlign: 'center',
+    flexShrink: 1,
+    maxWidth: '100%',
   },
   pictogramaSugerido: {
     width: 100,
@@ -80,6 +86,7 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 8,
     padding: 10,
+    overflow: 'hidden',
   },
   horizontalGrid: {
     flexDirection: 'row',
@@ -91,7 +98,7 @@ export const styles = StyleSheet.create({
     width,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start', // O 'center' si prefieres centrado
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   center: {
@@ -100,6 +107,4 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  
-  
 });

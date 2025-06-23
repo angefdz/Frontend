@@ -1,18 +1,16 @@
-// src/app/biblioteca/BibliotecaScreen.tsx
 import SeccionHorizontal from '@/components/biblioteca/pantallaPrincipal/SeccionBibliteca';
 import ItemClicable from '@/components/comunes/ItemClicable';
-import { useAuth } from '@/context/AuthContext'; // ✅ ahora usamos tu AuthContext
+import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Button, ScrollView, Text, View } from 'react-native';
 
 export default function BibliotecaScreen() {
   const router = useRouter();
-
-  const { token, usuarioId, cargandoAuth } = useAuth(); // ✅ sustituido
+  const { token, usuarioId, cargandoAuth } = useAuth();
 
   const {
     categorias,
@@ -28,7 +26,6 @@ export default function BibliotecaScreen() {
     recargar: recargarPictogramas,
   } = usePictogramasContext();
 
-  // Reaccionamos al cambio de usuario o token
   useEffect(() => {
     if (token && usuarioId) {
       recargarCategorias();
@@ -46,12 +43,6 @@ export default function BibliotecaScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {errorCategorias && (
-        <View style={{ padding: 16 }}>
-          <Text style={{ color: 'red' }}>{errorCategorias}</Text>
-        </View>
-      )}
-
       <SeccionHorizontal
         titulo="Categorías"
         datos={cargandoCategorias ? [] : categorias.slice(0, 30)}
@@ -73,10 +64,12 @@ export default function BibliotecaScreen() {
           />
         )}
       />
-
-      {errorPictogramas && (
-        <View style={{ padding: 16 }}>
-          <Text style={{ color: 'red' }}>{errorPictogramas}</Text>
+      {errorCategorias && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
+          <Text style={{ color: 'red', marginBottom: 8 }}>
+            Error al cargar las categorías disponibles
+          </Text>
+          <Button title="Reintentar" onPress={recargarCategorias} />
         </View>
       )}
 
@@ -101,6 +94,14 @@ export default function BibliotecaScreen() {
           />
         )}
       />
+      {errorPictogramas && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
+          <Text style={{ color: 'red', marginBottom: 8 }}>
+            Error al cargar los pictogramas disponibles
+          </Text>
+          <Button title="Reintentar" onPress={recargarPictogramas} />
+        </View>
+      )}
     </ScrollView>
   );
 }

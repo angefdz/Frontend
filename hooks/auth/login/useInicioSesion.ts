@@ -1,10 +1,11 @@
 import { guardarCredenciales } from '@/hooks/utils/seguridad';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { useAuth } from '@/context/AuthContext'; // <-- Importa el hook global de autenticación
+import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
+import { useLoginGoogle } from './useLoginGoogle';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
@@ -16,9 +17,27 @@ export const useInicioSesion = () => {
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState('');
 
+  const { setAuthData } = useAuth();
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
-  const { setAuthData } = useAuth(); // <-- Hook para actualizar contexto global
+
+  // Hook de login con Google
+  const { promptAsync, resultado } = useLoginGoogle();
+
+  // Si el login con Google devuelve token y usuarioId, lo guardamos
+  useEffect(() => {
+    if (resultado) {
+      const { token, usuarioId } = resultado;
+
+      setAuthData({ token, usuarioId });
+      guardarCredenciales(token, usuarioId);
+
+      marcarCategoriasComoDesactualizadas();
+      marcarPictogramasComoDesactualizados();
+
+      router.replace('/pantalla-principal');
+    }
+  }, [resultado]);
 
   const manejarCambioCorreo = (texto: string) => {
     setCorreo(texto);
@@ -53,11 +72,8 @@ export const useInicioSesion = () => {
       const { token, usuarioId } = await response.json();
 
       await guardarCredenciales(token, usuarioId);
-
-      // Actualiza el contexto global para que todas las pantallas usen el token actualizado
       setAuthData({ token, usuarioId });
 
-      // Marca categorías y pictogramas como desactualizados para recarga
       marcarCategoriasComoDesactualizadas();
       marcarPictogramasComoDesactualizados();
 
@@ -70,8 +86,13 @@ export const useInicioSesion = () => {
     }
   };
 
-  const manejarInicioSesionGoogle = () => {
-    console.log('Google login (a implementar)');
+  const manejarInicioSesionGoogle = async () => {
+    try {
+      await promptAsync();
+    } catch (error) {
+      console.error('Error al iniciar sesión con Google:', error);
+      setError('No se pudo iniciar sesión con Google.');
+    }
   };
 
   const manejarOlvideContrasena = () => {

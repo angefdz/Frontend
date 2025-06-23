@@ -27,15 +27,30 @@ export default function SeccionBiblioteca<T>({
       <CabeceraSeccion titulo={titulo} onAddPress={onAddPress} />
 
       {datos.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        <Text
+          style={{ marginHorizontal: 16, fontStyle: 'italic' }}
+          allowFontScaling={true}
+        >
           {mensajeVacio}
         </Text>
       ) : (
         <View>
           <ListaScrollHorizontal datos={datos} renderItem={renderItem} />
 
-          <TouchableOpacity onPress={onVerMasPress} style={styles.verMasButton}>
-            <Text style={styles.verMasText}>{textoVerMas}</Text>
+          <TouchableOpacity
+            onPress={onVerMasPress}
+            style={styles.verMasButton}
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={`Ver más ${titulo.toLowerCase()}`}
+          >
+            <Text
+              style={styles.verMasText}
+              allowFontScaling={true}
+              adjustsFontSizeToFit={false}
+            >
+              {textoVerMas}
+            </Text>
           </TouchableOpacity>
         </View>
       )}

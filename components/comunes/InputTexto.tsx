@@ -11,6 +11,8 @@ interface Props {
 export default function InputTexto({ placeholder, valor, setValor, disabled = false }: Props) {
   return (
     <TextInput
+    accessible={true}
+  accessibilityLabel={placeholder}
       style={[styles.input, disabled && styles.inputDisabled]}
       placeholder={placeholder}
       value={valor}
@@ -23,15 +25,25 @@ export default function InputTexto({ placeholder, valor, setValor, disabled = fa
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderColor: '#CCC',
+    borderColor: '#999', // borde accesible por defecto
     borderRadius: 10,
     padding: 12,
     marginVertical: 10,
     fontSize: 16,
     backgroundColor: '#FFF',
+    minHeight: 48,
+    color: '#1A1A1A',
   },
-  inputDisabled: {  // Cambié nombre para mantener naming inglés
+  inputFocused: {
+    borderColor: '#007AFF', // foco azul accesible
+  },
+  inputDisabled: {
     backgroundColor: '#F0F0F0',
-    color: '#999',
+    color: '#1A1A1A',
+    borderColor: '#CCC',
+  },
+  inputError: {
+    borderColor: '#D32F2F', // rojo accesible para error
   },
 });
+

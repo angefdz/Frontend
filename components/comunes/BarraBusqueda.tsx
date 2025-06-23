@@ -19,9 +19,12 @@ export default function BarraBusqueda({
       <TextInput
         style={styles.input}
         placeholder={placeholder}
-        placeholderTextColor="#999"
+        placeholderTextColor="#333"
         value={valor}
         onChangeText={setValor}
+        accessible
+        accessibilityRole="search"
+        accessibilityLabel="Barra de búsqueda"
       />
     </View>
   );

@@ -11,6 +11,7 @@ type Props<T extends { id?: string | number }> = {
   itemsPerPage: number;
   renderItem: (item: T | null, size: number) => React.ReactNode;
   spacing?: number;
+  availableHeight?: number; // NUEVO
 };
 
 function GridPaginadoHorizontalInner<T extends { id?: string | number }>({
@@ -18,15 +19,18 @@ function GridPaginadoHorizontalInner<T extends { id?: string | number }>({
   itemsPerPage,
   renderItem,
   spacing = 10,
+  availableHeight,
 }: Props<T>) {
-  const { width, height } = useWindowDimensions();
+  const { width, height: screenHeight } = useWindowDimensions();
 
   const numCols = Math.ceil(Math.sqrt(itemsPerPage));
   const numRows = Math.ceil(itemsPerPage / numCols);
 
-  const itemWidth = width / numCols;
-  const itemHeight = height / numRows;
-  const itemSize = Math.min(itemWidth, itemHeight) - spacing;
+  const usableHeight = availableHeight ?? screenHeight * 0.6; // ← por defecto usa 60%
+  const totalSpacing = spacing * (numCols + 1);
+  const itemWidth = (width - totalSpacing) / numCols;
+  const itemHeight = usableHeight / numRows;
+  const itemSize = Math.min(itemWidth, itemHeight);
 
   const pages = useMemo(() => chunkArray<T>(items, itemsPerPage), [items, itemsPerPage]);
 
@@ -81,9 +85,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// Memoizamos el componente con React.memo para evitar rerenders innecesarios
-const GridPaginadoHorizontal = React.memo(
-  GridPaginadoHorizontalInner
-) as typeof GridPaginadoHorizontalInner;
+const GridPaginadoHorizontal = React.memo(GridPaginadoHorizontalInner) as typeof GridPaginadoHorizontalInner;
 
 export default GridPaginadoHorizontal;

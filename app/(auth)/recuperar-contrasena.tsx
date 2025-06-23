@@ -24,7 +24,7 @@ export default function RecuperarContrasena() {
         <TextInput
           style={styles.input}
           placeholder="Introduce tu correo electrónico"
-          placeholderTextColor="#666"
+          placeholderTextColor="#111"
           value={correo}
           onChangeText={manejarCambioCorreo}
           keyboardType="email-address"

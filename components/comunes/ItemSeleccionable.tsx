@@ -26,8 +26,14 @@ function ItemSeleccionable({
   itemStyle,
   textStyle,
 }: Props) {
+  
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} accessibilityLabel={`${seleccionado ? 'Seleccionado' : 'No seleccionado'}: ${nombre}`
+    
+   }
+   
+    accessibilityRole="checkbox"
+    accessible>
       <View
         style={[
           {

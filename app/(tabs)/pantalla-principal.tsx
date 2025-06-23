@@ -11,6 +11,7 @@ import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion'
 import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
 import TextoFraseExpandibleAnimado from '@/components/pantallaPrincipal/TextoFraseExpandible';
 
+
 import { useAuth } from '@/context/AuthContext';
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
@@ -19,6 +20,7 @@ import { useFrase } from '@/hooks/frase/useFrase';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
+import { useVoz } from '@/context/VozContext';
 import { styles } from '@/styles/InicioScreen.styles';
 import { PictogramaSimple } from '@/types';
 
@@ -47,13 +49,25 @@ export default function PantallaPrincipal() {
   const [configAplicada, setConfigAplicada] = useState(false);
   const [todoListo, setTodoListo] = useState(false);
 
-  const tipoVoz = configuracion?.tipoVoz ?? 'femenina';
+  const { tipoVoz } = useVoz();
+
+
 
   const pictosFiltrados = categoriaSeleccionada
     ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
     : [];
 
-  const pictogramas = categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro;
+    const deduplicarPorId = (pictos: PictogramaSimple[]): PictogramaSimple[] => {
+      const vistos = new Set<number>();
+      return pictos.filter((p) => {
+        if (vistos.has(p.id)) return false;
+        vistos.add(p.id);
+        return true;
+      });
+    };
+    
+    const pictogramas = deduplicarPorId(categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro);
+    
   const cargandoPictos = categoriaSeleccionada ? false : cargandoSinFiltro;
   const errorPictogramas = categoriaSeleccionada ? null : errorSinFiltro;
 
@@ -96,7 +110,7 @@ export default function PantallaPrincipal() {
       id: configuracion.id,
       botonesPorPantalla: itemsPerPage,
       mostrarPorCategoria: modoAgrupado,
-      tipoVoz: configuracion.tipoVoz,
+      tipoVoz,
     };
 
     guardarConfiguracionUsuario(token, nuevaConfig)
@@ -174,9 +188,6 @@ export default function PantallaPrincipal() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <View style={{ padding: 10, backgroundColor: '#eee' }}>
-        <Text style={{ fontSize: 16, color: '#333' }}>Usuario ID: {usuarioId}</Text>
-      </View>
 
       <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         <TextoFraseExpandibleAnimado frase={frase} />
@@ -202,7 +213,7 @@ export default function PantallaPrincipal() {
             <ActivityIndicator size="large" color="#666" />
           </View>
         ) : (
-          <>
+          <View>
             {modoAgrupado && !categoriaSeleccionada && (
               <GridCategorias
                 categorias={categorias}
@@ -235,7 +246,7 @@ export default function PantallaPrincipal() {
                 onSeleccionar={manejarSeleccion}
               />
             )}
-          </>
+          </View>
         )}
       </ScrollView>
 

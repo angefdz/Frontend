@@ -65,7 +65,7 @@ export default function EditarPictogramaScreen() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
+        
         const data: PictogramaConCategorias = res.data;
 
         setPictograma(data);
@@ -128,6 +128,21 @@ export default function EditarPictogramaScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <CabeceraSeccion texto="Editar pictograma" />
+      {!esPersonalizado && (
+  <Text
+    style={{
+      color: '#666',
+      fontStyle: 'italic',
+      marginBottom: 12,
+      textAlign: 'center',
+      backgroundColor: '#f0f0f0',
+      padding: 10,
+      borderRadius: 5,
+    }}
+  >
+    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+  </Text>
+)}
 
       <SelectorImagen
         uriImagen={imagen}
@@ -143,28 +158,37 @@ export default function EditarPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <DropDownPicker
-        open={openTipo}
-        value={tipo}
-        items={[
-          { label: 'Verbo', value: 'verbo' },
-          { label: 'Sustantivo', value: 'sustantivo' },
-        ]}
-        setOpen={setOpenTipo}
-        setValue={setTipo}
-        setItems={() => {}}
-        placeholder="Selecciona tipo"
-        style={[
-          styles.dropdown,
-          !esPersonalizado && { backgroundColor: '#F0F0F0' },
-        ]}
-        dropDownContainerStyle={styles.dropdownContainer}
-        textStyle={[
-          styles.dropdownText,
-          !esPersonalizado && { color: '#999999' },
-        ]}
-        disabled={!esPersonalizado}
-      />
+      <Text
+  accessibilityRole="text"
+  accessibilityLabel="Selector del tipo de pictograma"
+  style={styles.sectionTitle}
+>
+  Tipo
+</Text>
+
+<DropDownPicker
+  open={openTipo}
+  value={tipo}
+  items={[
+    { label: 'Verbo', value: 'verbo' },
+    { label: 'Sustantivo', value: 'sustantivo' },
+  ]}
+  setOpen={setOpenTipo}
+  setValue={setTipo}
+  setItems={() => {}}
+  placeholder="Selecciona tipo"
+  style={[
+    styles.dropdown,
+    !esPersonalizado && { backgroundColor: '#F0F0F0' },
+  ]}
+  dropDownContainerStyle={styles.dropdownContainer}
+  textStyle={[
+    styles.dropdownText,
+    !esPersonalizado && { color: '#999999' },
+  ]}
+  disabled={!esPersonalizado}
+/>
+
 
       <CabeceraSeccion texto="Categorías asignadas" />
 
@@ -201,6 +225,8 @@ export default function EditarPictogramaScreen() {
       <TouchableOpacity
         onPress={() => setMostrarModal(true)}
         style={styles.verMasButton}
+        accessibilityRole="button"
+  accessibilityLabel="Añadir categorías"
       >
         <Text style={styles.verMasText}>+ Añadir categorías</Text>
       </TouchableOpacity>

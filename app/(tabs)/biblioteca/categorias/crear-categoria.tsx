@@ -132,6 +132,9 @@ export default function CrearCategoriaScreen() {
       <TouchableOpacity
         onPress={() => setMostrarModal(true)}
         style={styles.verMasButton}
+        accessible
+  accessibilityRole="button"
+  accessibilityLabel="Añadir pictogramas a la categoría"
       >
         <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
       </TouchableOpacity>
@@ -139,6 +142,7 @@ export default function CrearCategoriaScreen() {
       <BotonPrincipal
         texto={subiendo ? 'Creando...' : 'Crear categoría'}
         onPress={manejarCrear}
+        
       />
 
       <SelectorItemsModal

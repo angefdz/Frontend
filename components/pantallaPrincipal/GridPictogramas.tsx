@@ -2,6 +2,7 @@ import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
 import { PictogramaSimple } from '@/types';
 import React, { useCallback } from 'react';
+import { useWindowDimensions } from 'react-native';
 
 type Props = {
   pictogramas: PictogramaSimple[];
@@ -14,6 +15,8 @@ function GridPictogramas({
   itemsPerPage,
   onSeleccionar,
 }: Props) {
+  const { height } = useWindowDimensions();
+
   const renderItem = useCallback(
     (p: PictogramaSimple | null, itemSize: number) =>
       p ? (
@@ -32,6 +35,7 @@ function GridPictogramas({
       items={pictogramas ?? []}
       itemsPerPage={itemsPerPage}
       renderItem={renderItem}
+      availableHeight={height * 0.6} // Ajusta este valor si necesitas más o menos espacio vertical
     />
   );
 }

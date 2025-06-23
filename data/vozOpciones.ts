@@ -1,7 +1,5 @@
-     // src/data/vozOpciones.ts
-
 export const VOICES = {
-    femenina: 'es-es-x-ana-local',
-    masculina: 'es-es-x-edp-local',
-  };
-  
+     femenina: 'com.apple.ttsbundle.Monica-compact',  // iOS
+     masculina: 'com.apple.ttsbundle.Jorge-compact',
+   };
+   

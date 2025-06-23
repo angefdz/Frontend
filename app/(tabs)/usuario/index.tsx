@@ -2,14 +2,15 @@ import { useAuth } from '@/context/AuthContext';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
 
+import { useDescargarHistorialCsv } from '@/hooks/frase/useDescargarHistorialCsv'; // ← añade esto arriba
 import { styles } from '@/styles/PerfilScreen.styles';
 import { Feather } from '@expo/vector-icons';
-import * as FileSystem from 'expo-file-system';
 import { useFocusEffect, useRouter } from 'expo-router';
-import * as Sharing from 'expo-sharing';
 import { useCallback, useEffect } from 'react';
+
 import {
   Alert,
+  Button,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -23,9 +24,13 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 
 export default function PerfilScreen() {
   const router = useRouter();
-  const { token, cerrarSesion } = useAuth(); // ← CAMBIO
-  const { usuario, recargarUsuario } = useUsuarioActual();
-  const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
+  const { token, cerrarSesion } = useAuth();
+  const { usuario, recargarUsuario, error: errorUsuario } = useUsuarioActual();
+  const {
+    configuracion,
+    recargarConfiguracion,
+    errorConfiguracion,
+  } = useConfiguracionUsuario(token);
 
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
@@ -34,12 +39,10 @@ export default function PerfilScreen() {
     console.log('Token actual en PerfilScreen:', token);
   }, [token]);
 
-  useFocusEffect(
-    useCallback(() => {
-      recargarUsuario();
-      recargarConfiguracion();
-    }, [])
-  );
+  const recargarTodo = () => {
+    recargarUsuario();
+    recargarConfiguracion();
+  };
 
   const manejarCerrarSesion = () => {
     Alert.alert('Cerrar sesión', '¿Estás segura de que quieres cerrar sesión?', [
@@ -48,7 +51,7 @@ export default function PerfilScreen() {
         text: 'Sí',
         style: 'destructive',
         onPress: () => {
-          cerrarSesion(); // ← ya no es async
+          cerrarSesion();
           marcarCategoriasComoDesactualizadas();
           marcarPictogramasComoDesactualizados();
           router.replace('/inicio-sesion');
@@ -57,12 +60,12 @@ export default function PerfilScreen() {
     ]);
   };
 
-  const manejarDescargarHistorial = async () => {
-    const contenido = 'Hola, me gusta\nQuiero agua\nGracias';
-    const path = FileSystem.documentDirectory + 'historial.txt';
-    await FileSystem.writeAsStringAsync(path, contenido);
-    await Sharing.shareAsync(path);
+  const { descargarHistorial } = useDescargarHistorialCsv();
+
+  const manejarDescargarHistorial = () => {
+    descargarHistorial();
   };
+
 
   const manejarEliminarCuenta = () => {
     Alert.alert(
@@ -101,13 +104,29 @@ export default function PerfilScreen() {
     );
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      recargarTodo();
+    }, [])
+  );
+
+  const errorActual = errorUsuario ?? errorConfiguracion;
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      {errorActual && (
+        <View style={{ padding: 16, alignItems: 'center' }}>
+          <Text style={{ color: 'red', marginBottom: 8 }}>{errorActual}</Text>
+          <Button title="Reintentar" onPress={recargarTodo} />
+        </View>
+      )}
+
       <View style={styles.iconoEditarContainer}>
-        <TouchableOpacity onPress={() => router.push('/usuario/editar-perfil')}>
+        <TouchableOpacity onPress={() => router.push('/usuario/editar-perfil')} accessibilityRole="button"
+  accessibilityLabel="Editar perfil">
           <Feather name="edit-2" size={24} color="#007AFF" />
         </TouchableOpacity>
       </View>
@@ -118,6 +137,8 @@ export default function PerfilScreen() {
         value={usuario?.nombre ?? ''}
         editable={false}
         placeholder="Nombre"
+        accessibilityRole="text"
+  accessibilityLabel={`Nombre: ${usuario?.nombre ?? 'No disponible'}`}
       />
 
       <Text style={styles.label}>Correo electrónico</Text>
@@ -126,6 +147,8 @@ export default function PerfilScreen() {
         value={usuario?.correo ?? ''}
         editable={false}
         placeholder="Correo"
+        accessibilityRole="text"
+        accessibilityLabel={`Correo electrónico: ${usuario?.correo ?? 'No disponible'}`}
       />
 
       <Text style={styles.label}>Voz</Text>
@@ -134,22 +157,29 @@ export default function PerfilScreen() {
         value={configuracion?.tipoVoz ?? ''}
         editable={false}
         placeholder="Tipo de voz"
+        accessibilityRole="text"
+        accessibilityLabel={`Tipo de voz: ${configuracion?.tipoVoz ?? 'No disponible'}`}
       />
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => router.push('/usuario/pictogramas-ocultos')}
+        accessibilityRole="button"
+  accessibilityLabel="Ver pictogramas ocultos"
       >
         <Text style={styles.buttonText}>Pictogramas ocultos</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={manejarDescargarHistorial}>
+      <TouchableOpacity style={styles.button} onPress={manejarDescargarHistorial} accessibilityRole="button"
+  accessibilityLabel="Descargar historial de frases">
         <Text style={styles.buttonText}>Historial</Text>
       </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => router.push('/usuario/cambiar-password')}
+         accessibilityRole="button"
+  accessibilityLabel="Cambiar contraseña"
       >
         <Text style={styles.buttonText}>Cambiar contraseña</Text>
       </TouchableOpacity>
@@ -157,6 +187,8 @@ export default function PerfilScreen() {
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#FF3B30' }]}
         onPress={manejarCerrarSesion}
+        accessibilityRole="button"
+  accessibilityLabel="Cerrar sesión"
       >
         <Text style={[styles.buttonText, { color: '#fff' }]}>Cerrar sesión</Text>
       </TouchableOpacity>
@@ -164,6 +196,8 @@ export default function PerfilScreen() {
       <TouchableOpacity
         style={[styles.button, { backgroundColor: '#8E8E93' }]}
         onPress={manejarEliminarCuenta}
+        accessibilityRole="button"
+  accessibilityLabel="Eliminar cuenta"
       >
         <Text style={[styles.buttonText, { color: '#fff' }]}>Eliminar cuenta</Text>
       </TouchableOpacity>

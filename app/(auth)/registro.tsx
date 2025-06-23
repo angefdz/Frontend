@@ -39,7 +39,9 @@ import { styles } from '../../styles/RegistroScreen.styles';
             placeholder="Nombre"
             value={nombre}
             onChangeText={setNombre}
-            placeholderTextColor="#666"
+            placeholderTextColor="#111"
+            accessibilityLabel="Nombre"
+          accessibilityHint="Introduce tu nombre completo"
           />
   
           <TextInput
@@ -49,7 +51,9 @@ import { styles } from '../../styles/RegistroScreen.styles';
             onChangeText={setCorreo}
             keyboardType="email-address"
             autoCapitalize="none"
-            placeholderTextColor="#666"
+            placeholderTextColor="#111"
+            accessibilityLabel="Correo electrónico"
+          accessibilityHint="Introduce tu dirección de correo"
           />
   
           <TextInput
@@ -59,7 +63,9 @@ import { styles } from '../../styles/RegistroScreen.styles';
             onChangeText={setContrasena}
             secureTextEntry
             autoCapitalize="none"
-            placeholderTextColor="#666"
+            placeholderTextColor="#111"
+            accessibilityLabel="Contraseña"
+          accessibilityHint="Introduce una nueva contraseña segura"
           />
   
           <TextInput
@@ -69,12 +75,15 @@ import { styles } from '../../styles/RegistroScreen.styles';
             onChangeText={setConfirmacion}
             secureTextEntry
             autoCapitalize="none"
-            placeholderTextColor="#666"
+            placeholderTextColor="#111"
+            accessibilityLabel="Confirmar contraseña"
+          accessibilityHint="Vuelve a introducir tu contraseña"
           />
   
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
   
-          <TouchableOpacity style={styles.button} onPress={manejarRegistro} disabled={cargando}>
+          <TouchableOpacity style={styles.button} onPress={manejarRegistro} disabled={cargando} accessibilityLabel="Botón registrarse"
+          accessibilityHint="Presiona para crear tu cuenta">
             {cargando ? (
               <ActivityIndicator color="white" />
             ) : (
@@ -82,7 +91,9 @@ import { styles } from '../../styles/RegistroScreen.styles';
             )}
           </TouchableOpacity>
   
-          <TouchableOpacity onPress={manejarVolver} style={styles.backButton}>
+          <TouchableOpacity onPress={manejarVolver} style={styles.backButton} accessibilityLabel="Volver a Iniciar Sesión"
+          accessibilityHint="Presiona para regresar a la pantalla de inicio de sesión"
+        >
             <Text style={styles.backButtonText}>Volver a Iniciar Sesión</Text>
           </TouchableOpacity>
         </View>

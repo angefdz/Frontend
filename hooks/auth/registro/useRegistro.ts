@@ -14,11 +14,20 @@ export const useRegistro = () => {
   const [error, setError] = useState('');
   const [cargando, setCargando] = useState(false);
 
+  const esCorreoValido = (correo: string) => {
+    const regexRFC5322 = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z]{2,})+$/;
+    return regexRFC5322.test(correo);
+  };
+  
   const manejarRegistro = async () => {
     if (!nombre || !correo || !contrasena || !confirmacion) {
       setError('Todos los campos son obligatorios.');
       return;
     }
+    if (!esCorreoValido(correo)) {
+      setError('El correo no tiene un formato válido.');
+      return;
+    }    
 
     if (contrasena !== confirmacion) {
       setError('Las contraseñas no coinciden.');

@@ -8,10 +8,12 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useAuth } from '@/context/AuthContext';
+import { useVoz } from '@/context/VozContext'; // ✅ Importa el contexto de voz
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import { useOpcionesTipoVoz } from '@/hooks/configuracion/useOpcionesTipoVoz';
@@ -20,7 +22,8 @@ import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
 
 export default function EditarPerfilScreen() {
   const router = useRouter();
-  const { token, usuarioId } = useAuth(); // ← CAMBIO
+  const { token, usuarioId } = useAuth();
+  const { setTipoVoz } = useVoz(); // ✅ Setter del contexto
 
   const { configuracion, recargarConfiguracion } = useConfiguracionUsuario(token);
   const { usuario, recargarUsuario } = useUsuarioActual();
@@ -63,6 +66,7 @@ export default function EditarPerfilScreen() {
       });
 
       await recargarConfiguracion();
+      setTipoVoz(voz); // ✅ Actualiza el contexto tras guardar
       await recargarUsuario();
 
       Alert.alert('Perfil actualizado', 'Los cambios se han guardado correctamente');
@@ -84,6 +88,8 @@ export default function EditarPerfilScreen() {
         value={nombre}
         onChangeText={setNombre}
         placeholder="Nombre del usuario"
+        accessibilityLabel="Nombre del usuario"
+        accessibilityRole="text"
       />
 
       <Text style={styles.label}>Correo electrónico</Text>
@@ -91,24 +97,34 @@ export default function EditarPerfilScreen() {
         style={[styles.input, { color: '#555' }]}
         value={usuario?.correo ?? ''}
         editable={false}
+        accessibilityLabel="Correo del usuario"
+        accessibilityRole="text"
       />
 
-      <Text style={styles.label}>Voz</Text>
-      <DropDownPicker
-        open={open}
-        value={voz}
-        items={opciones}
-        setOpen={setOpen}
-        setValue={setVoz}
-        setItems={() => {}} // <- no lo usas porque las opciones ya están precargadas
-        placeholder="Selecciona un tipo de voz"
-        style={styles.dropdown}
-        dropDownContainerStyle={styles.dropdownContainer}
-        textStyle={styles.dropdownText}
-        disabled={cargandoOpciones}
-      />
+<Text style={styles.label}>Voz</Text>
+<View
+  accessible
+  accessibilityLabel="Selecciona un tipo de voz"
+  accessibilityRole="menu"
+>
+  <DropDownPicker
+    open={open}
+    value={voz}
+    items={opciones}
+    setOpen={setOpen}
+    setValue={setVoz}
+    setItems={() => {}}
+    placeholder="Selecciona un tipo de voz"
+    style={styles.dropdown}
+    dropDownContainerStyle={styles.dropdownContainer}
+    textStyle={styles.dropdownText}
+    disabled={cargandoOpciones}
+  />
+</View>
 
-      <TouchableOpacity style={styles.button} onPress={guardarCambios}>
+
+      <TouchableOpacity style={styles.button} onPress={guardarCambios} accessibilityLabel="Guardar cambios en el perfil"
+  accessibilityRole="button">
         <Text style={styles.buttonText}>Guardar cambios</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>

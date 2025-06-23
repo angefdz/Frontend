@@ -1,5 +1,3 @@
-// components/pantallaPrincipal/GridItem.tsx
-
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
@@ -12,13 +10,32 @@ type Props = {
 
 export default function GridItem({ imagen, nombre, itemSize, onPress }: Props) {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.container, { width: itemSize, height: itemSize }]}>
+    <TouchableOpacity
+      onPress={onPress}
+      style={[styles.container, { width: itemSize, height: itemSize }]}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel={`Seleccionar pictograma: ${nombre}`}
+    >
       <Image
         source={{ uri: imagen }}
-        style={{ width: itemSize * 0.7, height: itemSize * 0.7 }}
+        style={{
+          width: itemSize * 0.7,
+          height: itemSize * 0.7,
+          maxHeight: itemSize * 0.65,
+        }}
         resizeMode="contain"
       />
-      <Text style={[styles.texto, { fontSize: itemSize * 0.15 }]} numberOfLines={1}>
+      <Text
+        style={[
+          styles.texto,
+          {
+            fontSize: Math.max(12, itemSize * 0.14),
+            maxWidth: itemSize * 0.9,
+          },
+        ]}
+        numberOfLines={1}
+      >
         {nombre}
       </Text>
     </TouchableOpacity>
@@ -32,7 +49,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 4,
-    margin: 6,
+    overflow: 'hidden',
   },
   texto: {
     marginTop: 4,

@@ -20,17 +20,19 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   boton: {
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     backgroundColor: '#F0F0F0',
     borderRadius: 8,
+    minHeight: 48, // ✅ para accesibilidad táctil
+    justifyContent: 'center',
   },
   botonActivo: {
     backgroundColor: '#007AFF',
   },
   texto: {
     fontSize: 16,
-    color: '#333',
+    color: '#1A1A1A', // contraste aún mejor
   },
   textoActivo: {
     color: '#fff',
@@ -51,8 +53,10 @@ export const styles = StyleSheet.create({
     elevation: 8,
   },
   botonSelector: {
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
     backgroundColor: '#F0F0F0',
+    minHeight: 48,
+    justifyContent: 'center',
   },
 });

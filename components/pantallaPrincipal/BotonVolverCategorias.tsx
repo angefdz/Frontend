@@ -11,6 +11,9 @@ export default function BotonVolverCategorias({ onPress }: Props) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      accessible
+      accessibilityRole="button"
+      accessibilityLabel="Volver a categorías"
       style={{
         alignSelf: 'flex-start',
         marginBottom: 10,

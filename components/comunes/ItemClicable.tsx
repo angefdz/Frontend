@@ -18,13 +18,18 @@ export default function ItemClicable({
   textStyle,
 }: Props) {
   return (
-    <TouchableOpacity style={[styles.item, itemStyle]} onPress={onPress}>
+    <TouchableOpacity style={[styles.item, itemStyle]} onPress={onPress} accessible
+    accessibilityRole="button"
+    accessibilityLabel={`Elemento ${nombre}`}>
       <Image
         source={{ uri: imagen }}
         style={styles.imagen}
         resizeMode="contain"
       />
-      <Text style={[styles.texto, textStyle]} numberOfLines={1}>
+      <Text style={[styles.texto, textStyle]} 
+      numberOfLines={2}             // ← permite una línea extra si el texto crece
+      allowFontScaling={true}       // ← asegura que respete el ajuste del sistema
+      adjustsFontSizeToFit={false}>
         {nombre}
       </Text>
     </TouchableOpacity>
@@ -34,15 +39,16 @@ export default function ItemClicable({
 const styles = StyleSheet.create({
   item: {
     width: 80,
-    height: 100,
-    marginRight: 0,
+    aspectRatio: 1,      // Para que la altura sea igual al ancho y sea cuadrado
+    marginRight: 8,      // Añadido margen derecho para separar items horizontalmente
+    marginBottom: 8,     // Añadido margen inferior para separar verticalmente
     alignItems: 'center',
     justifyContent: 'center',
   },
   imagen: {
     width: 60,
     height: 60,
-    borderRadius: 10
+    borderRadius: 10,
   },
   texto: {
     fontSize: 12,
@@ -50,3 +56,4 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
 });
+

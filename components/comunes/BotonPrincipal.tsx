@@ -8,7 +8,9 @@ interface Props {
 
 export default function BotonPrincipal({ texto, onPress }: Props) {
   return (
-    <TouchableOpacity style={styles.boton} onPress={onPress}>
+    <TouchableOpacity style={styles.boton} onPress={onPress} accessible
+    accessibilityRole="button"
+    accessibilityLabel={texto} >
       <Text style={styles.texto}>{texto}</Text>
     </TouchableOpacity>
   );

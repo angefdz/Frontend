@@ -56,26 +56,53 @@ export default function MenuConfiguracion({
           customStyles={triggerStyles}
           onPress={() => setMenuVisible(!menuVisible)}
         >
-          <Feather
-            name={menuVisible ? 'x' : 'settings'}
-            size={24}
-            color="#aaa"
-          />
+          <View
+            accessible
+            accessibilityRole="button"
+            accessibilityLabel={
+              menuVisible
+                ? 'Cerrar menú de configuración'
+                : 'Abrir menú de configuración'
+            }
+          >
+            <Feather
+              name={menuVisible ? 'x' : 'settings'}
+              size={24}
+              color="#aaa"
+            />
+          </View>
         </MenuTrigger>
 
         {mostrarMenuPrincipal && (
           <MenuOptions customStyles={optionsStyles}>
             <MenuOption onSelect={toggleAgrupado}>
-              <Text style={styles.menuOptionText}>
-                {modoAgrupado
-                  ? 'Desagrupar pictogramas'
-                  : 'Agrupar por categorías'}
-              </Text>
+              <View
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel={
+                  modoAgrupado
+                    ? 'Desagrupar pictogramas en el teclado'
+                    : 'Agrupar pictogramas por categorías en el teclado'
+                }
+              >
+                <Text style={styles.menuOptionText}>
+                  {modoAgrupado
+                    ? 'Desagrupar pictogramas'
+                    : 'Agrupar por categorías'}
+                </Text>
+              </View>
             </MenuOption>
+
             <MenuOption onSelect={handleReajustarPictogramas}>
-              <Text style={styles.menuOptionText}>
-                Reajustar número de pictogramas
-              </Text>
+              <View
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel="Cambiar el número de pictogramas visibles en el teclado"
+              >
+                <Text style={styles.menuOptionText}>
+                  Reajustar número de pictogramas
+                </Text>
+              </View>
             </MenuOption>
           </MenuOptions>
         )}
@@ -90,20 +117,33 @@ export default function MenuConfiguracion({
                   cerrarMenu();
                 }}
               >
-                <Text
-                  style={[
-                    styles.menuOptionText,
-                    itemsPerPage === cantidad && styles.selectedOption,
-                  ]}
+                <View
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={`Mostrar ${cantidad} pictogramas por página`}
                 >
-                  {cantidad} pictogramas
-                </Text>
+                  <Text
+                    style={[
+                      styles.menuOptionText,
+                      itemsPerPage === cantidad && styles.selectedOption,
+                    ]}
+                  >
+                    {cantidad} pictogramas
+                  </Text>
+                </View>
               </MenuOption>
             ))}
+
             <MenuOption onSelect={handleVolver}>
-              <Text style={[styles.menuOptionText, { fontWeight: 'bold' }]}>
-                ← Volver
-              </Text>
+              <View
+                accessible
+                accessibilityRole="button"
+                accessibilityLabel="Volver al menú anterior"
+              >
+                <Text style={[styles.menuOptionText, { fontWeight: 'bold' }]}>
+                  ← Volver
+                </Text>
+              </View>
             </MenuOption>
           </MenuOptions>
         )}

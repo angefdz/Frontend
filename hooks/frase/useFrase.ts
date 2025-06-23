@@ -2,10 +2,17 @@ import * as Speech from 'expo-speech';
 import { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 
+import { useAuth } from '@/context/AuthContext';
+import { useVoz } from '@/context/VozContext';
+import { VOICES } from '@/data/vozOpciones';
+import { guardarFrase } from '@/hooks/frase/useGuardarFrase';
 import { PictogramaSimple } from '@/types';
 import { usePrediccionPictograma } from '../utils/prediccion';
 
 export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
+  const { tipoVoz } = useVoz();
+  const { token } = useAuth();
+
   const pictogramaHola = pictogramasDisponibles.find(
     p => p.nombre.toLowerCase() === 'hola'
   );
@@ -50,16 +57,22 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
 
   const reproducirFrase = async () => {
     const texto = frase.join(' ');
-    if (!texto) return;
-
+    if (!texto || !token) return; // ← asegurarse de que hay token
+  
+    const clave = tipoVoz.toLowerCase() as keyof typeof VOICES;
+    const voiceId = VOICES[clave];
+  
     try {
+      await guardarFrase(token, texto); // ← ahora token es seguro
+  
       await Speech.stop();
       Speech.speak(texto, {
         language: 'es-ES',
         rate: 1,
         pitch: 1.1,
+        voice: voiceId,
       });
-
+  
       Toast.show({
         type: 'success',
         text1: 'Frase guardada',
@@ -67,13 +80,14 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
         position: 'bottom',
       });
     } catch (error) {
-      console.error('❌ Error al reproducir frase:', error);
+      console.error('❌ Error al reproducir o guardar frase:', error);
       Toast.show({
         type: 'error',
-        text1: 'Error al reproducir la frase',
+        text1: 'Error al guardar o reproducir la frase',
       });
     }
   };
+  
 
   const usarSugerencia = () => {
     if (sugerencia) {

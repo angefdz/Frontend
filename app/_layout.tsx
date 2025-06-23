@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message';
 import { AuthProvider } from '@/context/AuthContext'; // <== Añadido contexto Auth
 import { CategoriasProvider } from '@/context/CategoriasContext';
 import { PictogramasProvider } from '@/context/PictogramasContext';
+import { VozProvider } from '@/context/VozContext';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -24,7 +25,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AuthProvider> {/* Envuelve toda la app para autenticación global */}
+      
+      <AuthProvider> 
+        <VozProvider>
         <CategoriasProvider>
           <PictogramasProvider>
             <Slot />
@@ -32,7 +35,9 @@ export default function RootLayout() {
             <Toast />
           </PictogramasProvider>
         </CategoriasProvider>
+        </VozProvider>
       </AuthProvider>
+      
     </ThemeProvider>
   );
 }

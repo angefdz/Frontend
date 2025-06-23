@@ -2,12 +2,12 @@ import { useRouter } from 'expo-router';
 import { Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Props {
-  id: number;
-  nombre: string;
-  imagen: string;
-  itemStyle?: ViewStyle;
-  emojiStyle?: TextStyle;
-  textStyle?: TextStyle;
+  readonly id: number;
+  readonly nombre: string;
+  readonly imagen: string;
+  readonly itemStyle?: ViewStyle;
+  readonly emojiStyle?: TextStyle;
+  readonly textStyle?: TextStyle;
 }
 
 export default function CategoriaClicable({

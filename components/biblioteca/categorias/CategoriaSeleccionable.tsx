@@ -1,9 +1,9 @@
 import { Image, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Categoria {
-  id: number;
-  nombre: string;
-  imagen: string; // URL de imagen
+  readonly id: number;
+  readonly nombre: string;
+  readonly imagen: string; // URL de imagen
 }
 
 interface Props {

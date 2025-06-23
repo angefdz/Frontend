@@ -1,3 +1,4 @@
+// VerPictogramaScreen.tsx
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
@@ -20,7 +21,7 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
-import { CategoriaConPictogramas, PictogramaConCategorias, PictogramaSimple } from '@/types';
+import { CategoriaConPictogramas, PictogramaSimple } from '@/types';
 
 export default function VerPictogramaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -28,34 +29,34 @@ export default function VerPictogramaScreen() {
 
   const { token, usuarioId } = useAuth();
   const { eliminarPictograma } = useEliminarPictograma();
-  const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
+  const { marcarPictogramasComoDesactualizados, pictogramas } = usePictogramasContext();
   const { categorias, cargando, error, marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
-  const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
+  const [esPersonalizado, setEsPersonalizado] = useState(false);
   const [oculto, setOculto] = useState(false);
-  const [cargandoPictograma, setCargandoPictograma] = useState(true);
+
+  const pictograma = useMemo(() => {
+    return pictogramas.find((p) => p.id === Number(id)) ?? null;
+  }, [pictogramas, id]);
 
   useEffect(() => {
-    const cargarPictograma = async () => {
+    const cargarUsuarioId = async () => {
       if (!id || !token) return;
-      setCargandoPictograma(true);
 
       try {
         const res = await axios.get(
           `${process.env.EXPO_PUBLIC_API_BASE_URL}/pictogramas/${id}/con-categorias`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setPictograma(res.data);
+        if (res.data.usuarioId) {
+          setEsPersonalizado(true);
+        }
       } catch (err) {
-        console.error('❌ Error al cargar pictograma:', err);
-        Alert.alert('Error', 'No se pudo cargar el pictograma.');
-        router.back();
-      } finally {
-        setCargandoPictograma(false);
+        console.error('❌ Error al comprobar si el pictograma es personalizado:', err);
       }
     };
 
-    cargarPictograma();
+    cargarUsuarioId();
   }, [id, token]);
 
   useEffect(() => {
@@ -96,8 +97,6 @@ export default function VerPictogramaScreen() {
 
   const manejarEliminar = async () => {
     if (!pictograma) return;
-
-    const esPersonalizado = !!pictograma.usuarioId;
 
     if (!esPersonalizado) {
       Alert.alert('No se puede eliminar', 'Este pictograma es general y no se puede eliminar.');
@@ -152,12 +151,48 @@ export default function VerPictogramaScreen() {
     }
   };
 
-  if (cargandoPictograma || !pictograma) {
+  if (!pictograma) {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: 'center', marginTop: 32, color: 'red' }}>
           Cargando pictograma...
         </Text>
+      </View>
+    );
+  }
+
+  let contenidoCategorias;
+
+  if (cargando) {
+    contenidoCategorias = <ActivityIndicator style={{ marginTop: 16 }} />;
+  } else if (error) {
+    contenidoCategorias = (
+      <Text style={{ color: 'red', marginHorizontal: 16 }}>{error}</Text>
+    );
+  } else if (categoriasDelPictograma.length === 0) {
+    contenidoCategorias = (
+      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        Este pictograma no está asignado a ninguna categoría.
+      </Text>
+    );
+  } else {
+    contenidoCategorias = (
+      <View style={styles.grid}>
+        {categoriasDelPictograma.map((cat) => (
+          <ItemClicable
+            key={cat.id}
+            nombre={cat.nombre}
+            imagen={cat.imagen}
+            itemStyle={styles.item}
+            textStyle={styles.itemText}
+            onPress={() =>
+              router.push({
+                pathname: '/biblioteca/categorias/pictogramas-por-categoria',
+                params: { id: cat.id.toString() },
+              })
+            }
+          />
+        ))}
       </View>
     );
   }
@@ -172,57 +207,33 @@ export default function VerPictogramaScreen() {
         onEditar={manejarEditar}
         onEliminar={manejarEliminar}
       />
-{!pictograma.usuarioId && (
-  <Text
-    style={{
-      color: '#666',
-      fontStyle: 'italic',
-      marginBottom: 12,
-      textAlign: 'center',
-      backgroundColor: '#f0f0f0',
-      padding: 10,
-      borderRadius: 5,
-    }}
-  >
-    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
-  </Text>
-)}
 
-      <ImagenPictograma uri={pictograma.imagen} nombre = {pictograma.nombre}/>
-      
+      {!esPersonalizado && (
+        <Text
+          style={{
+            color: '#666',
+            fontStyle: 'italic',
+            marginBottom: 12,
+            textAlign: 'center',
+            backgroundColor: '#f0f0f0',
+            padding: 10,
+            borderRadius: 5,
+          }}
+        >
+          Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+        </Text>
+      )}
+
+      <ImagenPictograma uri={pictograma.imagen} nombre={pictograma.nombre} />
+
       <Text style={styles.sectionTitle}>Tipo:</Text>
       <Text style={{ fontSize: 16 }}>
-    {pictograma.tipo === 'verbo' ? 'Verbo' : 'Sustantivo'}
-  </Text>
+        {pictograma.tipo === 'verbo' ? 'Verbo' : 'Sustantivo'}
+      </Text>
+
       <CabeceraSeccion texto="Categorías del pictograma" />
 
-      {cargando ? (
-        <ActivityIndicator style={{ marginTop: 16 }} />
-      ) : error ? (
-        <Text style={{ color: 'red', marginHorizontal: 16 }}>{error}</Text>
-      ) : categoriasDelPictograma.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          Este pictograma no está asignado a ninguna categoría.
-        </Text>
-      ) : (
-        <View style={styles.grid}>
-          {categoriasDelPictograma.map((cat) => (
-            <ItemClicable
-              key={cat.id}
-              nombre={cat.nombre}
-              imagen={cat.imagen}
-              itemStyle={styles.item}
-              textStyle={styles.itemText}
-              onPress={() =>
-                router.push({
-                  pathname: '/biblioteca/categorias/pictogramas-por-categoria',
-                  params: { id: cat.id.toString() },
-                })
-              }
-            />
-          ))}
-        </View>
-      )}
+      {contenidoCategorias}
     </ScrollView>
   );
 }

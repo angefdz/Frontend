@@ -3,9 +3,9 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  titulo: string;
-  onEditar: () => void;
-  onEliminar: () => void;
+  readonly titulo: string;
+  readonly onEditar: () => void;
+  readonly onEliminar: () => void;
 }
 
 export default function CabeceraCategoria({

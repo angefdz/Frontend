@@ -2,8 +2,8 @@ import { styles } from '@/styles/BibliotecaScreen.styles';
 import { ScrollView, View } from 'react-native';
 
 interface Props<T> {
-  datos: T[];
-  renderItem: (item: T) => React.ReactNode;
+  readonly datos: T[];
+  readonly renderItem: (item: T) => React.ReactNode;
 }
 
 export default function ListaScrollHorizontal<T>({ datos, renderItem }: Props<T>) {

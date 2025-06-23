@@ -4,13 +4,13 @@ import { styles } from '@/styles/BibliotecaScreen.styles';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props<T> {
-  titulo: string;
-  onAddPress: () => void;
-  onVerMasPress: () => void;
-  datos: T[];
-  renderItem: (item: T) => React.ReactNode;
-  textoVerMas?: string;
-  mensajeVacio?: string;
+  readonly titulo: string;
+  readonly onAddPress: () => void;
+  readonly onVerMasPress: () => void;
+  readonly datos: T[];
+  readonly renderItem: (item: T) => React.ReactNode;
+  readonly textoVerMas?: string;
+  readonly mensajeVacio?: string;
 }
 
 export default function SeccionBiblioteca<T>({

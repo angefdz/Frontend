@@ -18,7 +18,7 @@ import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
 
-import { useAuth } from '@/context/AuthContext'; // ✅ NUEVO
+import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
@@ -31,7 +31,7 @@ import { PictogramaConCategorias } from '@/types';
 export default function EditarPictogramaScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { token } = useAuth(); // ✅ CAMBIO
+  const { token } = useAuth();
 
   const { categorias: categoriasDisponibles } = useCategoriasConPictogramas();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
@@ -65,7 +65,7 @@ export default function EditarPictogramaScreen() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        
+
         const data: PictogramaConCategorias = res.data;
 
         setPictograma(data);
@@ -74,6 +74,7 @@ export default function EditarPictogramaScreen() {
         setTipo(data.tipo as 'verbo' | 'sustantivo');
         setCategoriasSeleccionadas(data.categorias.map((c) => c.id));
       } catch (error) {
+        console.error('❌ Error al cargar el pictograma:', error);
         Alert.alert('Error', 'No se pudo cargar el pictograma');
         router.back();
       } finally {
@@ -125,24 +126,62 @@ export default function EditarPictogramaScreen() {
     );
   }
 
+  let contenidoCategorias;
+  if (cargandoCats) {
+    contenidoCategorias = (
+      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        Cargando categorías...
+      </Text>
+    );
+  } else if (categorias.length === 0) {
+    contenidoCategorias = (
+      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        No hay categorías añadidas aún.
+      </Text>
+    );
+  } else {
+    contenidoCategorias = (
+      <ListaItems
+        items={categorias}
+        gap={10}
+        renderItem={(cat) => (
+          <ItemSeleccionable
+            key={cat.id}
+            nombre={cat.nombre}
+            imagen={cat.imagen}
+            seleccionado={true}
+            onPress={() =>
+              setCategoriasSeleccionadas((prev) =>
+                prev.filter((x) => x !== cat.id)
+              )
+            }
+            itemStyle={styles.item}
+            textStyle={styles.itemText}
+          />
+        )}
+      />
+    );
+  }
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <CabeceraSeccion texto="Editar pictograma" />
+
       {!esPersonalizado && (
-  <Text
-    style={{
-      color: '#666',
-      fontStyle: 'italic',
-      marginBottom: 12,
-      textAlign: 'center',
-      backgroundColor: '#f0f0f0',
-      padding: 10,
-      borderRadius: 5,
-    }}
-  >
-    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
-  </Text>
-)}
+        <Text
+          style={{
+            color: '#666',
+            fontStyle: 'italic',
+            marginBottom: 12,
+            textAlign: 'center',
+            backgroundColor: '#f0f0f0',
+            padding: 10,
+            borderRadius: 5,
+          }}
+        >
+          Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+        </Text>
+      )}
 
       <SelectorImagen
         uriImagen={imagen}
@@ -158,75 +197,37 @@ export default function EditarPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <Text
-  accessibilityRole="text"
-  accessibilityLabel="Selector del tipo de pictograma"
-  style={styles.sectionTitle}
->
-  Tipo
-</Text>
-
-<DropDownPicker
-  open={openTipo}
-  value={tipo}
-  items={[
-    { label: 'Verbo', value: 'verbo' },
-    { label: 'Sustantivo', value: 'sustantivo' },
-  ]}
-  setOpen={setOpenTipo}
-  setValue={setTipo}
-  setItems={() => {}}
-  placeholder="Selecciona tipo"
-  style={[
-    styles.dropdown,
-    !esPersonalizado && { backgroundColor: '#F0F0F0' },
-  ]}
-  dropDownContainerStyle={styles.dropdownContainer}
-  textStyle={[
-    styles.dropdownText,
-    !esPersonalizado && { color: '#999999' },
-  ]}
-  disabled={!esPersonalizado}
-/>
-
+      <DropDownPicker
+        open={openTipo}
+        value={tipo}
+        items={[
+          { label: 'Verbo', value: 'verbo' },
+          { label: 'Sustantivo', value: 'sustantivo' },
+        ]}
+        setOpen={setOpenTipo}
+        setValue={setTipo}
+        setItems={() => {}}
+        placeholder="Selecciona tipo"
+        style={[
+          styles.dropdown,
+          !esPersonalizado && { backgroundColor: '#F0F0F0' },
+        ]}
+        dropDownContainerStyle={styles.dropdownContainer}
+        textStyle={[
+          styles.dropdownText,
+          !esPersonalizado && { color: '#999999' },
+        ]}
+        disabled={!esPersonalizado}
+      />
 
       <CabeceraSeccion texto="Categorías asignadas" />
-
-      {cargandoCats ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          Cargando categorías...
-        </Text>
-      ) : categorias.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          No hay categorías añadidas aún.
-        </Text>
-      ) : (
-        <ListaItems
-          items={categorias}
-          gap={10}
-          renderItem={(cat) => (
-            <ItemSeleccionable
-              key={cat.id}
-              nombre={cat.nombre}
-              imagen={cat.imagen}
-              seleccionado={true}
-              onPress={() =>
-                setCategoriasSeleccionadas((prev) =>
-                  prev.filter((x) => x !== cat.id)
-                )
-              }
-              itemStyle={styles.item}
-              textStyle={styles.itemText}
-            />
-          )}
-        />
-      )}
+      {contenidoCategorias}
 
       <TouchableOpacity
         onPress={() => setMostrarModal(true)}
         style={styles.verMasButton}
         accessibilityRole="button"
-  accessibilityLabel="Añadir categorías"
+        accessibilityLabel="Añadir categorías"
       >
         <Text style={styles.verMasText}>+ Añadir categorías</Text>
       </TouchableOpacity>

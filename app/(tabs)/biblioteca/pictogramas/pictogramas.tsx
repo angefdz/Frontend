@@ -35,11 +35,9 @@ export default function PictogramasScreen() {
     }, [recargar, token])
   );
 
-  const filtrados = pictogramas
-    .filter(item => item && item.nombre)
-    .filter(item =>
-      item.nombre.toLowerCase().includes(busqueda.toLowerCase())
-    );
+  const filtrados = pictogramas.filter(item =>
+    item?.nombre?.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   return (
     <View style={styles.container}>

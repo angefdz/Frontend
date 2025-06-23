@@ -48,6 +48,10 @@ export default function CrearPictogramaScreen() {
     categoriasSeleccionadas.includes(cat.id)
   );
 
+  const quitarCategoria = (id: number) => {
+    setCategoriasSeleccionadas((prev) => prev.filter((x) => x !== id));
+  };
+
   const manejarCrear = async () => {
     if (!nombre || !imagen || !tipo) {
       Alert.alert('Error', 'Por favor completa todos los campos');
@@ -71,7 +75,7 @@ export default function CrearPictogramaScreen() {
       await crearPictogramaUsuario(
         nombre,
         urlFinalImagen,
-        tipo, // <- ¡esto es lo que faltaba antes!
+        tipo,
         categoriasSeleccionadas,
         token
       );
@@ -112,27 +116,23 @@ export default function CrearPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <View
-  accessible={true}
-  accessibilityLabel="Selector de tipo de palabra"
->
-  <DropDownPicker
-    open={openTipo}
-    value={tipo}
-    items={[
-      { label: 'Verbo', value: 'verbo' },
-      { label: 'Sustantivo', value: 'sustantivo' },
-    ]}
-    setOpen={setOpenTipo}
-    setValue={setTipo}
-    setItems={() => {}}
-    placeholder="Selecciona el tipo"
-    style={styles.dropdown}
-    dropDownContainerStyle={styles.dropdownContainer}
-    textStyle={styles.dropdownText}
-  />
-</View>
-
+      <View accessible={true} accessibilityLabel="Selector de tipo de palabra">
+        <DropDownPicker
+          open={openTipo}
+          value={tipo}
+          items={[
+            { label: 'Verbo', value: 'verbo' },
+            { label: 'Sustantivo', value: 'sustantivo' },
+          ]}
+          setOpen={setOpenTipo}
+          setValue={setTipo}
+          setItems={() => {}}
+          placeholder="Selecciona el tipo"
+          style={styles.dropdown}
+          dropDownContainerStyle={styles.dropdownContainer}
+          textStyle={styles.dropdownText}
+        />
+      </View>
 
       <Text style={styles.sectionTitle}>Categorías asignadas</Text>
 
@@ -150,11 +150,7 @@ export default function CrearPictogramaScreen() {
               nombre={cat.nombre}
               imagen={cat.imagen}
               seleccionado={true}
-              onPress={() =>
-                setCategoriasSeleccionadas(prev =>
-                  prev.filter(id => id !== cat.id)
-                )
-              }
+              onPress={() => quitarCategoria(cat.id)}
               itemStyle={styles.item}
               textStyle={styles.itemText}
             />
@@ -166,7 +162,7 @@ export default function CrearPictogramaScreen() {
         onPress={() => setMostrarModal(true)}
         style={styles.verMasButton}
         accessibilityLabel="Botón para añadir categorías"
-  accessibilityRole="button"
+        accessibilityRole="button"
       >
         <Text style={styles.verMasText}>+ Añadir categorías</Text>
       </TouchableOpacity>

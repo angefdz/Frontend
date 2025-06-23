@@ -3,12 +3,12 @@ import { Feather } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  titulo: string;
-  id: number;
-  oculto: boolean;
-  onToggleVisibilidad: () => void;
-  onEditar?: () => void;
-  onEliminar?: () => void;
+  readonly titulo: string;
+  readonly id: number;
+  readonly oculto: boolean;
+  readonly onToggleVisibilidad: () => void;
+  readonly onEditar?: () => void;
+  readonly onEliminar?: () => void;
 }
 
 export default function CabeceraPictograma({

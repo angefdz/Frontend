@@ -7,10 +7,9 @@ import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
 import BotonVolverCategorias from '@/components/pantallaPrincipal/BotonVolverCategorias';
 import GridCategorias from '@/components/pantallaPrincipal/GridCategorias';
 import GridPictogramas from '@/components/pantallaPrincipal/GridPictogramas';
-import MenuConfiguracion from '@/components/pantallaPrincipal/MenuConfiguracion';
+import HeaderConfiguracion from '@/components/pantallaPrincipal/HeaderConfiguration';
 import SugerenciaPictograma from '@/components/pantallaPrincipal/SugerenciaPictograma';
 import TextoFraseExpandibleAnimado from '@/components/pantallaPrincipal/TextoFraseExpandible';
-
 
 import { useAuth } from '@/context/AuthContext';
 import { guardarConfiguracionUsuario } from '@/hooks/configuracion/guardarConfiguracionUsuario';
@@ -51,23 +50,21 @@ export default function PantallaPrincipal() {
 
   const { tipoVoz } = useVoz();
 
-
-
   const pictosFiltrados = categoriaSeleccionada
     ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
     : [];
 
-    const deduplicarPorId = (pictos: PictogramaSimple[]): PictogramaSimple[] => {
-      const vistos = new Set<number>();
-      return pictos.filter((p) => {
-        if (vistos.has(p.id)) return false;
-        vistos.add(p.id);
-        return true;
-      });
-    };
-    
-    const pictogramas = deduplicarPorId(categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro);
-    
+  const deduplicarPorId = (pictos: PictogramaSimple[]): PictogramaSimple[] => {
+    const vistos = new Set<number>();
+    return pictos.filter((p) => {
+      if (vistos.has(p.id)) return false;
+      vistos.add(p.id);
+      return true;
+    });
+  };
+
+  const pictogramas = deduplicarPorId(categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro);
+
   const cargandoPictos = categoriaSeleccionada ? false : cargandoSinFiltro;
   const errorPictogramas = categoriaSeleccionada ? null : errorSinFiltro;
 
@@ -151,10 +148,10 @@ export default function PantallaPrincipal() {
     navigation.setOptions({
       headerShown: true,
       headerRight: () => (
-        <MenuConfiguracion
+        <HeaderConfiguracion
           modoAgrupado={modoAgrupado}
-          setModoAgrupado={manejarCambioAgrupado}
-          resetearCategoria={manejarVolverCategorias}
+          manejarCambioAgrupado={manejarCambioAgrupado}
+          manejarVolverCategorias={manejarVolverCategorias}
           setItemsPerPage={setItemsPerPage}
           itemsPerPage={itemsPerPage}
         />
@@ -188,7 +185,6 @@ export default function PantallaPrincipal() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-
       <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         <TextoFraseExpandibleAnimado frase={frase} />
 

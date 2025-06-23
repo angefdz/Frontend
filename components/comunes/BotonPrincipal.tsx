@@ -2,8 +2,8 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface Props {
-  texto: string;
-  onPress: () => void;
+  readonly texto: string;
+  readonly onPress: () => void;
 }
 
 export default function BotonPrincipal({ texto, onPress }: Props) {

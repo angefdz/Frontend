@@ -2,8 +2,8 @@ import React from 'react';
 import { ScrollView, View, ViewStyle } from 'react-native';
 
 interface Item {
-  id: number;
-  [key: string]: any;
+  readonly id: number;
+  readonly [key: string]: any;
 }
 
 interface Props<T extends Item> {

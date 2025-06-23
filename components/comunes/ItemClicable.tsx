@@ -3,11 +3,11 @@
 import { Image, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 type Props = {
-  nombre: string;
-  imagen: string;
-  onPress?: () => void;
-  itemStyle?: ViewStyle;
-  textStyle?: TextStyle;
+  readonly nombre: string;
+  readonly imagen: string;
+  readonly onPress?: () => void;
+  readonly itemStyle?: ViewStyle;
+  readonly textStyle?: TextStyle;
 };
 
 export default function ItemClicable({

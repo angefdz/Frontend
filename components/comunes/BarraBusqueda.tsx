@@ -3,9 +3,9 @@ import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
 interface Props {
-  valor: string;
-  setValor: (texto: string) => void;
-  placeholder?: string;
+  readonly valor: string;
+  readonly setValor: (texto: string) => void;
+  readonly placeholder?: string;
 }
 
 export default function BarraBusqueda({

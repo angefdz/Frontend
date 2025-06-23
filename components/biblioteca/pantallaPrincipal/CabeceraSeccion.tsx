@@ -1,8 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface Props {
-  titulo: string;
-  onAddPress: () => void;
+  readonly titulo: string;
+  readonly onAddPress: () => void;
 }
 
 export default function CabeceraSeccion({ titulo, onAddPress }: Props) {

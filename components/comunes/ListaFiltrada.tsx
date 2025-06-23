@@ -3,9 +3,9 @@ import { ScrollView, Text, TextStyle, View, ViewStyle } from 'react-native';
 import ItemClicable from './ItemClicable';
 
 type Item = {
-  id: string | number;
-  nombre: string;
-  imagen: string;
+    readonly id: string | number;
+    readonly nombre: string;
+    readonly imagen: string;
 };
 
 type Props = {

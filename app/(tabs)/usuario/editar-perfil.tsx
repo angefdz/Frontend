@@ -65,9 +65,9 @@ export default function EditarPerfilScreen() {
         correo: usuario.correo,
       });
 
-      await recargarConfiguracion();
+       recargarConfiguracion();
       setTipoVoz(voz); // ✅ Actualiza el contexto tras guardar
-      await recargarUsuario();
+       recargarUsuario();
 
       Alert.alert('Perfil actualizado', 'Los cambios se han guardado correctamente');
       router.back();

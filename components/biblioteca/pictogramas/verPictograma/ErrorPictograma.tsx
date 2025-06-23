@@ -1,9 +1,9 @@
 // components/biblioteca/pictogramas/ErrorPictograma.tsx
-import { Text, View } from 'react-native';
 import { styles } from '@/styles/BibliotecaScreen.styles';
+import { Text, View } from 'react-native';
 
 interface Props {
-  mensaje: string;
+  readonly mensaje: string;
 }
 
 export default function ErrorPictograma({ mensaje }: Props) {

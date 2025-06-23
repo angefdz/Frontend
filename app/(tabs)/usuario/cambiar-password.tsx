@@ -8,14 +8,12 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import { useAuth } from '@/context/AuthContext';
 import { useCambiarPassword } from '@/hooks/usuario/useCambiarPassword';
 import { styles } from '@/styles/PerfilScreen.styles';
 
 export default function CambiarPasswordScreen() {
   const router = useRouter();
-  const { token } = useAuth(); // ← usamos el contexto directamente
-  const { cambiarPassword } = useCambiarPassword(); // ← le pasamos el token
+  const { cambiarPassword } = useCambiarPassword(); 
 
   const [passwordActual, setPasswordActual] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
@@ -29,7 +27,7 @@ export default function CambiarPasswordScreen() {
     });
 
     if (ok) {
-      router.back(); // Volver si todo fue bien
+      router.back(); 
     }
   };
 

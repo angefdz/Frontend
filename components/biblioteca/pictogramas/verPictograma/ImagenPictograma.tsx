@@ -2,8 +2,8 @@
 import { Image, View } from 'react-native';
 
 interface Props {
-  uri: string;
-  nombre: string;
+  readonly uri: string;
+  readonly nombre: string;
 }
 
 export default function ImagenPictograma({ uri, nombre}: Props) {

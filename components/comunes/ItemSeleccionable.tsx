@@ -10,12 +10,12 @@ import {
 } from 'react-native';
 
 type Props = {
-  nombre: string;
-  imagen: string;
-  seleccionado: boolean;
-  onPress: () => void;
-  itemStyle?: StyleProp<ViewStyle>;
-  textStyle?: StyleProp<TextStyle>;
+  readonly nombre: string;
+  readonly imagen: string;
+  readonly seleccionado: boolean;
+  readonly onPress: () => void;
+  readonly itemStyle?: StyleProp<ViewStyle>;
+  readonly textStyle?: StyleProp<TextStyle>;
 };
 
 function ItemSeleccionable({

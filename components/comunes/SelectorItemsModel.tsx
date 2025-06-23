@@ -13,14 +13,14 @@ import BotonPrincipal from './BotonPrincipal';
 import ItemSeleccionable from './ItemSeleccionable';
 
 type Props<T> = {
-  visible: boolean;
-  onClose: () => void;
-  items: T[];
-  seleccionados: number[];
-  setSeleccionados: React.Dispatch<React.SetStateAction<number[]>>;
-  getId: (item: T) => number;
-  getNombre: (item: T) => string;
-  getImagen: (item: T) => string;
+  readonly visible: boolean;
+  readonly onClose: () => void;
+  readonly items: T[];
+  readonly seleccionados: number[];
+  readonly setSeleccionados: React.Dispatch<React.SetStateAction<number[]>>;
+  readonly getId: (item: T) => number;
+  readonly getNombre: (item: T) => string;
+  readonly getImagen: (item: T) => string;
   titulo?: string;
 };
 

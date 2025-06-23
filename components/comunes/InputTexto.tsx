@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, TextInput } from 'react-native';
 
 interface Props {
-  placeholder: string;
-  valor: string;
-  setValor: (texto: string) => void;
-  disabled?: boolean;  // Cambio aquí a "disabled"
+  readonly placeholder: string;
+  readonly valor: string;
+  readonly setValor: (texto: string) => void;
+  readonly disabled?: boolean;  // Cambio aquí a "disabled"
 }
 
 export default function InputTexto({ placeholder, valor, setValor, disabled = false }: Props) {

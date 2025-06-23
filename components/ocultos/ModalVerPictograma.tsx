@@ -90,6 +90,7 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
       marcarPictogramasComoDesactualizados();
       marcarCategoriasComoDesactualizadas();
     } catch (err) {
+      console.error('Error al cambiar la visibilidad del pictograma:', err);
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };

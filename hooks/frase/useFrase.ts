@@ -18,9 +18,8 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   );
 
   const [frase, setFrase] = useState<string[]>([]);
-  const [sugerencia, setSugerencia] = useState<PictogramaSimple>(
-    pictogramaHola!
-  );
+  const [sugerencia, setSugerencia] = useState<PictogramaSimple | undefined>(pictogramaHola);
+
 
   const { sugerencia: sugerenciaTexto } = usePrediccionPictograma(frase);
 

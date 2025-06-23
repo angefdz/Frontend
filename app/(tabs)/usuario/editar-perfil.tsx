@@ -86,7 +86,8 @@ export default function EditarPerfilScreen() {
             onChangeText={setNombre}
             placeholder="Nombre del usuario"
             accessibilityRole="text"
-          accessibilityLabel={`Nombre: ${nombre || 'no disponible'}`}
+            accessibilityLabel={`Nombre: ${nombre ?? 'no disponible'}`}
+
           />
         </View>
       ),
@@ -101,7 +102,8 @@ export default function EditarPerfilScreen() {
             value={usuario?.correo ?? ''}
             editable={false}
             accessibilityRole="text"
-          accessibilityLabel={`Correo electrónico: ${usuario?.correo ?? 'no disponible'}`}
+            accessibilityLabel={`Correo electrónico: ${usuario?.correo ?? 'no disponible'}`}
+
         
           />
         </View>

@@ -50,6 +50,16 @@ export default function PantallaPrincipal() {
 
   const { tipoVoz } = useVoz();
 
+  const renderHeaderRight = () => (
+    <HeaderConfiguracion
+      modoAgrupado={modoAgrupado}
+      manejarCambioAgrupado={manejarCambioAgrupado}
+      manejarVolverCategorias={manejarVolverCategorias}
+      setItemsPerPage={setItemsPerPage}
+      itemsPerPage={itemsPerPage}
+    />
+  );
+
   const pictosFiltrados = categoriaSeleccionada
     ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
     : [];
@@ -147,15 +157,7 @@ export default function PantallaPrincipal() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerRight: () => (
-        <HeaderConfiguracion
-          modoAgrupado={modoAgrupado}
-          manejarCambioAgrupado={manejarCambioAgrupado}
-          manejarVolverCategorias={manejarVolverCategorias}
-          setItemsPerPage={setItemsPerPage}
-          itemsPerPage={itemsPerPage}
-        />
-      ),
+      headerRight: renderHeaderRight,
     });
   }, [navigation, modoAgrupado, itemsPerPage]);
 

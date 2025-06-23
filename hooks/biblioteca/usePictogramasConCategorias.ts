@@ -33,9 +33,9 @@ export const usePictogramasConCategorias = () => {
         }),
       ]);
 
-      const generales: PictogramaConCategorias[] = generalesRes.data || [];
-      const personalizados: PictogramaConCategorias[] = personalizadosRes.data || [];
-      const ocultos: PictogramaConCategorias[] = ocultosRes.data || [];
+      const generales: PictogramaConCategorias[] = generalesRes.data ?? [];
+const personalizados: PictogramaConCategorias[] = personalizadosRes.data ?? [];
+const ocultos: PictogramaConCategorias[] = ocultosRes.data ?? [];
 
       const idsOcultos = new Set(ocultos.map(p => p.id));
       const todos = [...generales, ...personalizados];

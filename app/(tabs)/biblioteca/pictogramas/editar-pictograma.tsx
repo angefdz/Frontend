@@ -27,6 +27,59 @@ import { useCategoriasConPictogramas } from '@/hooks/biblioteca/useCategoriasCon
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { PictogramaConCategorias } from '@/types';
 
+function SelectorTipo({
+  tipo,
+  setTipo,
+  esPersonalizado,
+}: {
+  tipo: 'verbo' | 'sustantivo';
+  setTipo: (nuevo: 'verbo' | 'sustantivo') => void;
+  esPersonalizado: boolean;
+}) {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 20,
+        opacity: esPersonalizado ? 1 : 0.5,
+      }}
+      accessible
+      accessibilityLabel="Selecciona el tipo de palabra"
+    >
+      {['verbo', 'sustantivo'].map((opcion) => {
+        const seleccionada = tipo === opcion;
+        return (
+          <TouchableOpacity
+            key={opcion}
+            onPress={() => esPersonalizado && setTipo(opcion as 'verbo' | 'sustantivo')}
+            style={{
+              paddingVertical: 10,
+              paddingHorizontal: 20,
+              borderRadius: 8,
+              borderWidth: 1,
+              borderColor: seleccionada ? '#007AFF' : '#ccc',
+              backgroundColor: seleccionada ? '#007AFF' : '#fff',
+            }}
+            disabled={!esPersonalizado}
+            accessibilityRole="button"
+            accessibilityLabel={`Seleccionar tipo ${opcion}`}
+          >
+            <Text
+              style={{
+                color: seleccionada ? '#fff' : '#333',
+                fontWeight: 'bold',
+              }}
+            >
+              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
 export default function EditarPictogramaScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
@@ -124,42 +177,33 @@ export default function EditarPictogramaScreen() {
     );
   }
 
-  let contenidoCategorias;
-  if (cargandoCats) {
-    contenidoCategorias = (
-      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-        Cargando categorías...
-      </Text>
-    );
-  } else if (categorias.length === 0) {
-    contenidoCategorias = (
-      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-        No hay categorías añadidas aún.
-      </Text>
-    );
-  } else {
-    contenidoCategorias = (
-      <ListaItems
-        items={categorias}
-        gap={10}
-        renderItem={(cat) => (
-          <ItemSeleccionable
-            key={cat.id}
-            nombre={cat.nombre}
-            imagen={cat.imagen}
-            seleccionado={true}
-            onPress={() =>
-              setCategoriasSeleccionadas((prev) =>
-                prev.filter((x) => x !== cat.id)
-              )
-            }
-            itemStyle={styles.item}
-            textStyle={styles.itemText}
-          />
-        )}
-      />
-    );
-  }
+  const contenidoCategorias = cargandoCats ? (
+    <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+      Cargando categorías...
+    </Text>
+  ) : categorias.length === 0 ? (
+    <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+      No hay categorías añadidas aún.
+    </Text>
+  ) : (
+    <ListaItems
+      items={categorias}
+      gap={10}
+      renderItem={(cat) => (
+        <ItemSeleccionable
+          key={cat.id}
+          nombre={cat.nombre}
+          imagen={cat.imagen}
+          seleccionado={true}
+          onPress={() =>
+            setCategoriasSeleccionadas((prev) => prev.filter((x) => x !== cat.id))
+          }
+          itemStyle={styles.item}
+          textStyle={styles.itemText}
+        />
+      )}
+    />
+  );
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -195,45 +239,7 @@ export default function EditarPictogramaScreen() {
       />
 
       <Text style={styles.sectionTitle}>Tipo</Text>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          marginBottom: 20,
-          opacity: esPersonalizado ? 1 : 0.5,
-        }}
-        accessible
-        accessibilityLabel="Selecciona el tipo de palabra"
-      >
-        {['verbo', 'sustantivo'].map((opcion) => (
-          <TouchableOpacity
-            key={opcion}
-            onPress={() =>
-              esPersonalizado && setTipo(opcion as 'verbo' | 'sustantivo')
-            }
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: tipo === opcion ? '#007AFF' : '#ccc',
-              backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
-            }}
-            disabled={!esPersonalizado}
-            accessibilityRole="button"
-            accessibilityLabel={`Seleccionar tipo ${opcion}`}
-          >
-            <Text
-              style={{
-                color: tipo === opcion ? '#fff' : '#333',
-                fontWeight: 'bold',
-              }}
-            >
-              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      <SelectorTipo tipo={tipo} setTipo={setTipo} esPersonalizado={esPersonalizado} />
 
       <CabeceraSeccion texto="Categorías asignadas" />
       {contenidoCategorias}

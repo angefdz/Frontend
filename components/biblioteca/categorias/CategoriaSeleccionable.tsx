@@ -1,18 +1,18 @@
 import { Image, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
 
 interface Categoria {
-  readonly id: number;
-  readonly nombre: string;
-  readonly imagen: string; // URL de imagen
+   id: number;
+   nombre: string;
+  imagen: string; // URL de imagen
 }
 
 interface Props {
-  categoria: Categoria;
-  seleccionada?: boolean;
-  itemStyle?: ViewStyle;
-  emojiStyle?: any; // Para estilo de imagen, no solo texto
-  textStyle?: TextStyle;
-  onPress?: () => void;
+  readonly categoria: Categoria;
+  readonly seleccionada?: boolean;
+  readonly itemStyle?: ViewStyle;
+  readonly emojiStyle?: any; // Para estilo de imagen, no solo texto
+  readonly textStyle?: TextStyle;
+  readonly onPress?: () => void;
 }
 
 export default function CategoriaSeleccionable({

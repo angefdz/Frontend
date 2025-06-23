@@ -1,6 +1,6 @@
 // context/CategoriasContext.tsx
 import { useCategoriasConPictogramas as useCategoriasHook } from '@/hooks/biblioteca/useCategoriasVisibles';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type CategoriasContextType = {
   readonly categorias: any[];
@@ -25,16 +25,19 @@ export const CategoriasProvider = ({ children }: { children: React.ReactNode }) 
     }
   }, [desactualizadas, recargar]);
 
+  const value = useMemo(
+    () => ({
+      categorias,
+      cargando,
+      error,
+      recargar,
+      marcarCategoriasComoDesactualizadas,
+    }),
+    [categorias, cargando, error, recargar]
+  );
+
   return (
-    <CategoriasContext.Provider
-      value={{
-        categorias,
-        cargando,
-        error,
-        recargar,
-        marcarCategoriasComoDesactualizadas,
-      }}
-    >
+    <CategoriasContext.Provider value={value}>
       {children}
     </CategoriasContext.Provider>
   );

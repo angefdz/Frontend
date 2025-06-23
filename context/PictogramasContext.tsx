@@ -1,6 +1,7 @@
-import { useAuth } from '@/context/AuthContext'; // 👈 importar AuthContext
+// context/PictogramasContext.tsx
+import { useAuth } from '@/context/AuthContext';
 import { usePictogramasVisibles as usePictogramasHook } from '@/hooks/biblioteca/usePictogramasVisibles';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 type PictogramasContextType = {
   readonly pictogramas: any[];
@@ -8,7 +9,7 @@ type PictogramasContextType = {
   readonly error: string | null;
   readonly recargar: () => void;
   readonly marcarPictogramasComoDesactualizados: () => void;
-  readonly usuarioId: number | null; 
+  readonly usuarioId: number | null;
 };
 
 const PictogramasContext = createContext<PictogramasContextType | undefined>(undefined);
@@ -17,7 +18,7 @@ export const PictogramasProvider = ({ children }: { children: React.ReactNode })
   const { pictogramas, cargando, error, recargar } = usePictogramasHook();
   const [desactualizados, setDesactualizados] = useState(false);
 
-  const { usuarioId } = useAuth(); // 👈 obtener usuarioId
+  const { usuarioId } = useAuth();
 
   const marcarPictogramasComoDesactualizados = () => {
     setDesactualizados(true);
@@ -30,17 +31,20 @@ export const PictogramasProvider = ({ children }: { children: React.ReactNode })
     }
   }, [desactualizados, recargar]);
 
+  const value = useMemo(
+    () => ({
+      pictogramas,
+      cargando,
+      error,
+      recargar,
+      marcarPictogramasComoDesactualizados,
+      usuarioId,
+    }),
+    [pictogramas, cargando, error, recargar, usuarioId]
+  );
+
   return (
-    <PictogramasContext.Provider
-      value={{
-        pictogramas,
-        cargando,
-        error,
-        recargar,
-        marcarPictogramasComoDesactualizados,
-        usuarioId, // 👈 incluirlo en el value
-      }}
-    >
+    <PictogramasContext.Provider value={value}>
       {children}
     </PictogramasContext.Provider>
   );

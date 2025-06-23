@@ -13,10 +13,10 @@ import {
 import { getConjugation } from 'spanish-verbs';
 
 interface Props {
-  visible: boolean;
-  verbo: string;
-  onClose: () => void;
-  onConfirm: (formaConjugada: string) => void;
+  readonly visible: boolean;
+  readonly verbo: string;
+  readonly onClose: () => void;
+  readonly onConfirm: (formaConjugada: string) => void;
 }
 
 export default function ModalConjugadorVerbo({

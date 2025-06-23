@@ -54,9 +54,11 @@ export const useRegistro = () => {
       if (!response.ok) {
         try {
           const errorData = await response.json();
-          const errorMessage = errorData.message || errorData.error || JSON.stringify(errorData);
+          const errorMessage = errorData.message ?? errorData.error ?? JSON.stringify(errorData);
+          
           setError(errorMessage);
         } catch (jsonError) {
+          console.error('❌ Error al parsear JSON del servidor:', jsonError);
           setError(`Error ${response.status}: ${response.statusText}`);
         }
         setCargando(false);

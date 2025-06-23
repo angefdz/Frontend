@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 
-export default function CabeceraSeccion({ texto }: { texto: string }) {
+export default function CabeceraSeccion({  texto }: { readonly texto: string }) {
   return <Text style={styles.titulo}>{texto}</Text>;
 }
 

@@ -21,7 +21,7 @@ type Props<T> = {
   readonly getId: (item: T) => number;
   readonly getNombre: (item: T) => string;
   readonly getImagen: (item: T) => string;
-  titulo?: string;
+  readonly titulo?: string;
 };
 
 export default function SelectorItemsModal<T>({
@@ -41,7 +41,7 @@ export default function SelectorItemsModal<T>({
     return items.filter((item) =>
       getNombre(item).toLowerCase().includes(busqueda.toLowerCase())
     );
-  }, [items, busqueda]);
+  }, [items, busqueda, getNombre]);
 
   const toggleSeleccion = useCallback((id: number) => {
     setSeleccionados((prev) =>
@@ -50,7 +50,8 @@ export default function SelectorItemsModal<T>({
   }, [setSeleccionados]);
 
   const renderItem = useCallback(
-    ({ item }: { item: T }) => {
+    (props: { item: T }) => {
+      const item = props.item;
       const id = getId(item);
       return (
         <ItemSeleccionable
@@ -87,7 +88,7 @@ export default function SelectorItemsModal<T>({
           columnWrapperStyle={{ justifyContent: 'flex-start' }}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={bibliotecaStyles.flat}
-          extraData={seleccionados} // 👈 Esto ayuda a que se actualice eficientemente
+          extraData={seleccionados}
         />
 
         <BotonPrincipal texto="Confirmar selección" onPress={onClose} />

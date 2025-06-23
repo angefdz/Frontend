@@ -3,18 +3,18 @@ import { ScrollView, Text, TextStyle, View, ViewStyle } from 'react-native';
 import ItemClicable from './ItemClicable';
 
 type Item = {
-    readonly id: string | number;
-    readonly nombre: string;
-    readonly imagen: string;
+     id: string | number;
+     nombre: string;
+     imagen: string;
 };
 
 type Props = {
-  items: Item[];
-  gridStyle?: ViewStyle;
-  itemStyle?: ViewStyle;
-  itemTextStyle?: TextStyle;
-  onItemPress: (item: Item) => void;
-  error?: string | null;
+  readonly items: Item[];
+  readonly gridStyle?: ViewStyle;
+  readonly itemStyle?: ViewStyle;
+  readonly itemTextStyle?: TextStyle;
+  readonly onItemPress: (item: Item) => void;
+  readonly error?: string | null;
 };
 
 export default function ListaFiltrada({

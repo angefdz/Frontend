@@ -52,7 +52,7 @@ export const useConfiguracionUsuario = (
         if (isAxiosError(err) && err.response) {
           setErrorConfiguracion(
             `Error ${err.response.status}: ${
-              err.response.data?.message || 'No se pudo cargar la configuración.'
+              err.response.data?.message ?? 'No se pudo cargar la configuración.'
             }`
           );
         } else {

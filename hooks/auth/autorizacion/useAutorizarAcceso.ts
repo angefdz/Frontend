@@ -19,6 +19,9 @@ export const useAutorizarAcceso = () => {
         setToken(t);
         setUsuarioId(parseInt(id));
       } catch (err) {
+        console.warn('⚠️ Token inválido o expirado. Redirigiendo a login...');
+        console.error('❌ Error al cargar el token o el usuarioId:', err); // 👈 AÑADIDO
+
         console.warn('Token inválido o expirado. Redirigiendo a login...');
         try {
           await AsyncStorage.clear();

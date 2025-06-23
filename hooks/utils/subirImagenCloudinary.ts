@@ -43,7 +43,7 @@ export const subirImagenCloudinary = async (
 
     return response.data.secure_url;
   } catch (error: any) {
-    console.error('❌ Error al subir imagen a Cloudinary:', error.response?.data || error.message);
+    console.error('❌ Error al subir imagen a Cloudinary:', error.response?.data ?? error.message);
     throw new Error('No se pudo subir la imagen a Cloudinary');
   }
 };

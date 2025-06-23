@@ -2,15 +2,15 @@ import React from 'react';
 import { ScrollView, View, ViewStyle } from 'react-native';
 
 interface Item {
-  readonly id: number;
-  readonly [key: string]: any;
+   id: number;
+   [key: string]: any;
 }
 
 interface Props<T extends Item> {
-  items: T[];
-  renderItem: (item: T) => React.ReactNode;
-  gap?: number;
-  containerStyle?: ViewStyle;
+  readonly items: T[];
+  readonly renderItem: (item: T) => React.ReactNode;
+  readonly gap?: number;
+  readonly containerStyle?: ViewStyle;
 }
 
 export default function ListaItems<T extends Item>({

@@ -7,9 +7,9 @@ export default function SelectorImagen({
   setUriImagen,
   disabled = false,
 }: {
-  uriImagen: string;
-  setUriImagen: (uri: string) => void;
-  disabled?: boolean;
+  readonly uriImagen: string;
+  readonly setUriImagen: (uri: string) => void;
+  readonly disabled?: boolean;
 }) {
   useEffect(() => {
     (async () => {

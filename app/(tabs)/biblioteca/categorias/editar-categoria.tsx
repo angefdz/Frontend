@@ -86,6 +86,10 @@ export default function EditarCategoriaScreen() {
     }
   };
 
+  const handleQuitarPictograma = (id: number) => {
+    setPictogramasSeleccionados((prev) => prev.filter((x) => x !== id));
+  };
+
   if (!categoria) {
     return (
       <View style={styles.container}>
@@ -154,11 +158,7 @@ export default function EditarCategoriaScreen() {
               nombre={pic.nombre}
               imagen={pic.imagen}
               seleccionado={true}
-              onPress={() =>
-                setPictogramasSeleccionados((prev) =>
-                  prev.filter((x) => x !== pic.id)
-                )
-              }
+              onPress={() => handleQuitarPictograma(pic.id)}
               itemStyle={styles.item}
               textStyle={styles.itemText}
             />

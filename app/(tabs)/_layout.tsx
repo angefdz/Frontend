@@ -4,14 +4,25 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { MenuProvider } from 'react-native-popup-menu';
 
+// Iconos fuera del componente (evitas recrearlos en cada render)
+const HomeIcon = (size: number) => ({ color }: { color: string }) => (
+  <Feather name="home" color={color} size={size} />
+);
+const BibliotecaIcon = (size: number) => ({ color }: { color: string }) => (
+  <Feather name="book" color={color} size={size} />
+);
+const UsuarioIcon = (size: number) => ({ color }: { color: string }) => (
+  <Feather name="user" color={color} size={size} />
+);
+
 export default function TabsLayout() {
   const { scaleFont, scaleSpacing, scaleIcon } = useResponsive();
 
   const iconBaseSize = 24;
   const labelBaseSize = 11;
 
-  const scaledIconSize = scaleIcon(iconBaseSize); // por ejemplo: 28 en tablet
-  const scaledLabelSize = scaleFont(labelBaseSize); // por ejemplo: 12.5 en tablet
+  const scaledIconSize = scaleIcon(iconBaseSize);
+  const scaledLabelSize = scaleFont(labelBaseSize);
 
   return (
     <MenuProvider>
@@ -20,10 +31,10 @@ export default function TabsLayout() {
           tabBarActiveTintColor: '#007AFF',
           tabBarLabelStyle: {
             fontSize: scaledLabelSize,
-            paddingBottom: 2, // le damos espacio al texto
+            paddingBottom: 2,
           },
           tabBarStyle: {
-            height: scaleSpacing(60), // moderado
+            height: scaleSpacing(60),
             paddingTop: 4,
             paddingBottom: 6,
           },
@@ -33,9 +44,7 @@ export default function TabsLayout() {
           name="pantalla-principal"
           options={{
             title: 'Inicio',
-            tabBarIcon: ({ color }) => (
-              <Feather name="home" color={color} size={scaledIconSize} />
-            ),
+            tabBarIcon: HomeIcon(scaledIconSize),
             headerShown: true,
           }}
         />
@@ -43,9 +52,7 @@ export default function TabsLayout() {
           name="biblioteca"
           options={{
             title: 'Biblioteca',
-            tabBarIcon: ({ color }) => (
-              <Feather name="book" color={color} size={scaledIconSize} />
-            ),
+            tabBarIcon: BibliotecaIcon(scaledIconSize),
             headerShown: true,
           }}
         />
@@ -53,9 +60,7 @@ export default function TabsLayout() {
           name="usuario"
           options={{
             title: 'Usuario',
-            tabBarIcon: ({ color }) => (
-              <Feather name="user" color={color} size={scaledIconSize} />
-            ),
+            tabBarIcon: UsuarioIcon(scaledIconSize),
             headerShown: true,
           }}
         />

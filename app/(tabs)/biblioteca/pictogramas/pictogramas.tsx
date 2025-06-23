@@ -1,5 +1,5 @@
 import BarraBusqueda from '@/components/comunes/BarraBusqueda';
-import ItemClicable from '@/components/comunes/ItemClicable';
+import ListaFiltrada from '@/components/comunes/ListaFiltrada'; // ← añadido
 import { useAuth } from '@/context/AuthContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
@@ -9,7 +9,6 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -37,7 +36,7 @@ export default function PictogramasScreen() {
   );
 
   const filtrados = pictogramas
-    .filter(item => item && item.nombre) // Filtra nulos y sin nombre
+    .filter(item => item && item.nombre)
     .filter(item =>
       item.nombre.toLowerCase().includes(busqueda.toLowerCase())
     );
@@ -50,30 +49,20 @@ export default function PictogramasScreen() {
 
       {cargando ? (
         <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
-      ) : error ? (
-        <Text style={{ color: 'red', marginTop: 20 }}>{error}</Text>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ alignItems: 'flex-start' }}>
-            <View style={styles.grid}>
-              {filtrados.map((item) => (
-                <ItemClicable
-                  key={item.id}
-                  nombre={item.nombre}
-                  imagen={item.imagen}
-                  itemStyle={styles.item}
-                  textStyle={styles.itemText}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/biblioteca/pictogramas/ver-pictograma',
-                      params: { id: item.id },
-                    })
-                  }
-                />
-              ))}
-            </View>
-          </View>
-        </ScrollView>
+        <ListaFiltrada
+          items={filtrados}
+          error={error}
+          gridStyle={styles.grid}
+          itemStyle={styles.item}
+          itemTextStyle={styles.itemText}
+          onItemPress={(item) =>
+            router.push({
+              pathname: '/biblioteca/pictogramas/ver-pictograma',
+              params: { id: item.id },
+            })
+          }
+        />
       )}
 
       {/* Botón flotante de crear pictograma */}

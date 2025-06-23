@@ -14,7 +14,7 @@ export default function SeleccionarPictogramasScreen() {
   const [seleccionadosIds, setSeleccionadosIds] = useState<number[]>([]);
   const [busqueda, setBusqueda] = useState('');
 
-  const { pictogramas, cargando } = usePictogramas();
+  const { pictogramas } = usePictogramas();
 
   useEffect(() => {
     if (seleccionados) {

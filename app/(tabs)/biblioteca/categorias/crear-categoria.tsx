@@ -85,6 +85,43 @@ export default function CrearCategoriaScreen() {
     }
   };
 
+  const handleQuitarPictograma = (id: number) => {
+    setPictogramasSeleccionados((prev) => prev.filter((x) => x !== id));
+  };
+
+  let contenidoPictogramas;
+  if (cargandoPictos) {
+    contenidoPictogramas = (
+      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        Cargando pictogramas...
+      </Text>
+    );
+  } else if (pictogramas.length === 0) {
+    contenidoPictogramas = (
+      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
+        No hay pictogramas añadidos aún.
+      </Text>
+    );
+  } else {
+    contenidoPictogramas = (
+      <ListaItems
+        items={pictogramas}
+        gap={10}
+        renderItem={(pic) => (
+          <ItemSeleccionable
+            key={pic.id}
+            nombre={pic.nombre}
+            imagen={pic.imagen}
+            seleccionado={true}
+            onPress={() => handleQuitarPictograma(pic.id)}
+            itemStyle={styles.item}
+            textStyle={styles.itemText}
+          />
+        )}
+      />
+    );
+  }
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <Text style={styles.sectionTitle}>Crear nueva categoría</Text>
@@ -99,42 +136,14 @@ export default function CrearCategoriaScreen() {
 
       <Text style={styles.sectionTitle}>Pictogramas asignados</Text>
 
-      {cargandoPictos ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          Cargando pictogramas...
-        </Text>
-      ) : pictogramas.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          No hay pictogramas añadidos aún.
-        </Text>
-      ) : (
-        <ListaItems
-          items={pictogramas}
-          gap={10}
-          renderItem={(pic) => (
-            <ItemSeleccionable
-              key={pic.id}
-              nombre={pic.nombre}
-              imagen={pic.imagen}
-              seleccionado={true}
-              onPress={() =>
-                setPictogramasSeleccionados((prev) =>
-                  prev.filter((x) => x !== pic.id)
-                )
-              }
-              itemStyle={styles.item}
-              textStyle={styles.itemText}
-            />
-          )}
-        />
-      )}
+      {contenidoPictogramas}
 
       <TouchableOpacity
         onPress={() => setMostrarModal(true)}
         style={styles.verMasButton}
         accessible
-  accessibilityRole="button"
-  accessibilityLabel="Añadir pictogramas a la categoría"
+        accessibilityRole="button"
+        accessibilityLabel="Añadir pictogramas a la categoría"
       >
         <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
       </TouchableOpacity>
@@ -142,7 +151,6 @@ export default function CrearCategoriaScreen() {
       <BotonPrincipal
         texto={subiendo ? 'Creando...' : 'Crear categoría'}
         onPress={manejarCrear}
-        
       />
 
       <SelectorItemsModal

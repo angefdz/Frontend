@@ -1,5 +1,5 @@
 import BarraBusqueda from '@/components/comunes/BarraBusqueda';
-import ItemClicable from '@/components/comunes/ItemClicable';
+import ListaFiltrada from '@/components/comunes/ListaFiltrada'; // ← nuevo import
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
 import { Feather } from '@expo/vector-icons';
@@ -7,7 +7,6 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
@@ -30,30 +29,20 @@ export default function CategoriasScreen() {
 
       {cargando ? (
         <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
-      ) : error ? (
-        <Text style={{ color: 'red', marginTop: 20 }}>{error}</Text>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <View style={{ alignItems: 'flex-start' }}>
-            <View style={styles.grid}>
-              {filtradas.map((item) => (
-                <ItemClicable
-                  key={item.id}
-                  nombre={item.nombre}
-                  imagen={item.imagen}
-                  itemStyle={styles.item}
-                  textStyle={styles.itemText}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/biblioteca/categorias/pictogramas-por-categoria',
-                      params: { id: item.id },
-                    })
-                  }
-                />
-              ))}
-            </View>
-          </View>
-        </ScrollView>
+        <ListaFiltrada
+          items={filtradas}
+          error={error}
+          gridStyle={styles.grid}
+          itemStyle={styles.item}
+          itemTextStyle={styles.itemText}
+          onItemPress={(item) =>
+            router.push({
+              pathname: '/biblioteca/categorias/pictogramas-por-categoria',
+              params: { id: item.id },
+            })
+          }
+        />
       )}
 
       {/* Botón flotante para crear categoría */}
@@ -70,12 +59,12 @@ export default function CategoriasScreen() {
           alignItems: 'center',
           elevation: 5,
         }}
-        onPress={() => router.push('/biblioteca/categorias/crear-categoria')
-          
+        onPress={() =>
+          router.push('/biblioteca/categorias/crear-categoria')
         }
         accessible
-  accessibilityRole="button"
-  accessibilityLabel="Crear nueva categoría"
+        accessibilityRole="button"
+        accessibilityLabel="Crear nueva categoría"
       >
         <Feather name="plus" size={28} color="white" />
       </TouchableOpacity>

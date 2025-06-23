@@ -1,23 +1,34 @@
 import React from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 
 interface Props {
   readonly placeholder: string;
   readonly valor: string;
   readonly setValor: (texto: string) => void;
-  readonly disabled?: boolean;  // Cambio aquí a "disabled"
+  readonly disabled?: boolean;
 }
 
-export default function InputTexto({ placeholder, valor, setValor, disabled = false }: Props) {
+const { width } = Dimensions.get('window');
+
+export default function InputTexto({
+  placeholder,
+  valor,
+  setValor,
+  disabled = false,
+}: Props) {
   return (
     <TextInput
-    accessible={true}
-  accessibilityLabel={placeholder}
+      accessible={true}
+      accessibilityLabel={placeholder}
       style={[styles.input, disabled && styles.inputDisabled]}
       placeholder={placeholder}
       value={valor}
       onChangeText={setValor}
-      editable={!disabled}  // Usa disabled para controlar edición
+      editable={!disabled}
     />
   );
 }
@@ -25,17 +36,17 @@ export default function InputTexto({ placeholder, valor, setValor, disabled = fa
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderColor: '#999', // borde accesible por defecto
+    borderColor: '#999',
     borderRadius: 10,
-    padding: 12,
-    marginVertical: 10,
-    fontSize: 16,
+    padding: width * 0.035,          // antes 12
+    marginVertical: width * 0.03,    // antes 10
+    fontSize: width * 0.045,         // antes 16
     backgroundColor: '#FFF',
     minHeight: 48,
     color: '#1A1A1A',
   },
   inputFocused: {
-    borderColor: '#007AFF', // foco azul accesible
+    borderColor: '#007AFF',
   },
   inputDisabled: {
     backgroundColor: '#F0F0F0',
@@ -43,7 +54,6 @@ const styles = StyleSheet.create({
     borderColor: '#CCC',
   },
   inputError: {
-    borderColor: '#D32F2F', // rojo accesible para error
+    borderColor: '#D32F2F',
   },
 });
-

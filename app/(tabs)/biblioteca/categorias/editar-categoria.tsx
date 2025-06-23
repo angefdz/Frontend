@@ -23,6 +23,9 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { CategoriaConPictogramas } from '@/types';
+import { Dimensions } from 'react-native';
+const { width } = Dimensions.get('window');
+const textoSize = width * 0.035;
 
 export default function EditarCategoriaScreen() {
   const router = useRouter();
@@ -114,20 +117,29 @@ export default function EditarCategoriaScreen() {
       <CabeceraSeccion texto="Editar categoría" />
 
       {esGeneral && (
-        <Text
-          style={{
-            color: '#666',
-            fontStyle: 'italic',
-            marginBottom: 12,
-            textAlign: 'center',
-            backgroundColor: '#f0f0f0',
-            padding: 10,
-            borderRadius: 5,
-          }}
-        >
-          Esta es una categoría general. No puedes editar su nombre ni imagen, pero sí puedes modificar los pictogramas.
-        </Text>
-      )}
+  <View
+    style={{
+      marginHorizontal: width * 0.05, // 5% del ancho de pantalla
+      backgroundColor: '#f2f2f2',
+      borderRadius: 10,
+      padding: 12,
+      marginBottom: 16,
+    }}
+  >
+    <Text
+      style={{
+        color: '#444',
+        fontSize: textoSize,
+        fontStyle: 'italic',
+        textAlign: 'center',
+      }}
+      accessibilityRole="text"
+      accessibilityLabel="Aviso: esta es una categoría general. Solo puedes modificar los pictogramas."
+    >
+      Esta es una categoría general. No puedes editar su nombre ni imagen, pero sí puedes modificar los pictogramas.
+    </Text>
+  </View>
+)}
 
       <SelectorImagen
         uriImagen={imagen}

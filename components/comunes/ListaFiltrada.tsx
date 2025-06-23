@@ -3,9 +3,9 @@ import { ScrollView, Text, TextStyle, View, ViewStyle } from 'react-native';
 import ItemClicable from './ItemClicable';
 
 type Item = {
-     id: string | number;
-     nombre: string;
-     imagen: string;
+  id: string | number;
+  nombre: string;
+  imagen: string;
 };
 
 type Props = {
@@ -13,6 +13,7 @@ type Props = {
   readonly gridStyle?: ViewStyle;
   readonly itemStyle?: ViewStyle;
   readonly itemTextStyle?: TextStyle;
+  readonly itemEmojiStyle?: TextStyle; // ← nuevo
   readonly onItemPress: (item: Item) => void;
   readonly error?: string | null;
 };
@@ -22,6 +23,7 @@ export default function ListaFiltrada({
   gridStyle,
   itemStyle,
   itemTextStyle,
+  itemEmojiStyle,
   onItemPress,
   error,
 }: Props) {
@@ -40,6 +42,7 @@ export default function ListaFiltrada({
               imagen={item.imagen}
               itemStyle={itemStyle}
               textStyle={itemTextStyle}
+              emojiStyle={itemEmojiStyle} // ← añadido aquí
               onPress={() => onItemPress(item)}
             />
           ))}

@@ -1,51 +1,56 @@
-import { StyleSheet } from 'react-native';
+// styles/PerfilScreen.styles.ts
+import { Dimensions, StyleSheet } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const baseFont = width * 0.045;
 
 export const styles = StyleSheet.create({
   inner: {
-    padding: 20,
+    padding: width * 0.05,
     alignItems: 'center',
     backgroundColor: '#fff',
   },
   container: {
     flex: 1,
-    paddingTop: 60,
-    paddingHorizontal: 20,
+    paddingTop: width * 0.05,
+    paddingHorizontal: width * 0.05,
     backgroundColor: '#fff',
     alignItems: 'center',
   },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: '#ccc',
-    marginBottom: 20,
+  scrollContainer: {
+    flexGrow: 1,
+    paddingTop: width * 0.05,
+    paddingHorizontal: width * 0.05,
+    backgroundColor: '#fff',
+    alignItems: 'center',
   },
+  
   label: {
     alignSelf: 'flex-start',
-    marginBottom: 4,
+    marginBottom: width * 0.01,
     fontWeight: '600',
-    fontSize: 16,
+    fontSize: baseFont,
   },
   input: {
     width: '100%',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    padding: 10,
-    marginBottom: 16,
-    fontSize: 16,
+    padding: width * 0.03,
+    marginBottom: width * 0.04,
+    fontSize: baseFont,
     backgroundColor: '#F9F9F9',
   },
   voiceOptions: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: width * 0.04,
     gap: 10,
   },
   voiceButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingVertical: width * 0.025,
+    paddingHorizontal: width * 0.04,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
@@ -57,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   voiceButtonText: {
     color: '#333',
-    fontSize: 16,
+    fontSize: baseFont,
   },
   voiceButtonTextSelected: {
     color: '#fff',
@@ -65,14 +70,14 @@ export const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    paddingVertical: 12,
+    paddingVertical: width * 0.035,
     borderRadius: 8,
     backgroundColor: '#007AFF',
-    marginBottom: 12,
+    marginBottom: width * 0.03,
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: baseFont,
     fontWeight: '600',
     color: '#fff',
   },
@@ -82,29 +87,30 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     zIndex: 1000,
   },
-  
   dropdownContainer: {
     borderColor: '#ccc',
-    borderRadius: 8,
+    borderRadius: 14,
     zIndex: 999,
   },
-  
   dropdownText: {
-    fontSize: 16,
+    fontSize: baseFont,
   },
   content: {
     width: '100%',
-    paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingHorizontal: width * 0.05,
+    paddingTop: width * 0.1,
     alignItems: 'center',
   },
   iconoEditarContainer: {
     alignSelf: 'flex-end',
-    padding: 10,
+    padding: width * 0.025,
   },
-
-  
-  
-  
-  
+  dropdownWrapper: {
+    width: '100%',
+    maxWidth: 500,
+    alignSelf: 'center',
+  },
+  dropdownItem: {
+    fontSize: 16,
+  },
 });

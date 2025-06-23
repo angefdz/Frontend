@@ -14,6 +14,10 @@ import CabeceraPictograma from '@/components/biblioteca/pictogramas/verPictogram
 import ImagenPictograma from '@/components/biblioteca/pictogramas/verPictograma/ImagenPictograma';
 import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
 import ItemClicable from '@/components/comunes/ItemClicable';
+import { Dimensions } from 'react-native';
+
+
+const { width, height } = Dimensions.get('window');
 
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
@@ -171,9 +175,18 @@ export default function VerPictogramaScreen() {
     );
   } else if (categoriasDelPictograma.length === 0) {
     contenidoCategorias = (
-      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-        Este pictograma no está asignado a ninguna categoría.
-      </Text>
+      <Text
+  style={{
+    marginHorizontal: width * 0.05,
+    fontStyle: 'italic',
+    fontSize: width * 0.035,
+    textAlign: 'center',
+    marginTop: height * 0.015,
+    color: '#555',
+  }}
+>
+  Este pictograma no está asignado a ninguna categoría.
+</Text>
     );
   } else {
     contenidoCategorias = (
@@ -208,26 +221,31 @@ export default function VerPictogramaScreen() {
         onEliminar={manejarEliminar}
       />
 
-      {!esPersonalizado && (
-        <Text
-          style={{
-            color: '#666',
-            fontStyle: 'italic',
-            marginBottom: 12,
-            textAlign: 'center',
-            backgroundColor: '#f0f0f0',
-            padding: 10,
-            borderRadius: 5,
-          }}
-        >
-          Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
-        </Text>
-      )}
+{!esPersonalizado && (
+  <Text
+    style={{
+      color: '#666',
+      fontStyle: 'italic',
+      textAlign: 'center',
+      backgroundColor: '#f0f0f0',
+      padding: width * 0.03,
+      borderRadius: width * 0.02,
+      marginHorizontal: width * 0.05,
+      marginBottom: height * 0.015,
+      fontSize: width * 0.035,
+    }}
+    accessible
+    accessibilityRole="text"
+  >
+    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+  </Text>
+)}
+
 
       <ImagenPictograma uri={pictograma.imagen} nombre={pictograma.nombre} />
 
       <Text style={styles.sectionTitle}>Tipo:</Text>
-      <Text style={{ fontSize: 16 }}>
+      <Text style={{ fontSize: width* 0.035, marginLeft:8}}>
         {pictograma.tipo === 'verbo' ? 'Verbo' : 'Sustantivo'}
       </Text>
 

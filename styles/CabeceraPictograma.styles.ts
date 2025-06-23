@@ -1,28 +1,35 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
+const { width } = Dimensions.get('window');
+const fontSizeResponsive = width * 0.05;
+const paddingResponsive = width * 0.025;
 export const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginBottom: 15,
-    paddingHorizontal: 10,
+    marginTop: width * 0.05,
+    marginBottom: width * 0.04,
+    paddingHorizontal: width * 0.04,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   titulo: {
-    fontSize: 20,
+    fontSize: fontSizeResponsive,
     fontWeight: 'bold',
-    color: '#1A1A1A', // ✅ buen contraste
+    color: '#1A1A1A',
+    flex: 1,
+    flexWrap: 'wrap',
   },
   iconos: {
     flexDirection: 'row',
-    gap: 2, // ✅ si está soportado
-  },
-  botonIcono: {
-    padding: 10,
-    minWidth: 48,
-    minHeight: 48,
-    justifyContent: 'center',
     alignItems: 'center',
   },
+  botonIcono: {
+    padding: paddingResponsive,
+    minWidth: width * 0.12,
+    minHeight: width * 0.12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: width * 0.02, // Para separar botones
+  },
+   // úsalo así: <Feather size={styles.iconSize} ... />
 });

@@ -1,19 +1,22 @@
-import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import {
-  Alert,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
 import InputTexto from '@/components/comunes/InputTexto';
 import ItemSeleccionable from '@/components/comunes/ItemSeleccionable';
 import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
+import { useRouter } from 'expo-router';
+import { useState } from 'react';
+import {
+  Alert,
+  Dimensions,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+const width = Dimensions.get('window').width;
+const buttonWidth = width * 0.4;
 
 import { useAuth } from '@/context/AuthContext';
 import { crearPictogramaUsuario } from '@/hooks/biblioteca/crearPictogramaUsuario';
@@ -114,47 +117,58 @@ export default function CrearPictogramaScreen() {
 
       <Text style={styles.sectionTitle}>Tipo</Text>
       <View
+  style={{
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    marginBottom: 20,
+    gap: 10,
+  }}
+  accessible
+  accessibilityLabel="Selecciona el tipo de palabra"
+>
+  {['verbo', 'sustantivo'].map((opcion) => (
+    <TouchableOpacity
+      key={opcion}
+      onPress={() => setTipo(opcion as 'verbo' | 'sustantivo')}
+      style={{
+        width: buttonWidth,
+        paddingVertical: 12,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: tipo === opcion ? '#007AFF' : '#ccc',
+        backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
+        alignItems: 'center',
+      }}
+      accessibilityRole="button"
+      accessibilityLabel={`Seleccionar tipo ${opcion}`}
+    >
+      <Text
         style={{
-          flexDirection: 'row',
-          justifyContent: 'space-around',
-          marginBottom: 20,
+          color: tipo === opcion ? '#fff' : '#333',
+          fontWeight: 'bold',
+          fontSize: width*0.04,
         }}
-        accessible
-        accessibilityLabel="Selecciona el tipo de palabra"
       >
-        {['verbo', 'sustantivo'].map((opcion) => (
-          <TouchableOpacity
-            key={opcion}
-            onPress={() => setTipo(opcion as 'verbo' | 'sustantivo')}
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: tipo === opcion ? '#007AFF' : '#ccc',
-              backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
-            }}
-            accessibilityRole="button"
-            accessibilityLabel={`Seleccionar tipo ${opcion}`}
-          >
-            <Text
-              style={{
-                color: tipo === opcion ? '#fff' : '#333',
-                fontWeight: 'bold',
-              }}
-            >
-              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+        {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+      </Text>
+    </TouchableOpacity>
+  ))}
+</View>
 
       <Text style={styles.sectionTitle}>Categorías asignadas</Text>
 
       {categoriasAsignadas.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          No hay categorías añadidas aún.
-        </Text>
+        <Text
+        style={{
+          marginHorizontal: width * 0.05, // margen horizontal del 5%
+          fontStyle: 'italic',
+          fontSize: width * 0.04,  
+          paddingBottom: 10
+        }}
+      >
+        No hay categorías añadidas aún.
+      </Text>
       ) : (
         <ListaItems
           items={categoriasAsignadas}

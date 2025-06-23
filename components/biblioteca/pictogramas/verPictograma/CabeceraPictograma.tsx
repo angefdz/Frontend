@@ -1,7 +1,6 @@
 import { styles } from '@/styles/CabeceraPictograma.styles';
 import { Feather } from '@expo/vector-icons';
-import { Text, TouchableOpacity, View } from 'react-native';
-
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
 interface Props {
   readonly titulo: string;
   readonly id: number;
@@ -11,6 +10,7 @@ interface Props {
   readonly onEliminar?: () => void;
 }
 
+const { width } = Dimensions.get('window');
 export default function CabeceraPictograma({
   titulo,
   id,
@@ -20,33 +20,43 @@ export default function CabeceraPictograma({
   onEliminar,
 }: Props) {
   return (
-    <View style={styles.container}>
+    <View style={{flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',}}>
       <Text style={styles.titulo}>{titulo}</Text>
       <View style={styles.iconos}>
-      <TouchableOpacity
-  onPress={onToggleVisibilidad}
-  style={styles.botonIcono}
-  accessibilityRole="button"
-  accessibilityLabel={oculto ? 'Mostrar pictograma' : 'Ocultar pictograma'}
->
-  {oculto ? (
-    <Feather name="eye" size={24} color="#28A745" />
-  ) : (
-    <Feather name="eye-off" size={24} color="#DC3545" />
-  )}
-</TouchableOpacity>
+        <TouchableOpacity
+          onPress={onToggleVisibilidad}
+          style={styles.botonIcono}
+          accessibilityRole="button"
+          accessibilityLabel={oculto ? 'Mostrar pictograma' : 'Ocultar pictograma'}
+        >
+          {oculto ? (
+            <Feather name="eye" size={width*0.06} color="#28A745" />
+          ) : (
+            <Feather name="eye-off" size={width*0.06} color="#DC3545" />
+          )}
+        </TouchableOpacity>
 
         {onEditar && (
-          <TouchableOpacity onPress={onEditar} style={styles.botonIcono} accessibilityRole="button"
-          accessibilityLabel="Editar pictograma">
-            <Feather name="edit-3" size={24} color="#28A745" />
+          <TouchableOpacity
+            onPress={onEditar}
+            style={styles.botonIcono}
+            accessibilityRole="button"
+            accessibilityLabel="Editar pictograma"
+          >
+            <Feather name="edit-3" size={width*0.06} color="#28A745" />
           </TouchableOpacity>
         )}
 
         {onEliminar && (
-          <TouchableOpacity onPress={onEliminar} style={styles.botonIcono}accessibilityRole="button"
-          accessibilityLabel="Eliminar pictograma">
-            <Feather name="trash-2" size={24} color="#DC3545" />
+          <TouchableOpacity
+            onPress={onEliminar}
+            style={styles.botonIcono}
+            accessibilityRole="button"
+            accessibilityLabel="Eliminar pictograma"
+          >
+            <Feather name="trash-2" size={width*0.06} color="#DC3545" />
           </TouchableOpacity>
         )}
       </View>

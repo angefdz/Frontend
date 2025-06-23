@@ -97,6 +97,10 @@ export default function SelectorItemsModal<T>({
   );
 }
 
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
 const modalStyles = StyleSheet.create({
   modal: {
     justifyContent: 'flex-end',
@@ -104,16 +108,16 @@ const modalStyles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    paddingTop: 30,
-    paddingBottom: 20,
+    paddingTop: width * 0.06,         // antes 30
+    paddingBottom: width * 0.05,      // antes 20
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
   },
   titulo: {
-    fontSize: 18,
+    fontSize: width * 0.05,           // antes 18
     fontWeight: 'bold',
-    marginLeft: 16,
-    marginBottom: 10,
+    marginLeft: width * 0.04,         // antes 16
+    marginBottom: width * 0.025,      // antes 10
   },
 });

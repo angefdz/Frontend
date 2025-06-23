@@ -1,17 +1,20 @@
 // components/biblioteca/pictogramas/ImagenPictograma.tsx
-import { Image, View } from 'react-native';
+import { Dimensions, Image, View } from 'react-native';
 
 interface Props {
   readonly uri: string;
   readonly nombre: string;
 }
 
-export default function ImagenPictograma({ uri, nombre}: Props) {
+const { width } = Dimensions.get('window');
+const tamanyo = width * 0.5; // Puedes ajustar este porcentaje según necesites
+
+export default function ImagenPictograma({ uri, nombre }: Props) {
   return (
-    <View style={{ alignItems: 'center', marginBottom: 20 }}>
+    <View style={{ alignItems: 'center', marginBottom: width * 0.05 }}>
       <Image
         source={{ uri }}
-        style={{ width: 150, height: 150 }}
+        style={{ width: tamanyo, height: tamanyo }}
         resizeMode="contain"
         accessibilityRole="image"
         accessibilityLabel={

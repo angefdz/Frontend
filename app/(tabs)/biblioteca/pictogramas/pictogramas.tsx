@@ -1,5 +1,5 @@
 import BarraBusqueda from '@/components/comunes/BarraBusqueda';
-import ListaFiltrada from '@/components/comunes/ListaFiltrada'; // ← añadido
+import ListaFiltrada from '@/components/comunes/ListaFiltrada';
 import { useAuth } from '@/context/AuthContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
@@ -9,10 +9,14 @@ import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
+  Dimensions,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
+const tamanyoBoton = width * 0.14;
 
 export default function PictogramasScreen() {
   const router = useRouter();
@@ -67,12 +71,12 @@ export default function PictogramasScreen() {
       <TouchableOpacity
         style={{
           position: 'absolute',
-          bottom: 20,
-          right: 20,
+          bottom: height * 0.03,
+          right: width * 0.05,
           backgroundColor: '#007AFF',
-          borderRadius: 30,
-          width: 56,
-          height: 56,
+          borderRadius: tamanyoBoton / 2,
+          width: tamanyoBoton,
+          height: tamanyoBoton,
           justifyContent: 'center',
           alignItems: 'center',
           elevation: 5,
@@ -81,7 +85,7 @@ export default function PictogramasScreen() {
         accessibilityRole="button"
         accessibilityLabel="Crear pictograma"
       >
-        <Feather name="plus" size={28} color="white" />
+        <Feather name="plus" size={tamanyoBoton * 0.5} color="white" />
       </TouchableOpacity>
     </View>
   );

@@ -1,6 +1,17 @@
 import * as ImagePicker from 'expo-image-picker';
 import React, { useEffect } from 'react';
-import { Alert, Button, Image, Text, View } from 'react-native';
+import {
+  Alert,
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+
+const { width } = Dimensions.get('window');
+const imagenSize = width * 0.5;
 
 export default function SelectorImagen({
   uriImagen,
@@ -55,29 +66,51 @@ export default function SelectorImagen({
   };
 
   return (
-    <View style={{ alignItems: 'center', marginVertical: 10 }}>
+    <View style={styles.contenedor}>
       {uriImagen ? (
         <Image
           source={{ uri: uriImagen }}
-          style={{
-            width: 300,
-            height: 300,
-            borderRadius: 15,
-            marginBottom: 10,
-            resizeMode: 'cover',
-            opacity: disabled ? 0.5 : 1,
-          }}
+          style={[styles.imagen, { opacity: disabled ? 0.5 : 1 }]}
         />
       ) : null}
 
       {disabled ? (
-        <Text style={{ color: '#888', fontStyle: 'italic', marginBottom: 10 }}>
-          Imagen no editable
-        </Text>
+        <Text style={styles.textoDeshabilitado}>Imagen no editable</Text>
       ) : (
-        <Button title="Seleccionar imagen" onPress={mostrarOpcionesImagen}accessibilityLabel="Seleccionar imagen"
-        />
+        <TouchableOpacity
+          onPress={mostrarOpcionesImagen}
+          accessibilityRole="button"
+          accessibilityLabel="Seleccionar imagen"
+        >
+          <Text style={styles.textoLink}>Seleccionar imagen</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  contenedor: {
+    alignItems: 'center',
+    marginVertical: width * 0.04,
+  },
+  imagen: {
+    width: imagenSize,
+    height: imagenSize,
+    borderRadius: 15,
+    marginBottom: width * 0.03,
+    resizeMode: 'cover',
+  },
+  textoDeshabilitado: {
+    color: '#888',
+    fontStyle: 'italic',
+    marginBottom: width * 0.03,
+    fontSize: width * 0.04,
+  },
+  textoLink: {
+    color: '#007AFF',
+    fontSize: width * 0.045,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});

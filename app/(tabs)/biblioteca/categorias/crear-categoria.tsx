@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
+  Dimensions,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -22,6 +23,12 @@ import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
+
+const { width } = Dimensions.get('window');
+const paddingResponsive = width * 0.05;
+
+const fontSizeResponsive = width * 0.04;
+
 
 export default function CrearCategoriaScreen() {
   const router = useRouter();
@@ -92,15 +99,31 @@ export default function CrearCategoriaScreen() {
   let contenidoPictogramas;
   if (cargandoPictos) {
     contenidoPictogramas = (
-      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-        Cargando pictogramas...
-      </Text>
+      <Text
+  style={{
+    marginHorizontal: paddingResponsive,
+    fontStyle: 'italic',
+    fontSize: fontSizeResponsive,
+  }}
+>
+  Cargando pictogramas...
+</Text>
+
     );
   } else if (pictogramas.length === 0) {
     contenidoPictogramas = (
-      <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-        No hay pictogramas añadidos aún.
-      </Text>
+      <Text
+  style={{
+    marginHorizontal: paddingResponsive,
+    fontStyle: 'italic',
+    fontSize: fontSizeResponsive,
+    paddingBottom:width*0.01
+  }}
+>
+  No hay pictogramas añadidos aún.
+</Text>
+
+
     );
   } else {
     contenidoPictogramas = (
@@ -123,7 +146,11 @@ export default function CrearCategoriaScreen() {
   }
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 40 }}
+      showsVerticalScrollIndicator={false}
+    >
       <Text style={styles.sectionTitle}>Crear nueva categoría</Text>
 
       <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />

@@ -1,27 +1,24 @@
 import { useAuth } from '@/context/AuthContext';
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
+import { useDescargarHistorialCsv } from '@/hooks/frase/useDescargarHistorialCsv';
 import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
-
-import { useDescargarHistorialCsv } from '@/hooks/frase/useDescargarHistorialCsv'; // ← añade esto arriba
 import { styles } from '@/styles/PerfilScreen.styles';
+
 import { Feather } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect } from 'react';
-
+import { useCallback } from 'react';
 import {
   Alert,
-  Button,
-  KeyboardAvoidingView,
-  Platform,
+  Button, Dimensions, ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
-
+const { width } = Dimensions.get('window');
 export default function PerfilScreen() {
   const router = useRouter();
   const { token, cerrarSesion } = useAuth();
@@ -35,9 +32,7 @@ export default function PerfilScreen() {
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
 
-  useEffect(() => {
-    console.log('Token actual en PerfilScreen:', token);
-  }, [token]);
+  const { descargarHistorial } = useDescargarHistorialCsv();
 
   const recargarTodo = () => {
     recargarUsuario();
@@ -60,12 +55,9 @@ export default function PerfilScreen() {
     ]);
   };
 
-  const { descargarHistorial } = useDescargarHistorialCsv();
-
   const manejarDescargarHistorial = () => {
     descargarHistorial();
   };
-
 
   const manejarEliminarCuenta = () => {
     Alert.alert(
@@ -104,18 +96,14 @@ export default function PerfilScreen() {
     );
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      recargarTodo();
-    }, [])
-  );
+  useFocusEffect(useCallback(() => { recargarTodo(); }, []));
 
   const errorActual = errorUsuario ?? errorConfiguracion;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+    <ScrollView
+      contentContainerStyle={[styles.scrollContainer, { paddingBottom: 64 }]}
+      showsVerticalScrollIndicator={false}
     >
       {errorActual && (
         <View style={{ padding: 16, alignItems: 'center' }}>
@@ -125,9 +113,12 @@ export default function PerfilScreen() {
       )}
 
       <View style={styles.iconoEditarContainer}>
-        <TouchableOpacity onPress={() => router.push('/usuario/editar-perfil')} accessibilityRole="button"
-  accessibilityLabel="Editar perfil">
-          <Feather name="edit-2" size={24} color="#007AFF" />
+        <TouchableOpacity
+          onPress={() => router.push('/usuario/editar-perfil')}
+          accessibilityRole="button"
+          accessibilityLabel="Editar perfil"
+        >
+          <Feather name="edit-2" size={width * 0.06} color="#007AFF" />
         </TouchableOpacity>
       </View>
 
@@ -137,8 +128,6 @@ export default function PerfilScreen() {
         value={usuario?.nombre ?? ''}
         editable={false}
         placeholder="Nombre"
-        accessibilityRole="text"
-  accessibilityLabel={`Nombre: ${usuario?.nombre ?? 'No disponible'}`}
       />
 
       <Text style={styles.label}>Correo electrónico</Text>
@@ -147,8 +136,6 @@ export default function PerfilScreen() {
         value={usuario?.correo ?? ''}
         editable={false}
         placeholder="Correo"
-        accessibilityRole="text"
-        accessibilityLabel={`Correo electrónico: ${usuario?.correo ?? 'No disponible'}`}
       />
 
       <Text style={styles.label}>Voz</Text>
@@ -157,50 +144,27 @@ export default function PerfilScreen() {
         value={configuracion?.tipoVoz ?? ''}
         editable={false}
         placeholder="Tipo de voz"
-        accessibilityRole="text"
-        accessibilityLabel={`Tipo de voz: ${configuracion?.tipoVoz ?? 'No disponible'}`}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push('/usuario/pictogramas-ocultos')}
-        accessibilityRole="button"
-  accessibilityLabel="Ver pictogramas ocultos"
-      >
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/usuario/pictogramas-ocultos')}>
         <Text style={styles.buttonText}>Pictogramas ocultos</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={manejarDescargarHistorial} accessibilityRole="button"
-  accessibilityLabel="Descargar historial de frases">
+      <TouchableOpacity style={styles.button} onPress={manejarDescargarHistorial}>
         <Text style={styles.buttonText}>Historial</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => router.push('/usuario/cambiar-password')}
-         accessibilityRole="button"
-  accessibilityLabel="Cambiar contraseña"
-      >
+      <TouchableOpacity style={styles.button} onPress={() => router.push('/usuario/cambiar-password')}>
         <Text style={styles.buttonText}>Cambiar contraseña</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#FF3B30' }]}
-        onPress={manejarCerrarSesion}
-        accessibilityRole="button"
-  accessibilityLabel="Cerrar sesión"
-      >
+      <TouchableOpacity style={[styles.button, { backgroundColor: '#FF3B30' }]} onPress={manejarCerrarSesion}>
         <Text style={[styles.buttonText, { color: '#fff' }]}>Cerrar sesión</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: '#8E8E93' }]}
-        onPress={manejarEliminarCuenta}
-        accessibilityRole="button"
-  accessibilityLabel="Eliminar cuenta"
-      >
+      <TouchableOpacity style={[styles.button, { backgroundColor: '#8E8E93' }]} onPress={manejarEliminarCuenta}>
         <Text style={[styles.buttonText, { color: '#fff' }]}>Eliminar cuenta</Text>
       </TouchableOpacity>
-    </KeyboardAvoidingView>
+    </ScrollView>
   );
 }

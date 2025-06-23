@@ -1,5 +1,5 @@
 import BarraBusqueda from '@/components/comunes/BarraBusqueda';
-import ListaFiltrada from '@/components/comunes/ListaFiltrada'; // ← nuevo import
+import ItemClicable from '@/components/comunes/ItemClicable';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
 import { Feather } from '@expo/vector-icons';
@@ -7,10 +7,15 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
   ActivityIndicator,
+  Dimensions,
+  ScrollView,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const tamanyoBoton = width * 0.14;
 
 export default function CategoriasScreen() {
   const router = useRouter();
@@ -22,51 +27,61 @@ export default function CategoriasScreen() {
   );
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Todas las categorías</Text>
+    <View style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <Text style={styles.sectionTitle}>Todas las categorías</Text>
 
-      <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
+        <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
-      {cargando ? (
-        <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
-      ) : (
-        <ListaFiltrada
-          items={filtradas}
-          error={error}
-          gridStyle={styles.grid}
-          itemStyle={styles.item}
-          itemTextStyle={styles.itemText}
-          onItemPress={(item) =>
-            router.push({
-              pathname: '/biblioteca/categorias/pictogramas-por-categoria',
-              params: { id: item.id },
-            })
-          }
-        />
-      )}
+        {cargando ? (
+          <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
+        ) : error ? (
+          <Text style={{ color: 'red', marginTop: 20 }}>{error}</Text>
+        ) : (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={{ alignItems: 'flex-start' }}>
+              <View style={styles.grid}>
+                {filtradas.map((item) => (
+                  <ItemClicable
+                    key={item.id}
+                    nombre={item.nombre}
+                    imagen={item.imagen}
+                    itemStyle={styles.item}
+                    textStyle={styles.itemText}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/biblioteca/categorias/pictogramas-por-categoria',
+                        params: { id: item.id },
+                      })
+                    }
+                  />
+                ))}
+              </View>
+            </View>
+          </ScrollView>
+        )}
+      </View>
 
-      {/* Botón flotante para crear categoría */}
+      {/* Botón flotante responsive */}
       <TouchableOpacity
         style={{
           position: 'absolute',
-          bottom: 20,
-          right: 20,
+          bottom: '5%',
+          right: '5%',
           backgroundColor: '#007AFF',
-          borderRadius: 30,
-          width: 56,
-          height: 56,
+          width: tamanyoBoton,
+          height: tamanyoBoton,
+          borderRadius: tamanyoBoton / 2,
           justifyContent: 'center',
           alignItems: 'center',
           elevation: 5,
         }}
-        onPress={() =>
-          router.push('/biblioteca/categorias/crear-categoria')
-        }
+        onPress={() => router.push('/biblioteca/categorias/crear-categoria')}
         accessible
         accessibilityRole="button"
         accessibilityLabel="Crear nueva categoría"
       >
-        <Feather name="plus" size={28} color="white" />
+        <Feather name="plus" size={tamanyoBoton * 0.5} color="white" />
       </TouchableOpacity>
     </View>
   );

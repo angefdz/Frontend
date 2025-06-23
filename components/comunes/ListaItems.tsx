@@ -16,24 +16,25 @@ interface Props<T extends Item> {
 export default function ListaItems<T extends Item>({
   items,
   renderItem,
-  gap = 10,
+  gap = 5,
   containerStyle,
 }: Props<T>) {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <View
-        style={[
-          {
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-start', // Alineación a la izquierda
-            rowGap: gap,
-            columnGap: gap,
-            paddingBottom: 24,
-          },
-          containerStyle,
-        ]}
-      >
+  style={[
+    {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'flex-start',
+      rowGap: gap,
+      columnGap: gap,
+      paddingBottom: 24,
+    },
+    containerStyle, // ← esto debe estar aquí
+  ]}
+>
+
         {items.map((item) => renderItem(item))}
       </View>
     </ScrollView>

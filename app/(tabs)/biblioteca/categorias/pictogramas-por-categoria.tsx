@@ -2,7 +2,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, Text, View } from 'react-native';
+import { Alert, Dimensions, Text, View } from 'react-native';
 
 import CabeceraCategoria from '@/components/biblioteca/categorias/CabeceraCategoria';
 import BarraBusqueda from '@/components/comunes/BarraBusqueda';
@@ -14,6 +14,9 @@ import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasPorCategoria } from '@/hooks/pantallaPrincipal/usePictogramasPorCategoria';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
+
+const { width } = Dimensions.get('window');
+const fontSizeResponsive = width * 0.04;
 
 export default function PictogramasPorCategoriaScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -94,7 +97,14 @@ export default function PictogramasPorCategoriaScreen() {
   if (cargandoCategorias || !categoria || cargandoPictos) {
     return (
       <View style={styles.container}>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginTop: 32 }}>
+        <Text
+          style={{
+            fontSize: fontSizeResponsive,
+            color: '#666',
+            textAlign: 'center',
+            marginTop: 32,
+          }}
+        >
           Cargando...
         </Text>
       </View>
@@ -108,12 +118,27 @@ export default function PictogramasPorCategoriaScreen() {
   let contenidoPictogramas;
   if (errorPictos) {
     contenidoPictogramas = (
-      <Text style={{ color: 'red', marginTop: 24 }}>{errorPictos}</Text>
+      <Text
+        style={{
+          color: 'red',
+          marginTop: 24,
+          fontSize: fontSizeResponsive,
+          textAlign: 'center',
+        }}
+      >
+        {errorPictos}
+      </Text>
     );
   } else if (filtrados.length === 0) {
     contenidoPictogramas = (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 16, color: '#666', textAlign: 'center' }}>
+        <Text
+          style={{
+            fontSize: fontSizeResponsive,
+            color: '#666',
+            textAlign: 'center',
+          }}
+        >
           No hay pictogramas que coincidan con tu búsqueda.
         </Text>
       </View>
@@ -137,6 +162,7 @@ export default function PictogramasPorCategoriaScreen() {
             }
           />
         )}
+        containerStyle={{ width: '100%', justifyContent: 'flex-start' }}
       />
     );
   }
@@ -150,7 +176,15 @@ export default function PictogramasPorCategoriaScreen() {
       />
 
       {esGeneral && (
-        <Text style={{ color: '#666', fontStyle: 'italic', marginBottom: 12, textAlign: 'center' }}>
+        <Text
+          style={{
+            color: '#666',
+            fontStyle: 'italic',
+            marginBottom: 12,
+            textAlign: 'center',
+            fontSize: fontSizeResponsive,
+          }}
+        >
           Esta es una categoría general. Solo puedes modificar los pictogramas asociados.
         </Text>
       )}

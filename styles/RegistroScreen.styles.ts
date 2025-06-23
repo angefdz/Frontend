@@ -1,5 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
+const {width} = Dimensions.get('window');
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -8,11 +9,11 @@ export const styles = StyleSheet.create({
   },
 
   content: {
-    paddingHorizontal: 30,
+    paddingHorizontal: width * 0.03,
   },
 
   title: {
-    fontSize: 24,
+    fontSize: width * 0.05,
     fontWeight: 'bold',
     marginBottom: 25,
     textAlign: 'center',
@@ -20,14 +21,13 @@ export const styles = StyleSheet.create({
   },
 
   input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#666',
+    height: width * 0.12,
+    borderWidth: width * 0.004,
+    borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
-    fontSize: 16,
-    color: '#000',
+    fontSize: width * 0.04,
   },
 
   errorText: {
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
 
   button: {
     backgroundColor: '#007AFF',
-    paddingVertical: 15,
+    paddingVertical: width * 0.04,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
 
   buttonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: 'bold',
   },
 
@@ -57,6 +57,6 @@ export const styles = StyleSheet.create({
 
   backButtonText: {
     color: '#007AFF',
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
 });

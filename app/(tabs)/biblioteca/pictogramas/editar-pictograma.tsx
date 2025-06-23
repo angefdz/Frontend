@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 
+
 import BotonPrincipal from '@/components/comunes/BotonPrincipal';
 import CabeceraSeccion from '@/components/comunes/CabeceraSeccion';
 import InputTexto from '@/components/comunes/InputTexto';
@@ -16,6 +17,16 @@ import ItemSeleccionable from '@/components/comunes/ItemSeleccionable';
 import ListaItems from '@/components/comunes/ListaItems';
 import SelectorImagen from '@/components/comunes/SelectorImagen';
 import SelectorItemsModal from '@/components/comunes/SelectorItemsModel';
+import { Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
+const paddingVertical = width * 0.025;
+const paddingHorizontal = width * 0.05;
+const borderRadius = width * 0.02;
+const fontSize = width * 0.035;
+const textoSize = width * 0.035;
+const marginHorizontal = width * 0.04;
 
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
@@ -48,34 +59,36 @@ function SelectorTipo({
       accessibilityLabel="Selecciona el tipo de palabra"
     >
       {['verbo', 'sustantivo'].map((opcion) => {
-        const seleccionada = tipo === opcion;
-        return (
-          <TouchableOpacity
-            key={opcion}
-            onPress={() => esPersonalizado && setTipo(opcion as 'verbo' | 'sustantivo')}
-            style={{
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-              borderRadius: 8,
-              borderWidth: 1,
-              borderColor: seleccionada ? '#007AFF' : '#ccc',
-              backgroundColor: seleccionada ? '#007AFF' : '#fff',
-            }}
-            disabled={!esPersonalizado}
-            accessibilityRole="button"
-            accessibilityLabel={`Seleccionar tipo ${opcion}`}
-          >
-            <Text
-              style={{
-                color: seleccionada ? '#fff' : '#333',
-                fontWeight: 'bold',
-              }}
-            >
-              {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
+  const seleccionada = tipo === opcion;
+  return (
+    <TouchableOpacity
+      key={opcion}
+      onPress={() => esPersonalizado && setTipo(opcion as 'verbo' | 'sustantivo')}
+      style={{
+        paddingVertical,
+        paddingHorizontal,
+        borderRadius,
+        borderWidth: 1,
+        borderColor: seleccionada ? '#007AFF' : '#ccc',
+        backgroundColor: seleccionada ? '#007AFF' : '#fff',
+        marginHorizontal: width * 0.015,
+      }}
+      disabled={!esPersonalizado}
+      accessibilityRole="button"
+      accessibilityLabel={`Seleccionar tipo ${opcion}`}
+    >
+      <Text
+        style={{
+          color: seleccionada ? '#fff' : '#333',
+          fontWeight: 'bold',
+          fontSize,
+        }}
+      >
+        {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+      </Text>
+    </TouchableOpacity>
+  );
+})}
     </View>
   );
 }
@@ -172,7 +185,7 @@ export default function EditarPictogramaScreen() {
   if (cargando || !pictograma) {
     return (
       <View style={styles.container}>
-        <Text style={{ marginTop: 32, textAlign: 'center' }}>Cargando...</Text>
+        <Text style={{ marginTop: 32, textAlign: 'center', fontSize: width* 0.035}}>Cargando...</Text>
       </View>
     );
   }
@@ -182,9 +195,19 @@ export default function EditarPictogramaScreen() {
       Cargando categorías...
     </Text>
   ) : categorias.length === 0 ? (
-    <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-      No hay categorías añadidas aún.
-    </Text>
+    <Text
+  style={{
+    marginHorizontal,
+    fontStyle: 'italic',
+    fontSize: textoSize,
+    color: '#444',
+    paddingBottom: 15
+  }}
+  accessibilityRole="text"
+  accessibilityLabel="Mensaje: no hay categorías añadidas aún."
+>
+  No hay categorías añadidas aún.
+</Text>
   ) : (
     <ListaItems
       items={categorias}
@@ -210,20 +233,23 @@ export default function EditarPictogramaScreen() {
       <CabeceraSeccion texto="Editar pictograma" />
 
       {!esPersonalizado && (
-        <Text
-          style={{
-            color: '#666',
-            fontStyle: 'italic',
-            marginBottom: 12,
-            textAlign: 'center',
-            backgroundColor: '#f0f0f0',
-            padding: 10,
-            borderRadius: 5,
-          }}
-        >
-          Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
-        </Text>
-      )}
+  <Text
+    style={{
+      color: '#444',
+      fontSize: width * 0.035,
+      fontStyle: 'italic',
+      textAlign: 'center',
+      backgroundColor: '#f0f0f0',
+      padding: width * 0.04,
+      marginBottom: width * 0.03,
+      borderRadius: width * 0.02,
+    }}
+    accessibilityRole="text"
+    accessibilityLabel="Aviso: este es un pictograma general. Solo puedes modificar las categorías."
+  >
+    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+  </Text>
+)}
 
       <SelectorImagen
         uriImagen={imagen}

@@ -2,6 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 import React from 'react';
 import {
   ActivityIndicator,
+  Dimensions,
   KeyboardAvoidingView,
   Platform,
   Text,
@@ -11,6 +12,8 @@ import {
 } from 'react-native';
 import { useInicioSesion } from '../../hooks/auth/login/useInicioSesion';
 import { styles } from '../../styles/LoginScreen.styles';
+
+const {width} = Dimensions.get('window');
 
 export default function InicioSesion() {
   const {
@@ -79,17 +82,6 @@ export default function InicioSesion() {
           )}
         </TouchableOpacity>
 
-        {/* Olvidé mi contraseña */}
-        <TouchableOpacity
-          style={styles.forgotPassword}
-          onPress={manejarOlvideContrasena}
-          accessibilityLabel="¿Olvidaste tu contraseña?"
-  accessibilityHint="Presiona para recuperar tu contraseña mediante correo electrónico"
-
-        >
-          <Text style={styles.forgotPasswordText}>¿Olvidaste tu contraseña?</Text>
-        </TouchableOpacity>
-
         {/* Separador */}
         <View style={styles.separator}>
           <View style={styles.separatorLine} />
@@ -104,7 +96,7 @@ export default function InicioSesion() {
           accessibilityLabel="Iniciar sesión con Google"
   accessibilityHint="Presiona para iniciar sesión con tu cuenta de Google"
         >
-          <AntDesign name="google" size={24} color="#DB4437" />
+          <AntDesign name="google" size={width * 0.06} color="#DB4437" />
           
           <Text style={styles.googleButtonText}>Continuar con Google</Text>
         </TouchableOpacity>

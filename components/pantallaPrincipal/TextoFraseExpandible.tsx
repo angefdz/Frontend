@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+import { Dimensions } from 'react-native';
+const {width} = Dimensions.get('window')
 interface Props {
   readonly frase: string[];
 }
@@ -61,7 +63,7 @@ const styles = StyleSheet.create({
     top: 0,
   },
   texto: {
-    fontSize: 18,
+    fontSize: width *0.06,
     lineHeight: 28,
     fontWeight: '500',
     flexWrap: 'wrap',

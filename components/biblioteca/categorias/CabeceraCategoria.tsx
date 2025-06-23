@@ -1,6 +1,9 @@
 import { styles } from '@/styles/CabeceraPictograma.styles';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+
+const { width } = Dimensions.get('window');
+const iconSize = width * 0.06; // responsive
 
 interface Props {
   readonly titulo: string;
@@ -17,15 +20,27 @@ export default function CabeceraCategoria({
     <View style={styles.container}>
       <Text style={styles.titulo}>{titulo}</Text>
       <View style={styles.iconos}>
-        <TouchableOpacity onPress={onEditar} style={styles.botonIcono} accessible
+        <TouchableOpacity
+          onPress={onEditar}
+          style={styles.botonIcono}
+          accessible
           accessibilityRole="button"
-          accessibilityLabel="Editar categoría">
-          <Feather name="edit-3" size={24} color="#007AFF" />
+          accessibilityLabel="Editar categoría"
+        >
+          <Feather name="edit-3" size={iconSize} color="#007AFF" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={onEliminar} style={styles.botonIcono} accessible
+        <TouchableOpacity
+          onPress={onEliminar}
+          style={styles.botonIcono}
+          accessible
           accessibilityRole="button"
-          accessibilityLabel="Eliminar categoría">
-          <MaterialCommunityIcons name="trash-can-outline" size={24} color="#FF3B30" />
+          accessibilityLabel="Eliminar categoría"
+        >
+          <MaterialCommunityIcons
+            name="trash-can-outline"
+            size={iconSize}
+            color="#FF3B30"
+          />
         </TouchableOpacity>
       </View>
     </View>

@@ -1,4 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+const { width } = Dimensions.get('window');
+
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,9 +11,10 @@ export const styles = StyleSheet.create({
     paddingTop: 40,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: width * 0.06,
     fontWeight: 'bold',
     marginBottom: 20,
+    marginLeft: 15
   },
   grid: {
     flexDirection: 'row',
@@ -31,11 +35,25 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   itemEmoji: {
-    fontSize: 40,
+    fontSize: width*0.08,
   },
   itemText: {
-    fontSize: 14,
+    fontSize: width * 0.035,
     marginTop: 5,
     color: '#333',
   },
+  contenedorBoton: {
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 40,
+  },
+  
+  botonFlotanteResponsive: {
+    backgroundColor: '#007AFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  
+  
 });

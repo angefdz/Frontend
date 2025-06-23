@@ -24,7 +24,11 @@ export default function SeccionBiblioteca<T>({
 }: Props<T>) {
   return (
     <View>
-      <CabeceraSeccion titulo={titulo} onAddPress={onAddPress} />
+      <CabeceraSeccion
+        titulo={titulo}
+        onAddPress={onAddPress}
+        tituloStyle={styles.sectionTitle} // 👈 se pasa el estilo aquí
+      />
 
       {datos.length === 0 ? (
         <Text

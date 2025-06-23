@@ -1,4 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,17 +9,17 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: width * 0.03,
     justifyContent: 'center',
   },
   input: {
-    height: 50,
-    borderWidth: 1,
+    height: width * 0.12,
+    borderWidth: width * 0.004,
     borderColor: '#ddd',
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
-    fontSize: 16,
+    fontSize: width * 0.04,
   },
   errorText: {
     color: 'red',
@@ -26,7 +28,7 @@ export const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#007AFF',
-    height: 50,
+    height: width * 0.1,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -34,7 +36,7 @@ export const styles = StyleSheet.create({
   },
   loginButtonText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: width * 0.04,
     fontWeight: '600',
   },
   forgotPassword: {
@@ -63,7 +65,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 50,
+    height: width * 0.1,
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 8,
@@ -72,7 +74,7 @@ export const styles = StyleSheet.create({
   },
   googleButtonText: {
     marginLeft: 10,
-    fontSize: 16,
+    fontSize: width * 0.04,
     color: '#333',
   },
   registerButton: {
@@ -82,7 +84,7 @@ export const styles = StyleSheet.create({
   
   registerButtonText: {
     color: '#007AFF',
-    fontSize: 16,
+    fontSize: width * 0.04,
   }
   
 }); 

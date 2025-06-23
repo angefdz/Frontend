@@ -107,4 +107,14 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  botonConEtiqueta: {
+    alignItems: 'center',
+    marginHorizontal: 8,
+  },
+  etiquetaBoton: {
+    marginTop: 4,
+    color: 'black',
+    fontSize: width*0.05,
+  },
+  
 });

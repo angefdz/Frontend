@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
-    fontSize: width * 0.04,
+    fontSize: width * 0.042,
   },
 
   errorText: {

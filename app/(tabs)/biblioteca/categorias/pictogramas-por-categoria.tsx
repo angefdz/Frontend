@@ -119,28 +119,34 @@ export default function PictogramasPorCategoriaScreen() {
   if (errorPictos) {
     contenidoPictogramas = (
       <Text
-        style={{
-          color: 'red',
-          marginTop: 24,
-          fontSize: fontSizeResponsive,
-          textAlign: 'center',
-        }}
-      >
-        {errorPictos}
-      </Text>
+  style={{
+    color: 'red',
+    marginTop: 24,
+    fontSize: fontSizeResponsive,
+    textAlign: 'center',
+  }}
+  accessibilityRole="alert"
+  accessibilityLabel={errorPictos}
+>
+  {errorPictos}
+</Text>
+
     );
   } else if (filtrados.length === 0) {
     contenidoPictogramas = (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Text
-          style={{
-            fontSize: fontSizeResponsive,
-            color: '#666',
-            textAlign: 'center',
-          }}
-        >
-          No hay pictogramas que coincidan con tu búsqueda.
-        </Text>
+  style={{
+    fontSize: fontSizeResponsive,
+    color: '#666',
+    textAlign: 'center',
+  }}
+  accessibilityRole="text"
+  accessibilityLabel="No hay pictogramas que coincidan con tu búsqueda."
+>
+  No hay pictogramas que coincidan con tu búsqueda.
+</Text>
+
       </View>
     );
   } else {
@@ -177,16 +183,19 @@ export default function PictogramasPorCategoriaScreen() {
 
       {esGeneral && (
         <Text
-          style={{
-            color: '#666',
-            fontStyle: 'italic',
-            marginBottom: 12,
-            textAlign: 'center',
-            fontSize: fontSizeResponsive,
-          }}
-        >
-          Esta es una categoría general. Solo puedes modificar los pictogramas asociados.
-        </Text>
+        style={{
+          color: '#666',
+          fontStyle: 'italic',
+          marginBottom: 12,
+          textAlign: 'center',
+          fontSize: fontSizeResponsive,
+        }}
+        accessibilityRole="text"
+        accessibilityLabel="Aviso: esta es una categoría general. Solo puedes modificar los pictogramas asociados."
+      >
+        Esta es una categoría general. Solo puedes modificar los pictogramas asociados.
+      </Text>
+      
       )}
 
       <BarraBusqueda valor={busqueda} setValor={setBusqueda} />

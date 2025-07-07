@@ -8,6 +8,7 @@ import {
 import Modal from 'react-native-modal';
 
 import { styles as bibliotecaStyles } from '@/styles/BibliotecaScreen.styles';
+import { TouchableOpacity } from 'react-native';
 import BarraBusqueda from './BarraBusqueda';
 import BotonPrincipal from './BotonPrincipal';
 import ItemSeleccionable from './ItemSeleccionable';
@@ -75,8 +76,28 @@ export default function SelectorItemsModal<T>({
       swipeDirection="down"
       style={modalStyles.modal}
     >
-      <View style={[modalStyles.modalContent, bibliotecaStyles.container]}>
-        <Text style={modalStyles.titulo}>{titulo}</Text>
+      
+      <View
+  style={[modalStyles.modalContent, bibliotecaStyles.container]}
+  accessibilityViewIsModal={true}
+  accessibilityLabel={titulo}
+>
+  <TouchableOpacity
+  onPress={onClose}
+  accessibilityRole="button"
+  accessibilityLabel="Cerrar selector"
+  style={modalStyles.botonCerrar}
+>
+  <Text style={modalStyles.textoCerrar}>Cerrar</Text>
+</TouchableOpacity>
+
+  <Text
+    style={modalStyles.titulo}
+    accessibilityRole="header"
+  >
+    {titulo}
+  </Text>
+
 
         <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
@@ -91,7 +112,12 @@ export default function SelectorItemsModal<T>({
           extraData={seleccionados}
         />
 
-        <BotonPrincipal texto="Confirmar selección" onPress={onClose} />
+<BotonPrincipal
+  texto="Confirmar selección"
+  onPress={onClose}
+  hint="Cierra el selector y guarda la selección actual"
+/>
+
       </View>
     </Modal>
   );
@@ -120,4 +146,17 @@ const modalStyles = StyleSheet.create({
     marginLeft: width * 0.04,         // antes 16
     marginBottom: width * 0.025,      // antes 10
   },
+  botonCerrar: {
+    alignSelf: 'flex-end',
+    marginRight: width * 0.04,
+    marginBottom: width * 0.02,
+    padding: width * 0.015,
+  },
+  
+  textoCerrar: {
+    fontSize: width * 0.04,
+    color: '#007AFF',
+    fontWeight: 'bold',
+  },
+  
 });

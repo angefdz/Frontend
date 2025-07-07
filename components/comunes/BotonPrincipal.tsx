@@ -9,20 +9,28 @@ import {
 interface Props {
   readonly texto: string;
   readonly onPress: () => void;
+  readonly hint?: string; // añadimos prop opcional para personalizar accesibilidad
 }
 
 const { width } = Dimensions.get('window');
 
-export default function BotonPrincipal({ texto, onPress }: Props) {
+export default function BotonPrincipal({ texto, onPress, hint }: Props) {
   return (
     <TouchableOpacity
       style={styles.boton}
       onPress={onPress}
-      accessible
+      accessible={true}
       accessibilityRole="button"
       accessibilityLabel={texto}
+      accessibilityHint={hint || `Presiona para ${texto.toLowerCase()}`}
     >
-      <Text style={styles.texto}>{texto}</Text>
+      <Text
+        style={styles.texto}
+        allowFontScaling={true}
+        adjustsFontSizeToFit={false}
+      >
+        {texto}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -30,19 +38,19 @@ export default function BotonPrincipal({ texto, onPress }: Props) {
 const styles = StyleSheet.create({
   boton: {
     backgroundColor: '#007AFF',
-    paddingVertical: width * 0.02,    // antes 12
-    paddingHorizontal: width * 0.06,   // antes 24
+    paddingVertical: width * 0.02,
+    paddingHorizontal: width * 0.06,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: width * 0.05,           // antes 20
-    width: '100%',                     // ocupa todo el ancho del contenedor
-    maxWidth: 500,                     // no se pasa en pantallas grandes
-    alignSelf: 'center', 
-    marginBottom: 20        // centrado horizontal
+    marginTop: width * 0.05,
+    width: '100%',
+    maxWidth: 500,
+    alignSelf: 'center',
+    marginBottom: 20,
   },
   texto: {
     color: '#FFFFFF',
-    fontSize: width * 0.04,           // antes 16
+    fontSize: width * 0.04,
     fontWeight: 'bold',
   },
 });

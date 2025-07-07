@@ -29,14 +29,28 @@ export default function CategoriasScreen() {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
-        <Text style={styles.sectionTitle}>Todas las categorías</Text>
+        {/* Título de sección */}
+        <Text
+          style={styles.sectionTitle}
+          accessibilityRole="header"
+        >
+          Todas las categorías
+        </Text>
 
+        {/* Barra de búsqueda (debe ser accesible internamente) */}
         <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
+        {/* Cargando, error o contenido */}
         {cargando ? (
           <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
         ) : error ? (
-          <Text style={{ color: 'red', marginTop: 20 }}>{error}</Text>
+          <Text
+            style={{ color: 'red', marginTop: 20 }}
+            accessibilityRole="alert"
+            accessibilityLiveRegion="polite"
+          >
+            {error}
+          </Text>
         ) : (
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ alignItems: 'flex-start' }}>
@@ -62,7 +76,7 @@ export default function CategoriasScreen() {
         )}
       </View>
 
-      {/* Botón flotante responsive */}
+      {/* Botón flotante */}
       <TouchableOpacity
         style={{
           position: 'absolute',
@@ -77,11 +91,18 @@ export default function CategoriasScreen() {
           elevation: 5,
         }}
         onPress={() => router.push('/biblioteca/categorias/crear-categoria')}
-        accessible
+        accessible={true}
         accessibilityRole="button"
         accessibilityLabel="Crear nueva categoría"
+        accessibilityHint="Presiona para abrir el formulario de creación de categoría"
       >
-        <Feather name="plus" size={tamanyoBoton * 0.5} color="white" />
+        <Feather
+          name="plus"
+          size={tamanyoBoton * 0.5}
+          color="white"
+          accessibilityElementsHidden
+          importantForAccessibility="no"
+        />
       </TouchableOpacity>
     </View>
   );

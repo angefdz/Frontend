@@ -35,9 +35,11 @@ function ItemSeleccionable({
   return (
     <TouchableOpacity
       onPress={onPress}
-      accessibilityLabel={`${seleccionado ? 'Seleccionado' : 'No seleccionado'}: ${nombre}`}
+      accessible={true}
       accessibilityRole="checkbox"
-      accessible
+      accessibilityState={{ checked: seleccionado }}
+      accessibilityLabel={nombre}
+      accessibilityHint={`Presiona para ${seleccionado ? 'deseleccionar' : 'seleccionar'} este pictograma`}
     >
       <View
         style={[
@@ -49,9 +51,9 @@ function ItemSeleccionable({
             justifyContent: 'center',
             alignItems: 'center',
           },
-          itemStyle, // estilos externos (si hay)
+          itemStyle,
           {
-            backgroundColor: seleccionado ? '#007AFF' : '#eee', // se aplica al final para que NO se sobrescriba
+            backgroundColor: seleccionado ? '#007AFF' : '#eee',
           },
         ]}
       >
@@ -63,6 +65,8 @@ function ItemSeleccionable({
             marginBottom: itemSize * 0.1,
           }}
           resizeMode="contain"
+          accessibilityElementsHidden={true}
+          importantForAccessibility="no"
         />
         <Text
           style={[
@@ -73,6 +77,7 @@ function ItemSeleccionable({
             },
             textStyle,
           ]}
+          allowFontScaling={true}
         >
           {nombre}
         </Text>

@@ -17,7 +17,8 @@ export default function BarraBusqueda({
 }: Props) {
   return (
     <View style={styles.contenedor}>
-      <Feather name="search" size={width * 0.05} color="#999" style={styles.icono} />
+      <Feather name="search" size={width * 0.05} color="#999" style={styles.icono}  accessibilityElementsHidden
+  importantForAccessibility="no"/>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -27,6 +28,7 @@ export default function BarraBusqueda({
         accessible
         accessibilityRole="search"
         accessibilityLabel="Barra de búsqueda"
+        accessibilityHint="Introduce texto para filtrar los resultados"
       />
     </View>
   );

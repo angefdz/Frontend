@@ -67,18 +67,26 @@ export default function ModalConjugadorVerbo({
 
 
           <Text style={styles.label}>Persona</Text>
-          <ScrollView horizontal style={styles.selector} showsHorizontalScrollIndicator={false}>
-            {personasGramaticales.map((p, index) => (
-              <TouchableOpacity
-                key={p.key}
-                onPress={() => setPersonaIndex(index)}
-                style={[styles.opcion, personaIndex === index && styles.opcionSeleccionada]}
-              >
-                <Image source={{ uri: p.imagen }} style={styles.icono} resizeMode="contain" />
-                <Text style={styles.opcionTexto}>{p.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
+          <ScrollView
+  horizontal
+  contentContainerStyle={styles.personasGrid}
+  showsHorizontalScrollIndicator={false}
+>
+  {personasGramaticales.map((p, index) => (
+    <TouchableOpacity
+      key={p.key}
+      onPress={() => setPersonaIndex(index)}
+      style={[
+        styles.opcion,
+        personaIndex === index && styles.opcionSeleccionada,
+      ]}
+    >
+      <Image source={{ uri: p.imagen }} style={styles.icono} resizeMode="contain" />
+      <Text style={styles.opcionTexto}>{p.label}</Text>
+    </TouchableOpacity>
+  ))}
+</ScrollView>
+
 
           <Text style={styles.conjugacion}>
             Resultado: <Text style={styles.verbo}>{formaConjugada.trim()? formaConjugada: '-'}</Text>
@@ -204,4 +212,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  personasGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    paddingVertical: 4,
+    paddingRight: 12,
+  },
+  
 });

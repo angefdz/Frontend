@@ -10,6 +10,7 @@ interface Props {
   readonly valor: string;
   readonly setValor: (texto: string) => void;
   readonly disabled?: boolean;
+  readonly hint?: string; // opcional
 }
 
 const { width } = Dimensions.get('window');
@@ -19,16 +20,20 @@ export default function InputTexto({
   valor,
   setValor,
   disabled = false,
+  hint,
 }: Props) {
   return (
     <TextInput
       accessible={true}
       accessibilityLabel={placeholder}
+      accessibilityHint={hint || `Introduce ${placeholder.toLowerCase()}`}
       style={[styles.input, disabled && styles.inputDisabled]}
       placeholder={placeholder}
+      placeholderTextColor="#555"
       value={valor}
       onChangeText={setValor}
       editable={!disabled}
+      allowFontScaling={true}
     />
   );
 }
@@ -38,22 +43,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#999',
     borderRadius: 10,
-    padding: width * 0.035,          // antes 12
-    marginVertical: width * 0.03,    // antes 10
-    fontSize: width * 0.045,         // antes 16
+    padding: width * 0.035,
+    marginVertical: width * 0.03,
+    fontSize: width * 0.045,
     backgroundColor: '#FFF',
     minHeight: 48,
     color: '#1A1A1A',
-  },
-  inputFocused: {
-    borderColor: '#007AFF',
   },
   inputDisabled: {
     backgroundColor: '#F0F0F0',
     color: '#1A1A1A',
     borderColor: '#CCC',
-  },
-  inputError: {
-    borderColor: '#D32F2F',
   },
 });

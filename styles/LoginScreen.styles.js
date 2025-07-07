@@ -12,6 +12,12 @@ export const styles = StyleSheet.create({
     padding: width * 0.03,
     justifyContent: 'center',
   },
+  tituloPantalla: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   input: {
     height: width * 0.12,
     borderWidth: width * 0.004,

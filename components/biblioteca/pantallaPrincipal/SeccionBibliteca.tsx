@@ -27,13 +27,15 @@ export default function SeccionBiblioteca<T>({
       <CabeceraSeccion
         titulo={titulo}
         onAddPress={onAddPress}
-        tituloStyle={styles.sectionTitle} // 👈 se pasa el estilo aquí
+        tituloStyle={styles.sectionTitle}
       />
 
       {datos.length === 0 ? (
         <Text
           style={{ marginHorizontal: 16, fontStyle: 'italic' }}
           allowFontScaling={true}
+          accessibilityRole="text"
+          accessibilityLiveRegion="polite"
         >
           {mensajeVacio}
         </Text>
@@ -47,6 +49,7 @@ export default function SeccionBiblioteca<T>({
             accessible
             accessibilityRole="button"
             accessibilityLabel={`Ver más ${titulo.toLowerCase()}`}
+            accessibilityHint={`Presiona para explorar más ${titulo.toLowerCase()}`}
           >
             <Text
               style={styles.verMasText}

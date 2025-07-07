@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+
 import {
   Menu,
   MenuOption,
@@ -23,6 +24,9 @@ export default function MenuConfiguracion({
   setItemsPerPage,
   itemsPerPage,
 }: Props) {
+  const { width } = Dimensions.get('window');
+const iconSize = width * 0.045; // ajusta 0.06 según lo grande que lo quieras
+
   const [mostrarSubmenu, setMostrarSubmenu] = useState(false);
   const [mostrarMenuPrincipal, setMostrarMenuPrincipal] = useState(true);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -67,7 +71,7 @@ export default function MenuConfiguracion({
           >
             <Feather
               name={menuVisible ? 'x' : 'settings'}
-              size={24}
+              size={iconSize}
               color="#aaa"
             />
           </View>

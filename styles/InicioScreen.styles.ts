@@ -109,8 +109,11 @@ export const styles = StyleSheet.create({
   },
   botonConEtiqueta: {
     alignItems: 'center',
-    marginHorizontal: 8,
+    justifyContent: 'center',
+    width: 200, // o el mismo valor que el ancho de botonIcono
+    marginHorizontal: 10,
   },
+  
   etiquetaBoton: {
     marginTop: 4,
     color: 'black',

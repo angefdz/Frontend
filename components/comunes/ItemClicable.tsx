@@ -1,9 +1,15 @@
-// components/biblioteca/shared/ItemClicable.tsx
-
-import { Dimensions, Image, StyleSheet, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-native';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle,
+} from 'react-native';
 
 const { width } = Dimensions.get('window');
-const itemSize = (width - 20 * 2 - 10 * 3) / 4; // igual que en BibliotecaScreen
+const itemSize = (width - 20 * 2 - 10 * 3) / 4;
 const imageSize = itemSize * 0.6;
 const fontSize = itemSize * 0.18;
 
@@ -22,26 +28,28 @@ export default function ItemClicable({
   onPress,
   itemStyle,
   textStyle,
-  
 }: Props) {
   return (
     <TouchableOpacity
       style={[styles.item, itemStyle]}
       onPress={onPress}
-      accessible
+      accessible={true}
       accessibilityRole="button"
-      accessibilityLabel={`Elemento ${nombre}`}
+      accessibilityLabel={nombre}
+      accessibilityHint="Presiona para ver más detalles"
     >
       <Image
         source={{ uri: imagen }}
         style={[styles.imagen, { width: imageSize, height: imageSize }]}
         resizeMode="contain"
+        accessibilityIgnoresInvertColors={true}
+        accessibilityElementsHidden={true}
+        importantForAccessibility="no"
       />
       <Text
         style={[styles.texto, { fontSize }, textStyle]}
         numberOfLines={2}
         allowFontScaling={true}
-        adjustsFontSizeToFit={false}
       >
         {nombre}
       </Text>

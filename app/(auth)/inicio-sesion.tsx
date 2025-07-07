@@ -13,7 +13,11 @@ import {
 import { useInicioSesion } from '../../hooks/auth/login/useInicioSesion';
 import { styles } from '../../styles/LoginScreen.styles';
 
-const {width} = Dimensions.get('window');
+export const options = {
+  title: 'Iniciar sesión',
+};
+
+const { width } = Dimensions.get('window');
 
 export default function InicioSesion() {
   const {
@@ -34,51 +38,71 @@ export default function InicioSesion() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      {/* Título de pantalla */}
+      <Text
+        accessibilityRole="header"
+        style={styles.tituloPantalla}
+      >
+        Inicio de sesión
+      </Text>
+
       <View style={styles.content}>
         {/* Campo de correo */}
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
-          placeholderTextColor="#111"
+          placeholderTextColor="#444"
           value={correo}
           onChangeText={manejarCambioCorreo}
           keyboardType="email-address"
           autoCapitalize="none"
           autoComplete="email"
-          accessibilityLabel="Campo de correo electrónico"
-  accessibilityHint="Introduce tu dirección de correo electrónico"
+          accessibilityLabel="Correo electrónico"
+          accessibilityHint="Introduce tu dirección de correo electrónico"
         />
 
         {/* Campo de contraseña */}
         <TextInput
           style={styles.input}
           placeholder="Contraseña"
-          placeholderTextColor="#111"
+          placeholderTextColor="#444"
           value={contrasena}
           onChangeText={manejarCambioContrasena}
           secureTextEntry
           autoCapitalize="none"
-          accessibilityLabel="Campo de contraseña"
-  accessibilityHint="Introduce tu contraseña para iniciar sesión"
+          accessibilityLabel="Contraseña"
+          accessibilityHint="Introduce tu contraseña para iniciar sesión"
         />
 
         {/* Mensaje de error */}
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {error ? (
+          <Text
+            style={styles.errorText}
+            accessibilityLiveRegion="polite"
+            accessibilityRole="alert"
+          >
+            {error}
+          </Text>
+        ) : null}
 
         {/* Botón de inicio de sesión */}
-        {/*TouchableOpacity: es un componente que permite hacer clic en un elemento */}
         <TouchableOpacity
           style={styles.loginButton}
           onPress={manejarInicioSesion}
           disabled={cargando}
-          accessibilityLabel="Botón de iniciar sesión"
-  accessibilityHint="Presiona para iniciar sesión con tu correo y contraseña"
+          accessible={true}
+          accessibilityLabel="Iniciar sesión"
+          accessibilityHint="Presiona para iniciar sesión con tu correo y contraseña"
+          accessibilityRole="button"
         >
-          {/*Si cargando es true se pone un loading */}
           {cargando ? (
-            <ActivityIndicator color="white" />
+            <ActivityIndicator
+              color="white"
+              accessibilityLabel="Cargando"
+              accessibilityRole="progressbar"
+            />
           ) : (
-            <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+            <Text style={styles.loginButtonText}>Iniciar sesión</Text>
           )}
         </TouchableOpacity>
 
@@ -89,24 +113,40 @@ export default function InicioSesion() {
           <View style={styles.separatorLine} />
         </View>
 
-        {/* Botón de inicio de sesión con Google */}
+        {/* Botón de Google */}
         <TouchableOpacity
           style={styles.googleButton}
           onPress={manejarInicioSesionGoogle}
+          accessible={true}
           accessibilityLabel="Iniciar sesión con Google"
-  accessibilityHint="Presiona para iniciar sesión con tu cuenta de Google"
+          accessibilityHint="Presiona para iniciar sesión con tu cuenta de Google"
+          accessibilityRole="button"
         >
-          <AntDesign name="google" size={width * 0.06} color="#DB4437" />
-          
+          {/* Icono decorativo */}
+          <AntDesign
+            name="google"
+            size={width * 0.06}
+            color="#DB4437"
+            accessibilityElementsHidden
+            importantForAccessibility="no"
+          />
           <Text style={styles.googleButtonText}>Continuar con Google</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={manejarIrARegistro} style={styles.registerButton} accessibilityLabel="Iniciar sesión con Google"
-  accessibilityHint="Presiona para iniciar sesión con tu cuenta de Google">
-        <Text style={styles.registerButtonText}>¿No tienes cuenta? Regístrate</Text>
+        {/* Botón de registro */}
+        <TouchableOpacity
+          onPress={manejarIrARegistro}
+          style={styles.registerButton}
+          accessible={true}
+          accessibilityLabel="Registrarse"
+          accessibilityHint="Presiona para crear una nueva cuenta"
+          accessibilityRole="button"
+        >
+          <Text style={styles.registerButtonText}>
+            ¿No tienes cuenta? Regístrate
+          </Text>
         </TouchableOpacity>
-
       </View>
     </KeyboardAvoidingView>
   );
-} 
+}

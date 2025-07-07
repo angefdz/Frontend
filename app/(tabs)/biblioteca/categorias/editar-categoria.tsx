@@ -157,9 +157,14 @@ export default function EditarCategoriaScreen() {
       <CabeceraSeccion texto="Pictogramas asignados" />
 
       {pictogramasSeleccionadosDatos.length === 0 ? (
-        <Text style={{ marginHorizontal: 16, fontStyle: 'italic' }}>
-          No hay pictogramas añadidos aún.
-        </Text>
+        <Text
+        style={{ marginHorizontal: 16, fontStyle: 'italic' }}
+        accessibilityRole="text"
+        accessibilityLabel="Aviso: no hay pictogramas añadidos aún"
+      >
+        No hay pictogramas añadidos aún.
+      </Text>
+      
       ) : (
         <ListaItems
           items={pictogramasSeleccionadosDatos}
@@ -178,12 +183,16 @@ export default function EditarCategoriaScreen() {
         />
       )}
 
-      <TouchableOpacity
-        onPress={() => setMostrarModal(true)}
-        style={styles.verMasButton}
-      >
-        <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
-      </TouchableOpacity>
+<TouchableOpacity
+  onPress={() => setMostrarModal(true)}
+  style={styles.verMasButton}
+  accessibilityRole="button"
+  accessibilityLabel="Añadir pictogramas"
+  accessibilityHint="Abre el selector de pictogramas para añadir nuevos a la categoría"
+>
+  <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
+</TouchableOpacity>
+
 
       <BotonPrincipal texto="Guardar" onPress={manejarGuardar} />
 

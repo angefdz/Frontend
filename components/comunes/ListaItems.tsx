@@ -2,8 +2,8 @@ import React from 'react';
 import { ScrollView, View, ViewStyle } from 'react-native';
 
 interface Item {
-   id: number;
-   [key: string]: any;
+  id: number;
+  [key: string]: any;
 }
 
 interface Props<T extends Item> {
@@ -20,21 +20,24 @@ export default function ListaItems<T extends Item>({
   containerStyle,
 }: Props<T>) {
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      accessible={false} // evita que el lector agrupe todo como un solo bloque
+      accessibilityRole="none"
+    >
       <View
-  style={[
-    {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      justifyContent: 'flex-start',
-      rowGap: gap,
-      columnGap: gap,
-      paddingBottom: 24,
-    },
-    containerStyle, // ← esto debe estar aquí
-  ]}
->
-
+        style={[
+          {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'flex-start',
+            rowGap: gap,
+            columnGap: gap,
+            paddingBottom: 24,
+          },
+          containerStyle,
+        ]}
+      >
         {items.map((item) => renderItem(item))}
       </View>
     </ScrollView>

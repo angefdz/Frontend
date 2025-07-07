@@ -86,6 +86,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     zIndex: 1000,
+    height: width * 0.1,
   },
   dropdownContainer: {
     borderColor: '#ccc',

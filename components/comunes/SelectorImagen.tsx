@@ -71,16 +71,25 @@ export default function SelectorImagen({
         <Image
           source={{ uri: uriImagen }}
           style={[styles.imagen, { opacity: disabled ? 0.5 : 1 }]}
+          accessibilityElementsHidden={true}
+          importantForAccessibility="no"
         />
       ) : null}
 
       {disabled ? (
-        <Text style={styles.textoDeshabilitado}>Imagen no editable</Text>
+        <Text
+          style={styles.textoDeshabilitado}
+          accessibilityRole="text"
+          accessibilityLiveRegion="polite"
+        >
+          Imagen no editable
+        </Text>
       ) : (
         <TouchableOpacity
           onPress={mostrarOpcionesImagen}
           accessibilityRole="button"
           accessibilityLabel="Seleccionar imagen"
+          accessibilityHint="Presiona para elegir una imagen desde la galería o tomar una foto"
         >
           <Text style={styles.textoLink}>Seleccionar imagen</Text>
         </TouchableOpacity>

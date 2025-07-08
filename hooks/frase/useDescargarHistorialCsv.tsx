@@ -28,7 +28,7 @@ export const useDescargarHistorialCsv = () => {
         dialogTitle: 'Compartir historial de frases',
       });
     } catch (error) {
-      console.error('❌ Error al descargar historial:', error);
+      console.error('Error al descargar historial:', error);
       Alert.alert('Error', 'No se pudo descargar el historial. Inténtalo más tarde.');
     }
   };

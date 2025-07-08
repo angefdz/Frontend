@@ -25,7 +25,7 @@ export default function MenuConfiguracion({
   itemsPerPage,
 }: Props) {
   const { width } = Dimensions.get('window');
-const iconSize = width * 0.045; // ajusta 0.06 según lo grande que lo quieras
+const iconSize = width * 0.045; 
 
   const [mostrarSubmenu, setMostrarSubmenu] = useState(false);
   const [mostrarMenuPrincipal, setMostrarMenuPrincipal] = useState(true);

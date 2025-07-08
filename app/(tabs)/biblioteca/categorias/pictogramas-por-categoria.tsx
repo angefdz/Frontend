@@ -85,7 +85,6 @@ export default function PictogramasPorCategoriaScreen() {
               Alert.alert('Eliminada', 'La categoría se ha eliminado correctamente.');
               router.back();
             } catch (error) {
-              console.error('❌ Error al eliminar categoría:', error);
               Alert.alert('Error', 'No se pudo eliminar la categoría.');
             }
           },

@@ -1,4 +1,4 @@
-// src/api/axiosInstance.ts
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { router } from 'expo-router';
@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// Interceptor de respuesta para gestionar errores globales (como token inválido)
 axiosInstance.interceptors.response.use(
   response => response,
   async error => {

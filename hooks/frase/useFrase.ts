@@ -4,7 +4,6 @@ import Toast from 'react-native-toast-message';
 
 import { useAuth } from '@/context/AuthContext';
 import { useVoz } from '@/context/VozContext';
-import { VOICES } from '@/data/vozOpciones';
 import { guardarFrase } from '@/hooks/frase/useGuardarFrase';
 import { PictogramaSimple } from '@/types';
 import { usePrediccionPictograma } from '../utils/prediccion';
@@ -19,7 +18,7 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
 
   const [frase, setFrase] = useState<string[]>([]);
   const [sugerencia, setSugerencia] = useState<PictogramaSimple | undefined>(pictogramaHola);
-
+  const [vozMasculina, setVozMasculina] = useState<string | undefined>();
 
   const { sugerencia: sugerenciaTexto } = usePrediccionPictograma(frase);
 
@@ -35,6 +34,21 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
 
     setSugerencia(sugerido ?? pictogramaHola!);
   }, [frase, sugerenciaTexto, pictogramasDisponibles]);
+
+  // Obtener voz masculina real si hace falta
+  useEffect(() => {
+    if (tipoVoz === 'masculina') {
+      Speech.getAvailableVoicesAsync().then(voices => {
+        const voz = voices.find(v =>
+          v.language === 'es-ES' && v.name.toLowerCase().includes('male')
+        );
+        if (voz) setVozMasculina(voz.identifier);
+        else if (voices.find(v => v.language === 'es-ES')) {
+          setVozMasculina(voices.find(v => v.language === 'es-ES')!.identifier);
+        }
+      });
+    }
+  }, [tipoVoz]);
 
   const añadirPictograma = (palabra: string) => {
     setFrase(prev => {
@@ -56,22 +70,27 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
 
   const reproducirFrase = async () => {
     const texto = frase.join(' ');
-    if (!texto || !token) return; // ← asegurarse de que hay token
-  
-    const clave = tipoVoz.toLowerCase() as keyof typeof VOICES;
-    const voiceId = VOICES[clave];
-  
+    if (!texto || !token) return;
+
     try {
-      await guardarFrase(token, texto); // ← ahora token es seguro
-  
+      await guardarFrase(token, texto);
       await Speech.stop();
-      Speech.speak(texto, {
-        language: 'es-ES',
-        rate: 1,
-        pitch: 1.1,
-        voice: voiceId,
-      });
-  
+
+      if (tipoVoz === 'femenina') {
+        Speech.speak(texto, {
+          language: 'es-ES',
+          pitch: 1.2,
+          rate: 1,
+        });
+      } else if (tipoVoz === 'masculina' && vozMasculina) {
+        Speech.speak(texto, {
+          language: 'es-ES',
+          pitch: 1.0,
+          rate: 1,
+          voice: vozMasculina,
+        });
+      }
+
       Toast.show({
         type: 'success',
         text1: 'Frase guardada',
@@ -79,14 +98,13 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
         position: 'bottom',
       });
     } catch (error) {
-      console.error('❌ Error al reproducir o guardar frase:', error);
+      console.error('Error al reproducir o guardar frase:', error);
       Toast.show({
         type: 'error',
         text1: 'Error al guardar o reproducir la frase',
       });
     }
   };
-  
 
   const usarSugerencia = () => {
     if (sugerencia) {

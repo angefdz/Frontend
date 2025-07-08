@@ -66,8 +66,10 @@ export const useInicioSesion = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Credenciales inválidas');
+        const body = await response.json();
+        throw new Error(body?.error || 'Credenciales inválidas');
       }
+      
 
       const { token, usuarioId } = await response.json();
 
@@ -78,10 +80,11 @@ export const useInicioSesion = () => {
       marcarPictogramasComoDesactualizados();
 
       router.replace('/pantalla-principal');
-    } catch (e) {
+    } catch (e: any) {
       console.error('Error al iniciar sesión:', e);
-      setError('Error al iniciar sesión. Intenta de nuevo.');
-    } finally {
+      setError(e.message || 'Error al iniciar sesión. Intenta de nuevo.');
+    }
+    finally {
       setCargando(false);
     }
   };
@@ -93,10 +96,6 @@ export const useInicioSesion = () => {
       console.error('Error al iniciar sesión con Google:', error);
       setError('No se pudo iniciar sesión con Google.');
     }
-  };
-
-  const manejarOlvideContrasena = () => {
-    router.push('/recuperar-contrasena');
   };
 
   const manejarIrARegistro = () => {
@@ -112,7 +111,6 @@ export const useInicioSesion = () => {
     manejarCambioContrasena,
     manejarInicioSesion,
     manejarInicioSesionGoogle,
-    manejarOlvideContrasena,
     manejarIrARegistro,
   };
 };

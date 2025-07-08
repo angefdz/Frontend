@@ -1,4 +1,3 @@
-// src/context/VozContext.tsx
 import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionUsuario';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { useAuth } from './AuthContext';

@@ -26,9 +26,7 @@ import { styles } from '@/styles/BibliotecaScreen.styles';
 
 const { width } = Dimensions.get('window');
 const paddingResponsive = width * 0.05;
-
 const fontSizeResponsive = width * 0.04;
-
 
 export default function CrearCategoriaScreen() {
   const router = useRouter();
@@ -85,7 +83,6 @@ export default function CrearCategoriaScreen() {
       Alert.alert('Éxito', 'Categoría creada correctamente');
       router.back();
     } catch (error) {
-      console.error('❌ Error al crear categoría:', error);
       Alert.alert('Error', 'No se pudo crear la categoría');
     } finally {
       setSubiendo(false);
@@ -100,30 +97,27 @@ export default function CrearCategoriaScreen() {
   if (cargandoPictos) {
     contenidoPictogramas = (
       <Text
-  style={{
-    marginHorizontal: paddingResponsive,
-    fontStyle: 'italic',
-    fontSize: fontSizeResponsive,
-  }}
->
-  Cargando pictogramas...
-</Text>
-
+        style={{
+          marginHorizontal: paddingResponsive,
+          fontStyle: 'italic',
+          fontSize: fontSizeResponsive,
+        }}
+      >
+        Cargando pictogramas...
+      </Text>
     );
   } else if (pictogramas.length === 0) {
     contenidoPictogramas = (
       <Text
-  style={{
-    marginHorizontal: paddingResponsive,
-    fontStyle: 'italic',
-    fontSize: fontSizeResponsive,
-    paddingBottom:width*0.01
-  }}
->
-  No hay pictogramas añadidos aún.
-</Text>
-
-
+        style={{
+          marginHorizontal: paddingResponsive,
+          fontStyle: 'italic',
+          fontSize: fontSizeResponsive,
+          paddingBottom: width * 0.01,
+        }}
+      >
+        No hay pictogramas añadidos aún.
+      </Text>
     );
   } else {
     contenidoPictogramas = (

@@ -22,7 +22,7 @@ export default function ListaItems<T extends Item>({
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
-      accessible={false} // evita que el lector agrupe todo como un solo bloque
+      accessible={false} 
       accessibilityRole="none"
     >
       <View

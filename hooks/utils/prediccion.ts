@@ -1,5 +1,3 @@
-// src/hooks/utils/prediccion.ts
-
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAutorizarAcceso } from '../auth/autorizacion/useAutorizarAcceso';
@@ -25,10 +23,10 @@ export const usePrediccionPictograma = (frase: string[]) => {
           },
         });
 
-        setSugerencia(response.data); // asumiendo que el backend devuelve un string
+        setSugerencia(response.data); 
         setError(null);
       } catch (err: any) {
-        console.error('❌ Error al predecir pictograma:', err);
+        console.error('Error al predecir pictograma:', err);
         setError('No se pudo predecir el pictograma');
       }
     };

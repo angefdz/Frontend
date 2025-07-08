@@ -9,7 +9,7 @@ import {
 interface Props {
   readonly texto: string;
   readonly onPress: () => void;
-  readonly hint?: string; // añadimos prop opcional para personalizar accesibilidad
+  readonly hint?: string; 
 }
 
 const { width } = Dimensions.get('window');

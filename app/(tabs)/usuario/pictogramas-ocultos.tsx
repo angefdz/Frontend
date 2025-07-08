@@ -29,7 +29,7 @@ export default function PictogramasOcultosScreen() {
   const cerrarModal = () => {
     setModalVisible(false);
     setPictogramaSeleccionadoId(null);
-    recargarPictogramas(); // por si se desocultó
+    recargarPictogramas(); 
   };
 
   if (cargando) {

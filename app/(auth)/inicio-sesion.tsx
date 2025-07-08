@@ -1,5 +1,5 @@
 import { AntDesign } from '@expo/vector-icons';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -28,26 +28,23 @@ export default function InicioSesion() {
     manejarCambioCorreo,
     manejarCambioContrasena,
     manejarInicioSesion,
-    manejarInicioSesionGoogle,
-    manejarOlvideContrasena,
     manejarIrARegistro,
   } = useInicioSesion();
+
+  const [mostrarContrasena, setMostrarContrasena] = useState(false);
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      {/* Título de pantalla */}
-      <Text
-        accessibilityRole="header"
-        style={styles.tituloPantalla}
-      >
-        Inicio de sesión
-      </Text>
+      
 
       <View style={styles.content}>
-        {/* Campo de correo */}
+      
+        <Text accessibilityRole="header" style={styles.title}>
+        Inicio de sesión
+      </Text>
         <TextInput
           style={styles.input}
           placeholder="Correo electrónico"
@@ -61,20 +58,45 @@ export default function InicioSesion() {
           accessibilityHint="Introduce tu dirección de correo electrónico"
         />
 
-        {/* Campo de contraseña */}
-        <TextInput
-          style={styles.input}
-          placeholder="Contraseña"
-          placeholderTextColor="#444"
-          value={contrasena}
-          onChangeText={manejarCambioContrasena}
-          secureTextEntry
-          autoCapitalize="none"
-          accessibilityLabel="Contraseña"
-          accessibilityHint="Introduce tu contraseña para iniciar sesión"
-        />
+        <View
+          style={[
+            styles.input,
+            {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingRight: width * 0.02,
+            },
+          ]}
+        >
+          <View style={{ flex: 1 }}>
+            <TextInput
+              style={{ fontSize: width * 0.04 }}
+              placeholder="Contraseña"
+              placeholderTextColor="#444"
+              value={contrasena}
+              onChangeText={manejarCambioContrasena}
+              secureTextEntry={!mostrarContrasena}
+              autoCapitalize="none"
+              accessibilityLabel="Contraseña"
+              accessibilityHint="Introduce tu contraseña para iniciar sesión"
+            />
+          </View>
 
-        {/* Mensaje de error */}
+          <TouchableOpacity
+            onPress={() => setMostrarContrasena((prev) => !prev)}
+            accessible={true}
+            accessibilityLabel={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            accessibilityRole="button"
+          >
+            <AntDesign
+              name={mostrarContrasena ? 'eye' : 'eyeo'}
+              size={width * 0.06}
+              color="#666"
+            />
+          </TouchableOpacity>
+        </View>
+
         {error ? (
           <Text
             style={styles.errorText}
@@ -85,7 +107,6 @@ export default function InicioSesion() {
           </Text>
         ) : null}
 
-        {/* Botón de inicio de sesión */}
         <TouchableOpacity
           style={styles.loginButton}
           onPress={manejarInicioSesion}
@@ -106,34 +127,6 @@ export default function InicioSesion() {
           )}
         </TouchableOpacity>
 
-        {/* Separador */}
-        <View style={styles.separator}>
-          <View style={styles.separatorLine} />
-          <Text style={styles.separatorText}>o</Text>
-          <View style={styles.separatorLine} />
-        </View>
-
-        {/* Botón de Google */}
-        <TouchableOpacity
-          style={styles.googleButton}
-          onPress={manejarInicioSesionGoogle}
-          accessible={true}
-          accessibilityLabel="Iniciar sesión con Google"
-          accessibilityHint="Presiona para iniciar sesión con tu cuenta de Google"
-          accessibilityRole="button"
-        >
-          {/* Icono decorativo */}
-          <AntDesign
-            name="google"
-            size={width * 0.06}
-            color="#DB4437"
-            accessibilityElementsHidden
-            importantForAccessibility="no"
-          />
-          <Text style={styles.googleButtonText}>Continuar con Google</Text>
-        </TouchableOpacity>
-
-        {/* Botón de registro */}
         <TouchableOpacity
           onPress={manejarIrARegistro}
           style={styles.registerButton}

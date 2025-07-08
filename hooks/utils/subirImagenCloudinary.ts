@@ -1,16 +1,8 @@
-// utils/subirImagenCloudinary.ts
+
 
 import axios from 'axios';
 
-/**
- * Sube una imagen local a Cloudinary y devuelve la URL pública.
- * 
- * @param uri URI local de la imagen (desde ImagePicker o similar)
- * @param folder Carpeta en Cloudinary donde guardar la imagen (por ejemplo: 'tfg/usuarios/152/categorias')
- * @param preset Nombre del upload_preset sin firmar
- * @param cloudName Nombre de tu cuenta en Cloudinary
- * @returns URL pública de la imagen subida
- */
+
 export const subirImagenCloudinary = async (
   uri: string,
   folder: string,
@@ -28,7 +20,7 @@ export const subirImagenCloudinary = async (
   } as any);
 
   formData.append('upload_preset', preset);
-  formData.append('folder', folder); // 🗂 Aquí le decimos la carpeta
+  formData.append('folder', folder); 
 
   try {
     const response = await axios.post(
@@ -43,7 +35,7 @@ export const subirImagenCloudinary = async (
 
     return response.data.secure_url;
   } catch (error: any) {
-    console.error('❌ Error al subir imagen a Cloudinary:', error.response?.data ?? error.message);
+    console.error('Error al subir imagen a Cloudinary:', error.response?.data ?? error.message);
     throw new Error('No se pudo subir la imagen a Cloudinary');
   }
 };

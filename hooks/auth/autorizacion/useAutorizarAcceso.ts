@@ -19,14 +19,14 @@ export const useAutorizarAcceso = () => {
         setToken(t);
         setUsuarioId(parseInt(id));
       } catch (err) {
-        console.warn('⚠️ Token inválido o expirado. Redirigiendo a login...');
-        console.error('❌ Error al cargar el token o el usuarioId:', err); // 👈 AÑADIDO
+        console.warn('Token inválido o expirado. Redirigiendo a login...');
+        console.error('Error al cargar el token o el usuarioId:', err); 
 
         console.warn('Token inválido o expirado. Redirigiendo a login...');
         try {
           await AsyncStorage.clear();
         } catch (clearErr) {
-          console.error('❌ Error al limpiar AsyncStorage:', clearErr);
+          console.error('Error al limpiar AsyncStorage:', clearErr);
         }
         router.replace('/inicio-sesion');
       } finally {
@@ -41,7 +41,7 @@ export const useAutorizarAcceso = () => {
     try {
       await AsyncStorage.clear();
     } catch (err) {
-      console.error('❌ Error al cerrar sesión limpiando AsyncStorage:', err);
+      console.error('Error al cerrar sesión limpiando AsyncStorage:', err);
     }
     setToken(null);
     setUsuarioId(null);

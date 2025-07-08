@@ -1,4 +1,4 @@
-// components/biblioteca/pictogramas/LoaderPictograma.tsx
+
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { ActivityIndicator, Text, View } from 'react-native';
 

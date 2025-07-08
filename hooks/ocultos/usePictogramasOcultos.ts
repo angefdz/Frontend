@@ -1,4 +1,3 @@
-// src/hooks/ocultos/usePictogramasOcultos.ts
 import { PictogramaConCategorias } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -25,7 +24,7 @@ export const usePictogramasOcultos = () => {
       setPictogramas(res.data);
       setError(null);
     } catch (err: any) {
-      console.error('❌ Error al cargar pictogramas ocultos:', err);
+      console.error('Error al cargar pictogramas ocultos:', err);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

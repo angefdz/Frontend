@@ -1,4 +1,3 @@
-// context/PictogramasContext.tsx
 import { useAuth } from '@/context/AuthContext';
 import { usePictogramasVisibles as usePictogramasHook } from '@/hooks/biblioteca/usePictogramasVisibles';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';

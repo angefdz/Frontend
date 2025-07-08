@@ -134,17 +134,17 @@ const modalStyles = StyleSheet.create({
   },
   modalContent: {
     backgroundColor: '#fff',
-    paddingTop: width * 0.06,         // antes 30
-    paddingBottom: width * 0.05,      // antes 20
+    paddingTop: width * 0.06,         
+    paddingBottom: width * 0.05,      
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
   },
   titulo: {
-    fontSize: width * 0.05,           // antes 18
+    fontSize: width * 0.05,       
     fontWeight: 'bold',
-    marginLeft: width * 0.04,         // antes 16
-    marginBottom: width * 0.025,      // antes 10
+    marginLeft: width * 0.04,       
+    marginBottom: width * 0.025,      
   },
   botonCerrar: {
     alignSelf: 'flex-end',

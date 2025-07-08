@@ -46,9 +46,9 @@ export const useConfiguracionUsuario = (
           }
         );
         setConfiguracion(response.data);
-        console.log('✅ Configuración cargada con éxito.');
+        console.log('Configuración cargada con éxito.');
       } catch (err) {
-        console.error('❌ Error al cargar la configuración:', err);
+        console.error('Error al cargar la configuración:', err);
         if (isAxiosError(err) && err.response) {
           setErrorConfiguracion(
             `Error ${err.response.status}: ${

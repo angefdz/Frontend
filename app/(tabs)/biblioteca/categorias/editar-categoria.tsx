@@ -84,7 +84,6 @@ export default function EditarCategoriaScreen() {
       Alert.alert('Éxito', 'Categoría actualizada correctamente');
       router.back();
     } catch (error) {
-      console.error('❌ Error al actualizar categoría:', error);
       Alert.alert('Error', 'No se pudo actualizar la categoría');
     }
   };
@@ -119,7 +118,7 @@ export default function EditarCategoriaScreen() {
       {esGeneral && (
   <View
     style={{
-      marginHorizontal: width * 0.05, // 5% del ancho de pantalla
+      marginHorizontal: width * 0.05, 
       backgroundColor: '#f2f2f2',
       borderRadius: 10,
       padding: 12,

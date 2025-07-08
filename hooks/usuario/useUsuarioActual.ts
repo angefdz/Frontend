@@ -1,4 +1,3 @@
-// src/hooks/usuario/useUsuarioActual.ts
 import { useAuth } from '@/context/AuthContext';
 import axios from '@/hooks/utils/axiosInstance';
 import { useEffect, useState } from 'react';
@@ -37,7 +36,7 @@ export const useUsuarioActual = () => {
     if (token) {
       fetchUsuario();
     }
-  }, [token]); // ✅ Ya no se usa cargandoToken
+  }, [token]); 
 
   return { usuario, cargando, error, recargarUsuario: fetchUsuario };
 };

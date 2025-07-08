@@ -25,7 +25,7 @@ export default function SugerenciaPictograma({
   const screenWidth = Dimensions.get('window').width;
   const padding = 32;
 
-  // 👇 Aquí se ajusta el tamaño como si fueran 9 si hay 4 en pantalla
+
   const itemsUsados = itemsPerPage === 4 ? 9 : itemsPerPage;
   const columnas = Math.sqrt(itemsUsados);
   const itemSize = (screenWidth - padding) / columnas;
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   item: {
-    backgroundColor: '#fffbe6', // sutil diferencia
+    backgroundColor: '#fffbe6', 
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: '#f0b429',

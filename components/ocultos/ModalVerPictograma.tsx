@@ -57,7 +57,7 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
         );
         setOculto(ocultoRes.data === true);
       } catch (err) {
-        console.error('❌ Error al cargar el pictograma:', err);
+        console.error('Error al cargar el pictograma:', err);
         setError('No se pudo cargar el pictograma');
       } finally {
         setCargando(false);
@@ -78,12 +78,12 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
         await axios.delete(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('✅ Pictograma visible', 'El pictograma se ha desocultado.');
+        Alert.alert('Pictograma visible', 'El pictograma se ha desocultado.');
       } else {
         await axios.post(url, null, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado.');
+        Alert.alert('Pictograma oculto', 'El pictograma se ha ocultado.');
       }
 
       setOculto((prev) => !prev);

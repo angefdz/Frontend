@@ -13,7 +13,7 @@ import { styles } from '@/styles/PerfilScreen.styles';
 
 export default function CambiarPasswordScreen() {
   const router = useRouter();
-  const { cambiarPassword } = useCambiarPassword(); // ← le pasamos el token
+  const { cambiarPassword } = useCambiarPassword(); 
 
   const [passwordActual, setPasswordActual] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
@@ -27,7 +27,7 @@ export default function CambiarPasswordScreen() {
     });
 
     if (ok) {
-      router.back(); // Volver si todo fue bien
+      router.back(); 
     }
   };
 

@@ -30,7 +30,7 @@ export const useEliminarCuenta = () => {
 
               if (response.status === 204) {
                 Alert.alert('Cuenta eliminada', 'Tu cuenta ha sido eliminada correctamente.');
-                cerrarSesion(); // 🧹 limpia token/contexto
+                cerrarSesion(); 
                 router.replace('/inicio-sesion');
               } else {
                 Alert.alert('Error', 'No se pudo eliminar la cuenta.');

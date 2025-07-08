@@ -1,4 +1,4 @@
-// src/context/AuthContext.tsx
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setUsuarioId(Number(storedUsuarioId));
         }
       } catch (e) {
-        console.error('❌ Error al cargar datos del usuario:', e);
+        console.error('Error al cargar datos del usuario:', e);
       } finally {
         setCargandoAuth(false);
       }
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         await AsyncStorage.setItem('usuarioId', usuarioId.toString());
       }
     } catch (e) {
-      console.error('❌ Error al guardar datos de autenticación:', e);
+      console.error('Error al guardar datos de autenticación:', e);
     }
   };
 
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('usuarioId');
     } catch (e) {
-      console.error('❌ Error al limpiar datos de sesión:', e);
+      console.error('Error al limpiar datos de sesión:', e);
     }
 
     setToken(null);

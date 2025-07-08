@@ -35,7 +35,7 @@ function GridPictogramas({
       items={pictogramas ?? []}
       itemsPerPage={itemsPerPage}
       renderItem={renderItem}
-      availableHeight={height * 0.6} // Ajusta este valor si necesitas más o menos espacio vertical
+      availableHeight={height * 0.6} 
     />
   );
 }

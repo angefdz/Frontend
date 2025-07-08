@@ -4,7 +4,6 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { MenuProvider } from 'react-native-popup-menu';
 
-// Iconos fuera del componente (evitas recrearlos en cada render)
 const HomeIcon = (size: number) => ({ color }: { color: string }) => (
   <Feather name="home" color={color} size={size} />
 );

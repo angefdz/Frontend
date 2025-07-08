@@ -112,6 +112,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 200, // o el mismo valor que el ancho de botonIcono
     marginHorizontal: 10,
+    flex: 1,
   },
   
   etiquetaBoton: {

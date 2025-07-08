@@ -6,8 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-// 👉 Importa los contextos
-import { AuthProvider } from '@/context/AuthContext'; // <== Añadido contexto Auth
+import { AuthProvider } from '@/context/AuthContext';
 import { CategoriasProvider } from '@/context/CategoriasContext';
 import { PictogramasProvider } from '@/context/PictogramasContext';
 import { VozProvider } from '@/context/VozContext';

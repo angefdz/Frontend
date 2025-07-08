@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default function TextoFraseExpandibleAnimado({ frase }: Props) {
-  const alturaInicial = Dimensions.get('window').height * 0.07; // 5% del alto de pantalla
+  const alturaInicial = Dimensions.get('window').height * 0.07; 
 const [contenidoAltura, setContenidoAltura] = useState(alturaInicial);
 const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
 
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: '#fdfdfd',
     overflow: 'hidden',
-    minHeight: 50, // se mantiene un mínimo
+    minHeight: 50,
   },
   medidor: {
     position: 'absolute',

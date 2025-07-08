@@ -3,14 +3,14 @@ import { Image, Text, TextStyle, TouchableOpacity, ViewStyle } from 'react-nativ
 interface Categoria {
    id: number;
    nombre: string;
-  imagen: string; // URL de imagen
+  imagen: string; 
 }
 
 interface Props {
   readonly categoria: Categoria;
   readonly seleccionada?: boolean;
   readonly itemStyle?: ViewStyle;
-  readonly emojiStyle?: any; // Para estilo de imagen, no solo texto
+  readonly emojiStyle?: any; 
   readonly textStyle?: TextStyle;
   readonly onPress?: () => void;
 }

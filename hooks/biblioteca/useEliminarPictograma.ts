@@ -11,7 +11,7 @@ export const useEliminarPictograma = () => {
     pictogramaId: number,
     token: string | null,
     esPersonalizado: boolean,
-    onEliminado?: () => void // ✅ callback opcional
+    onEliminado?: () => void 
   ) => {
     if (!token || !pictogramaId) return;
 
@@ -39,7 +39,7 @@ export const useEliminarPictograma = () => {
               Alert.alert('Eliminado', 'El pictograma se ha eliminado correctamente.');
               router.back();
 
-              if (onEliminado) onEliminado(); // ✅ notificar al contexto
+              if (onEliminado) onEliminado(); 
             } catch (err) {
               console.error('❌ Error al eliminar pictograma:', err);
               Alert.alert('Error', 'No se pudo eliminar el pictograma.');

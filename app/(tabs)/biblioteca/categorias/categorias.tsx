@@ -29,7 +29,7 @@ export default function CategoriasScreen() {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.container}>
-        {/* Título de sección */}
+       
         <Text
           style={styles.sectionTitle}
           accessibilityRole="header"
@@ -37,10 +37,8 @@ export default function CategoriasScreen() {
           Todas las categorías
         </Text>
 
-        {/* Barra de búsqueda (debe ser accesible internamente) */}
         <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
-        {/* Cargando, error o contenido */}
         {cargando ? (
           <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
         ) : error ? (
@@ -75,8 +73,6 @@ export default function CategoriasScreen() {
           </ScrollView>
         )}
       </View>
-
-      {/* Botón flotante */}
       <TouchableOpacity
         style={{
           position: 'absolute',

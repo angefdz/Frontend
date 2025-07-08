@@ -13,7 +13,7 @@ type Props = {
   readonly gridStyle?: ViewStyle;
   readonly itemStyle?: ViewStyle;
   readonly itemTextStyle?: TextStyle;
-  readonly itemEmojiStyle?: TextStyle; // ← nuevo
+  readonly itemEmojiStyle?: TextStyle; 
   readonly onItemPress: (item: Item) => void;
   readonly error?: string | null;
 };
@@ -42,7 +42,7 @@ export default function ListaFiltrada({
               imagen={item.imagen}
               itemStyle={itemStyle}
               textStyle={itemTextStyle}
-              emojiStyle={itemEmojiStyle} // ← añadido aquí
+              emojiStyle={itemEmojiStyle} 
               onPress={() => onItemPress(item)}
             />
           ))}

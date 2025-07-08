@@ -1,4 +1,4 @@
-// utils/fetchImagenArasaac.ts
+
 export async function fetchImagen(palabra: string): Promise<string | null> {
     try {
       const response = await fetch(
@@ -10,10 +10,10 @@ export async function fetchImagen(palabra: string): Promise<string | null> {
   
       const pictogramaId = data[0]._id;
   
-      // Construir URL a imagen en PNG
+
       return `https://static.arasaac.org/pictograms/${pictogramaId}/500/1_1_1.png`;
     } catch (error) {
-      console.error(`❌ Error buscando "${palabra}" en ARASAAC:`, error);
+      console.error(`Error buscando "${palabra}" en ARASAAC:`, error);
       return null;
     }
   }

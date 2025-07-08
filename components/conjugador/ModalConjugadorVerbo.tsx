@@ -25,8 +25,8 @@ export default function ModalConjugadorVerbo({
   onClose,
   onConfirm,
 }: Props) {
-  const [tiempoIndex, setTiempoIndex] = useState(1); // 0: present
-  const [personaIndex, setPersonaIndex] = useState(0); // 0: yo
+  const [tiempoIndex, setTiempoIndex] = useState(1); 
+  const [personaIndex, setPersonaIndex] = useState(0); 
 
   const formaConjugada = useMemo(() => {
     try {

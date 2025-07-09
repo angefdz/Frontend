@@ -34,7 +34,7 @@ export default function ModalConjugadorVerbo({
       const personaIdx = personaIndex as 0 | 1 | 2 | 3 | 4 | 5;
       const tiempoKey = `INDICATIVE_${tiemposVerbales[tiempoIndex].key.toUpperCase()}`;
 
-      // Verbo irregular
+      //verbo irregular
       if (verbosIrregulares.hasOwnProperty(verbo)) {
         const conjugaciones = (verbosIrregulares as any)[verbo];
         const conjugacionesPorTiempo = conjugaciones[tiempoKey];
@@ -44,7 +44,7 @@ export default function ModalConjugadorVerbo({
         }
       }
 
-      // Verbo regular
+      //verbo regular
       return (
         getConjugation(verbo, tiempoKey as any, personaIdx) ?? ''
       );

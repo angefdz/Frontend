@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext'; 
+import { useAuth } from '@/context/AuthContext';
 import { Pictograma } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -19,14 +19,12 @@ export const usePictogramas = () => {
 
     try {
       setCargando(true);
-      console.log('📥 Solicitando pictogramas desde:', `${API_BASE_URL}/pictogramas`);
       const res = await axios.get(`${API_BASE_URL}/pictogramas`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       setPictogramas(res.data);
-      console.log('Pictogramas cargados correctamente:', res.data);
     } catch (e: any) {
       console.error('Error cargando pictogramas:', e.message);
       setError('No se pudieron cargar los pictogramas');

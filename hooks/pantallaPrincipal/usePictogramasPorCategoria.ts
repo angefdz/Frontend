@@ -16,7 +16,6 @@ export const usePictogramasPorCategoria = (categoriaId: string | null) => {
 
     try {
       setCargando(true);
-      console.log('Cargando pictogramas para categoría:', categoriaId);
       const res = await axios.get(`${API_BASE_URL}/pictogramas/por-categoria/${categoriaId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });

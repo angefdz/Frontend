@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext'; 
+import { useAuth } from '@/context/AuthContext';
 import { PictogramaConCategorias, PictogramaSimple } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -12,9 +12,9 @@ export const usePictogramasVisibles = () => {
   const [error, setError] = useState<string | null>(null);
 
   const cargarPictogramas = useCallback(async () => {
-    console.log('[usePictogramasVisibles] Intentando cargar pictogramas...');
+    //console.log('[usePictogramasVisibles] Intentando cargar pictogramas...');
     if (!token) {
-      console.warn('[usePictogramasVisibles] Token no disponible, abortando carga.');
+      //console.warn('[usePictogramasVisibles] Token no disponible, abortando carga.');
       setCargando(false);
       setError('Token no disponible');
       return;
@@ -27,11 +27,8 @@ export const usePictogramasVisibles = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log('[usePictogramasVisibles] Respuesta del endpoint:', res);
 
-      if (!Array.isArray(res.data)) {
-        throw new Error('La respuesta no es un array: ' + JSON.stringify(res.data));
-      }
+      
 
       const pictogramasSimples: PictogramaSimple[] = res.data.map(p => ({
         id: p.id,
@@ -44,7 +41,6 @@ export const usePictogramasVisibles = () => {
       setPictogramas(pictogramasSimples);
       setError(null);
     } catch (err: any) {
-      console.error('Error al cargar pictogramas visibles:', err);
       setError('Error al cargar los pictogramas visibles');
       setPictogramas([]);
     } finally {

@@ -67,7 +67,6 @@ export default function PictogramasScreen() {
         />
       )}
 
-      {/* Botón flotante de crear pictograma */}
       <TouchableOpacity
         style={{
           position: 'absolute',

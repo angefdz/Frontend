@@ -1,4 +1,3 @@
-// src/hooks/usuario/useCambiarPassword.ts
 import { useAuth } from '@/context/AuthContext';
 import { Alert } from 'react-native';
 

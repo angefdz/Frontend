@@ -1,4 +1,3 @@
-// components/frase/FraseActual.tsx
 
 import { styles } from '@/styles/InicioScreen.styles';
 import React from 'react';

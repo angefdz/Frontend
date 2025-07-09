@@ -30,7 +30,7 @@ export function useCategoriasPorIds(ids: number[], token: string | null) {
         );
         setCategorias(response.data);
       } catch (err) {
-        console.error('❌ Error al obtener categorías por IDs:', err);
+        console.error('Error al obtener categorías por IDs:', err);
         setError('No se pudieron cargar las categorías seleccionadas.');
         setCategorias([]);
       } finally {

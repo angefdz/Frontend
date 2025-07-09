@@ -1,6 +1,4 @@
-// src/hooks/pictogramas/usePictogramasVisibles.ts
-
-import { useAuth } from '@/context/AuthContext'; // ✅ CAMBIO
+import { useAuth } from '@/context/AuthContext'; 
 import { PictogramaConCategorias, PictogramaSimple } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -35,7 +33,6 @@ export const usePictogramasVisibles = () => {
         throw new Error('La respuesta no es un array: ' + JSON.stringify(res.data));
       }
 
-      // Mapea para devolver solo propiedades de PictogramaSimple
       const pictogramasSimples: PictogramaSimple[] = res.data.map(p => ({
         id: p.id,
         nombre: p.nombre,
@@ -47,7 +44,7 @@ export const usePictogramasVisibles = () => {
       setPictogramas(pictogramasSimples);
       setError(null);
     } catch (err: any) {
-      console.error('❌ Error al cargar pictogramas visibles:', err);
+      console.error('Error al cargar pictogramas visibles:', err);
       setError('Error al cargar los pictogramas visibles');
       setPictogramas([]);
     } finally {
@@ -57,7 +54,6 @@ export const usePictogramasVisibles = () => {
 
   useEffect(() => {
     if (token) {
-      console.log('[usePictogramasVisibles] Token cargado, ejecutando carga...');
       cargarPictogramas();
     }
   }, [token, cargarPictogramas]);

@@ -28,7 +28,7 @@ export const useCategoriasConPictogramas = () => {
     } finally {
       setCargando(false);
     }
-  }, [token]); // <-- importante que dependa solo de token
+  }, [token]); 
 
   useEffect(() => {
     if (!cargandoToken && token) {

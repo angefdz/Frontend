@@ -4,9 +4,26 @@ import Toast from 'react-native-toast-message';
 
 import { useAuth } from '@/context/AuthContext';
 import { useVoz } from '@/context/VozContext';
+import verbos from '@/data/verbosIrregulares.json';
 import { guardarFrase } from '@/hooks/frase/useGuardarFrase';
 import { PictogramaSimple } from '@/types';
 import { usePrediccionPictograma } from '../utils/prediccion';
+
+export function buscarInfinitivo(palabra: string): string | null {
+  const palabraLimpia = palabra.trim().toLowerCase();
+
+  for (const [infinitivo, tiempos] of Object.entries(verbos)) {
+    for (const formas of Object.values(tiempos)) {
+      for (const forma of formas) {
+        if (forma.toLowerCase().includes(palabraLimpia)) {
+          return infinitivo;
+        }
+      }
+    }
+  }
+
+  return null;
+}
 
 export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   const { tipoVoz } = useVoz();
@@ -28,14 +45,26 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
       return;
     }
 
-    const sugerido = pictogramasDisponibles.find(
-      p => p.nombre.toLowerCase() === sugerenciaTexto.toLowerCase()
+    let texto = sugerenciaTexto.toLowerCase();
+
+    // Buscar pictograma exacto
+    let sugerido = pictogramasDisponibles.find(
+      p => p.nombre.toLowerCase() === texto
     );
+
+    // Si no lo encuentra, buscar si es una conjugación de un verbo irregular
+    if (!sugerido) {
+      const infinitivo = buscarInfinitivo(sugerenciaTexto);
+      if (infinitivo) {
+        sugerido = pictogramasDisponibles.find(
+          p => p.nombre.toLowerCase() === infinitivo.toLowerCase()
+        );
+      }
+    }
 
     setSugerencia(sugerido ?? pictogramaHola!);
   }, [frase, sugerenciaTexto, pictogramasDisponibles]);
 
-  // Obtener voz masculina real si hace falta
   useEffect(() => {
     if (tipoVoz === 'masculina') {
       Speech.getAvailableVoicesAsync().then(voices => {

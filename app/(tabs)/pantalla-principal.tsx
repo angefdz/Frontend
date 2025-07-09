@@ -122,7 +122,7 @@ export default function PantallaPrincipal() {
 
     guardarConfiguracionUsuario(token, nuevaConfig)
       .catch((err) => {
-        console.error('❌ Error al actualizar configuración:', err);
+        console.error('Error al actualizar configuración:', err);
       })
       .finally(() => {
         setTimeout(() => setTransicionando(false), 200);

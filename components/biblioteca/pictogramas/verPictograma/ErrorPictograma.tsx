@@ -1,4 +1,3 @@
-// components/biblioteca/pictogramas/ErrorPictograma.tsx
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { Text, View } from 'react-native';
 

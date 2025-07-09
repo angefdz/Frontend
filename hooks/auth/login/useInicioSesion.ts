@@ -1,11 +1,10 @@
 import { guardarCredenciales } from '@/hooks/utils/seguridad';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
-import { useLoginGoogle } from './useLoginGoogle';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
@@ -21,23 +20,6 @@ export const useInicioSesion = () => {
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
 
-  // Hook de login con Google
-  const { promptAsync, resultado } = useLoginGoogle();
-
-  // Si el login con Google devuelve token y usuarioId, lo guardamos
-  useEffect(() => {
-    if (resultado) {
-      const { token, usuarioId } = resultado;
-
-      setAuthData({ token, usuarioId });
-      guardarCredenciales(token, usuarioId);
-
-      marcarCategoriasComoDesactualizadas();
-      marcarPictogramasComoDesactualizados();
-
-      router.replace('/pantalla-principal');
-    }
-  }, [resultado]);
 
   const manejarCambioCorreo = (texto: string) => {
     setCorreo(texto);
@@ -89,14 +71,7 @@ export const useInicioSesion = () => {
     }
   };
 
-  const manejarInicioSesionGoogle = async () => {
-    try {
-      await promptAsync();
-    } catch (error) {
-      console.error('Error al iniciar sesión con Google:', error);
-      setError('No se pudo iniciar sesión con Google.');
-    }
-  };
+
 
   const manejarIrARegistro = () => {
     router.push('/registro');
@@ -110,7 +85,6 @@ export const useInicioSesion = () => {
     manejarCambioCorreo,
     manejarCambioContrasena,
     manejarInicioSesion,
-    manejarInicioSesionGoogle,
     manejarIrARegistro,
   };
 };

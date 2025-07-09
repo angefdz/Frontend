@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext'; // ✅ NUEVO
+import { useAuth } from '@/context/AuthContext'; 
 import { Pictograma } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const usePictogramas = () => {
-  const { token } = useAuth(); // ✅ Obtenemos el token
+  const { token } = useAuth();
   const [pictogramas, setPictogramas] = useState<Pictograma[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,9 +26,9 @@ export const usePictogramas = () => {
         },
       });
       setPictogramas(res.data);
-      console.log('✅ Pictogramas cargados correctamente:', res.data);
+      console.log('Pictogramas cargados correctamente:', res.data);
     } catch (e: any) {
-      console.error('❌ Error cargando pictogramas:', e.message);
+      console.error('Error cargando pictogramas:', e.message);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

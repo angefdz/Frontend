@@ -3,10 +3,7 @@ import axios from 'axios';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-/**
- * Actualiza la configuración del usuario mediante una petición PUT.
- * Se requiere token en la cabecera. Ya no se envía el usuario en el cuerpo.
- */
+
 export const guardarConfiguracionUsuario = async (
   token: string,
   configuracion: ConfiguracionPayload

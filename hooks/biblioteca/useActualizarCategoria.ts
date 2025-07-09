@@ -6,7 +6,7 @@ const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 interface CategoriaActualizarInput {
   nombre: string;
   imagen: string;
-  pictogramas: number[]; // lista de IDs
+  pictogramas: number[]; 
 }
 
 export function useActualizarCategoria() {

@@ -1,4 +1,5 @@
 import { personasGramaticales, tiemposVerbales } from '@/data/pictogramasGramatica';
+import verbosIrregulares from '@/data/verbosIrregulares.json';
 import React, { useMemo, useState } from 'react';
 import {
   Dimensions,
@@ -31,11 +32,22 @@ export default function ModalConjugadorVerbo({
   const formaConjugada = useMemo(() => {
     try {
       const personaIdx = personaIndex as 0 | 1 | 2 | 3 | 4 | 5;
-      return getConjugation(
-        verbo,
-        `INDICATIVE_${tiemposVerbales[tiempoIndex].key.toUpperCase()}` as any,
-        personaIdx
-      ) ?? '';
+      const tiempoKey = `INDICATIVE_${tiemposVerbales[tiempoIndex].key.toUpperCase()}`;
+
+      // Verbo irregular
+      if (verbosIrregulares.hasOwnProperty(verbo)) {
+        const conjugaciones = (verbosIrregulares as any)[verbo];
+        const conjugacionesPorTiempo = conjugaciones[tiempoKey];
+
+        if (conjugacionesPorTiempo && conjugacionesPorTiempo[personaIdx]) {
+          return conjugacionesPorTiempo[personaIdx];
+        }
+      }
+
+      // Verbo regular
+      return (
+        getConjugation(verbo, tiempoKey as any, personaIdx) ?? ''
+      );
     } catch (err) {
       console.error('Error al conjugar el verbo:', err);
       return '';
@@ -49,47 +61,45 @@ export default function ModalConjugadorVerbo({
           <Text style={styles.titulo}>Conjugar verbo "{verbo}"</Text>
 
           <Text style={styles.label}>Tiempo</Text>
-<View style={styles.tiempoContainer}>
-  {tiemposVerbales.map((t, index) => (
-    <TouchableOpacity
-      key={t.key}
-      onPress={() => setTiempoIndex(index)}
-      style={[
-        styles.tiempoItem,
-        tiempoIndex === index && styles.opcionSeleccionada,
-      ]}
-    >
-      <Image source={{ uri: t.imagen }} style={styles.icono} resizeMode="contain" />
-      <Text style={styles.opcionTexto}>{t.label}</Text>
-    </TouchableOpacity>
-  ))}
-</View>
-
+          <View style={styles.tiempoContainer}>
+            {tiemposVerbales.map((t, index) => (
+              <TouchableOpacity
+                key={t.key}
+                onPress={() => setTiempoIndex(index)}
+                style={[
+                  styles.tiempoItem,
+                  tiempoIndex === index && styles.opcionSeleccionada,
+                ]}
+              >
+                <Image source={{ uri: t.imagen }} style={styles.icono} resizeMode="contain" />
+                <Text style={styles.opcionTexto}>{t.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
 
           <Text style={styles.label}>Persona</Text>
           <ScrollView
-  horizontal
-  contentContainerStyle={styles.personasGrid}
-  showsHorizontalScrollIndicator={false}
->
-  {personasGramaticales.map((p, index) => (
-    <TouchableOpacity
-      key={p.key}
-      onPress={() => setPersonaIndex(index)}
-      style={[
-        styles.opcion,
-        personaIndex === index && styles.opcionSeleccionada,
-      ]}
-    >
-      <Image source={{ uri: p.imagen }} style={styles.icono} resizeMode="contain" />
-      <Text style={styles.opcionTexto}>{p.label}</Text>
-    </TouchableOpacity>
-  ))}
-</ScrollView>
-
+            horizontal
+            contentContainerStyle={styles.personasGrid}
+            showsHorizontalScrollIndicator={false}
+          >
+            {personasGramaticales.map((p, index) => (
+              <TouchableOpacity
+                key={p.key}
+                onPress={() => setPersonaIndex(index)}
+                style={[
+                  styles.opcion,
+                  personaIndex === index && styles.opcionSeleccionada,
+                ]}
+              >
+                <Image source={{ uri: p.imagen }} style={styles.icono} resizeMode="contain" />
+                <Text style={styles.opcionTexto}>{p.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
 
           <Text style={styles.conjugacion}>
-            Resultado: <Text style={styles.verbo}>{formaConjugada.trim()? formaConjugada: '-'}</Text>
+            Resultado: <Text style={styles.verbo}>{formaConjugada.trim() ? formaConjugada : '-'}</Text>
           </Text>
 
           <View style={styles.botones}>
@@ -121,7 +131,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-
   tiempoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -135,7 +144,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#eee',
     borderRadius: 12,
   },
-  
   modal: {
     width: width * 0.9,
     backgroundColor: 'white',
@@ -219,5 +227,4 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingRight: 12,
   },
-  
 });

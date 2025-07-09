@@ -1,0 +1,98 @@
+{
+    "Ir": {
+      "INDICATIVE_PRESENT": ["Voy", "Vas", "Va", "Vamos", "Vais", "Van"],
+      "INDICATIVE_PAST": ["Fui", "Fuiste", "Fue", "Fuimos", "Fuisteis", "Fueron"],
+      "INDICATIVE_FUTURE": ["Iré", "Irás", "Irá", "Iremos", "Iréis", "Irán"]
+    },
+    "Ser": {
+      "INDICATIVE_PRESENT": ["Soy", "Eres", "Es", "Somos", "Sois", "Son"],
+      "INDICATIVE_PAST": ["Fui", "Fuiste", "Fue", "Fuimos", "Fuisteis", "Fueron"],
+      "INDICATIVE_FUTURE": ["Seré", "Serás", "Será", "Seremos", "Seréis", "Serán"]
+    },
+    "Dormir": {
+      "INDICATIVE_PRESENT": ["Duermo", "Duermes", "Duerme", "Dormimos", "Dormís", "Duermen"],
+      "INDICATIVE_PAST": ["Dormí", "Dormiste", "Durmió", "Dormimos", "Dormisteis", "Durmieron"],
+      "INDICATIVE_FUTURE": ["Dormiré", "Dormirás", "Dormirá", "Dormiremos", "Dormiréis", "Dormirán"]
+    },
+    "Jugar": {
+      "INDICATIVE_PRESENT": ["Juego", "Juegas", "Juega", "Jugamos", "Jugáis", "Juegan"],
+      "INDICATIVE_PAST": ["Jugué", "Jugaste", "Jugó", "Jugamos", "Jugasteis", "Jugaron"],
+      "INDICATIVE_FUTURE": ["Jugaré", "Jugarás", "Jugará", "Jugaremos", "Jugaréis", "Jugarán"]
+    },
+    "Pensar": {
+      "INDICATIVE_PRESENT": ["Pienso", "Piensas", "Piensa", "Pensamos", "Pensáis", "Piensan"],
+      "INDICATIVE_PAST": ["Pensé", "Pensaste", "Pensó", "Pensamos", "Pensasteis", "Pensaron"],
+      "INDICATIVE_FUTURE": ["Pensaré", "Pensarás", "Pensará", "Pensaremos", "Pensaréis", "Pensarán"]
+    },
+    "Sentarse": {
+      "INDICATIVE_PRESENT": ["Me siento", "Te sientas", "Se sienta", "Nos sentamos", "Os sentáis", "Se sientan"],
+      "INDICATIVE_PAST": ["Me senté", "Te sentaste", "Se sentó", "Nos sentamos", "Os sentasteis", "Se sentaron"],
+      "INDICATIVE_FUTURE": ["Me sentaré", "Te sentarás", "Se sentará", "Nos sentaremos", "Os sentaréis", "Se sentarán"]
+    },
+    "Cerrar": {
+      "INDICATIVE_PRESENT": ["Cierro", "Cierras", "Cierra", "Cerramos", "Cerráis", "Cierran"],
+      "INDICATIVE_PAST": ["Cerré", "Cerraste", "Cerró", "Cerramos", "Cerrasteis", "Cerraron"],
+      "INDICATIVE_FUTURE": ["Cerraré", "Cerrarás", "Cerrará", "Cerraremos", "Cerraréis", "Cerrarán"]
+    },
+    "Reír": {
+      "INDICATIVE_PRESENT": ["Río", "Ríes", "Ríe", "Reímos", "Reís", "Ríen"],
+      "INDICATIVE_PAST": ["Reí", "Reíste", "Rió", "Reímos", "Reísteis", "Rieron"],
+      "INDICATIVE_FUTURE": ["Reiré", "Reirás", "Reirá", "Reiremos", "Reiréis", "Reirán"]
+    },
+    "Llorar": {
+      "INDICATIVE_PRESENT": ["Lloro", "Lloras", "Llora", "Lloramos", "Lloráis", "Lloran"],
+      "INDICATIVE_PAST": ["Lloré", "Lloraste", "Lloró", "Lloramos", "Llorasteis", "Lloraron"],
+      "INDICATIVE_FUTURE": ["Lloraré", "Llorarás", "Llorará", "Lloraremos", "Lloraréis", "Llorarán"]
+    },
+    "Sentir": {
+      "INDICATIVE_PRESENT": ["Siento", "Sientes", "Siente", "Sentimos", "Sentís", "Sienten"],
+      "INDICATIVE_PAST": ["Sentí", "Sentiste", "Sintió", "Sentimos", "Sentisteis", "Sintieron"],
+      "INDICATIVE_FUTURE": ["Sentiré", "Sentirás", "Sentirá", "Sentiremos", "Sentiréis", "Sentirán"]
+    },
+    "Encontrar": {
+      "INDICATIVE_PRESENT": ["Encuentro", "Encuentras", "Encuentra", "Encontramos", "Encontráis", "Encuentran"],
+      "INDICATIVE_PAST": ["Encontré", "Encontraste", "Encontró", "Encontramos", "Encontrasteis", "Encontraron"],
+      "INDICATIVE_FUTURE": ["Encontraré", "Encontrarás", "Encontrará", "Encontraremos", "Encontraréis", "Encontrarán"]
+    },
+    "Caer": {
+      "INDICATIVE_PRESENT": ["Caigo", "Caes", "Cae", "Caemos", "Caéis", "Caen"],
+      "INDICATIVE_PAST": ["Caí", "Caíste", "Cayó", "Caímos", "Caísteis", "Cayeron"],
+      "INDICATIVE_FUTURE": ["Caeré", "Caerás", "Caerá", "Caeremos", "Caeréis", "Caerán"]
+    },
+    "Querer": {
+          "INDICATIVE_PRESENT": ["Quiero", "Quieres", "Quiere", "Queremos", "Queréis", "Quieren"],
+          "INDICATIVE_PAST": ["Quise", "Quisiste", "Quiso", "Quisimos", "Quisisteis", "Quisieron"],
+          "INDICATIVE_FUTURE": ["Querré", "Querrás", "Querrá", "Querremos", "Querréis", "Querrán"]
+        },
+        "Romper": {
+          "INDICATIVE_PRESENT": ["Rompo", "Rompes", "Rompe", "Rompemos", "Rompéis", "Rompen"],
+          "INDICATIVE_PAST": ["Rompí", "Rompiste", "Rompió", "Rompimos", "Rompisteis", "Rompieron"],
+          "INDICATIVE_FUTURE": ["Romperé", "Romperás", "Romperá", "Romperemos", "Romperéis", "Romperán"]
+        },
+        "Encender": {
+          "INDICATIVE_PRESENT": ["Enciendo", "Enciendes", "Enciende", "Encendemos", "Encendéis", "Encienden"],
+          "INDICATIVE_PAST": ["Encendí", "Encendiste", "Encendió", "Encendimos", "Encendisteis", "Encendieron"],
+          "INDICATIVE_FUTURE": ["Encenderé", "Encenderás", "Encenderá", "Encenderemos", "Encenderéis", "Encenderán"]
+        },
+        "Mover": {
+          "INDICATIVE_PRESENT": ["Muevo", "Mueves", "Mueve", "Movemos", "Movéis", "Mueven"],
+          "INDICATIVE_PAST": ["Moví", "Moviste", "Movió", "Movimos", "Movisteis", "Movieron"],
+          "INDICATIVE_FUTURE": ["Moveré", "Moverás", "Moverá", "Moveremos", "Moveréis", "Moverán"]
+        },
+        "Doler": {
+          "INDICATIVE_PRESENT": ["Duelo", "Dueles", "Duele", "Dolemos", "Doléis", "Duelen"],
+          "INDICATIVE_PAST": ["Dolí", "Doliste", "Dolió", "Dolimos", "Dolisteis", "Dolieron"],
+          "INDICATIVE_FUTURE": ["Doleré", "Dolerás", "Dolerá", "Doleremos", "Doleréis", "Dolerán"]
+        },
+        "Oír": {
+          "INDICATIVE_PRESENT": ["Oigo", "Oyes", "Oye", "Oímos", "Oís", "Oyen"],
+          "INDICATIVE_PAST": ["Oí", "Oíste", "Oyó", "Oímos", "Oísteis", "Oyeron"],
+          "INDICATIVE_FUTURE": ["Oiré", "Oirás", "Oirá", "Oiremos", "Oiréis", "Oirán"]
+        },
+        "Estar": {
+    "INDICATIVE_PRESENT": ["Estoy", "Estás", "Está", "Estamos", "Estáis", "Están"],
+    "INDICATIVE_PAST": ["Estuve", "Estuviste", "Estuvo", "Estuvimos", "Estuvisteis", "Estuvieron"],
+    "INDICATIVE_FUTURE": ["Estaré", "Estarás", "Estará", "Estaremos", "Estaréis", "Estarán"]
+  }    
+  }
+  

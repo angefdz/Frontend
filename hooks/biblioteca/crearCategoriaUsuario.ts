@@ -1,5 +1,3 @@
-// src/hooks/categorias/crearCategoriaUsuario.ts
-
 import axios from 'axios';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;

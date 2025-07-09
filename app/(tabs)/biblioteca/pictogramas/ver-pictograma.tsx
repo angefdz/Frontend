@@ -125,7 +125,7 @@ export default function VerPictogramaScreen() {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('✅ Pictograma visible', 'El pictograma se ha desocultado correctamente.');
+        Alert.alert('Pictograma visible', 'El pictograma se ha desocultado correctamente.');
         setOculto(false);
       } else {
         await fetch(url, {
@@ -133,7 +133,7 @@ export default function VerPictogramaScreen() {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        Alert.alert('✅ Pictograma oculto', 'El pictograma se ha ocultado correctamente.', [
+        Alert.alert('Pictograma oculto', 'El pictograma se ha ocultado correctamente. Para desocultarlo acceda a la sección de pictogramas ocultos desde el perfil.', [
           {
             text: 'OK',
             onPress: () => {

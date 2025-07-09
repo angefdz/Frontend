@@ -1,4 +1,3 @@
-// src/hooks/pictogramas/usePictogramasPorCategoria.ts
 import { PictogramaSimple } from '@/types';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
@@ -24,12 +23,12 @@ export const usePictogramasPorCategoria = (categoriaId: string | null) => {
       setPictogramas(res.data);
       setError(null);
     } catch (err: any) {
-      console.error('❌ Error al cargar pictogramas por categoría:', err.message);
+      console.error('Error al cargar pictogramas por categoría:', err.message);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);
     }
-  }, [token, categoriaId]); // Aquí eliminamos cargando de dependencias
+  }, [token, categoriaId]); 
 
   useEffect(() => {
     if (!cargandoToken && token && categoriaId) {

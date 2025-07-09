@@ -24,7 +24,6 @@ export const useRecuperarContrasena = () => {
     setError('');
     setMensaje('');
 
-    // Simulación de llamada a backend
     await new Promise((res) => setTimeout(res, 1500));
     setCargando(false);
     setMensaje('Si el correo existe, se ha enviado un enlace de recuperación.');

@@ -1,12 +1,8 @@
-// src/hooks/usuario/guardarUsuarioActual.ts
 import axios from '@/hooks/utils/axiosInstance';
 import { UsuarioSimple } from '@/types';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-/**
- * Actualiza los datos del usuario autenticado (solo nombre, no el correo).
- */
 export const guardarUsuarioActual = async (
   token: string,
   usuario: UsuarioSimple

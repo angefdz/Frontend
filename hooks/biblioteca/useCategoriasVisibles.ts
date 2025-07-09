@@ -1,4 +1,4 @@
-// src/hooks/biblioteca/useCategoriasConPictogramas.ts
+
 import { useAuth } from '@/context/AuthContext';
 import { CategoriaConPictogramas } from '@/types';
 import axios from 'axios';

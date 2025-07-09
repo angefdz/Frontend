@@ -5,7 +5,7 @@ export default function BibliotecaLayout() {
     <Stack
       screenOptions={{
         headerShown: false,
-        gestureEnabled: true, // 👈 Habilita el gesto de swipe back
+        gestureEnabled: true,
       }}
     />
   );

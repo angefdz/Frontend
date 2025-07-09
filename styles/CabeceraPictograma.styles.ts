@@ -29,7 +29,6 @@ export const styles = StyleSheet.create({
     minHeight: width * 0.12,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: width * 0.02, // Para separar botones
+    marginLeft: width * 0.02, 
   },
-   // úsalo así: <Feather size={styles.iconSize} ... />
 });

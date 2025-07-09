@@ -1,4 +1,4 @@
-// styles/PerfilScreen.styles.ts
+
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');

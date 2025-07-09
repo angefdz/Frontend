@@ -12,13 +12,12 @@ export const styles = StyleSheet.create({
   titulo: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#1A1A1A', // Mejor contraste (AAA)
+    color: '#1A1A1A', 
     flex: 1,
   },
   iconos: {
     flexDirection: 'row',
     alignItems: 'center',
-    // Eliminamos gap por compatibilidad, usar marginRight en los hijos si hace falta
   },
   botonIcono: {
     padding: 8,

@@ -13,13 +13,11 @@ axiosInstance.interceptors.response.use(
   response => response,
   async error => {
     if (error.response?.status === 401 || error.response?.status === 403) {
-      console.warn('🔒 Token inválido o caducado. Cerrando sesión...');
+      console.warn('Token inválido o caducado. Cerrando sesión...');
 
-      // Limpiar sesión
       await AsyncStorage.removeItem('token');
       await AsyncStorage.removeItem('usuarioId');
 
-      // Redirigir al login
       router.replace('/inicio-sesion');
     }
 

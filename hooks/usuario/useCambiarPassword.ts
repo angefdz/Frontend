@@ -8,7 +8,7 @@ interface CambiarPasswordPayload {
 }
 
 export const useCambiarPassword = () => {
-  const { token } = useAuth(); // ← CAMBIO
+  const { token } = useAuth(); 
 
   const cambiarPassword = async ({
     passwordActual,
@@ -55,7 +55,7 @@ export const useCambiarPassword = () => {
         return false;
       }
     } catch (error) {
-      console.error('❌ Error al cambiar la contraseña:', error);
+      console.error('Error al cambiar la contraseña:', error);
       Alert.alert('Error', 'Ocurrió un problema al cambiar la contraseña.');
       return false;
     }

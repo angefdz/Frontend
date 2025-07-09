@@ -10,7 +10,7 @@ interface Props {
   readonly valor: string;
   readonly setValor: (texto: string) => void;
   readonly disabled?: boolean;
-  readonly hint?: string; // opcional
+  readonly hint?: string; 
 }
 
 const { width } = Dimensions.get('window');

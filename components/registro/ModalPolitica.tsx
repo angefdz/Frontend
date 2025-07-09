@@ -1,4 +1,4 @@
-// components/comunes/ModalPoliticaPrivacidad.tsx
+
 
 import React from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';

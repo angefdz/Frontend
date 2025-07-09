@@ -1,4 +1,4 @@
-// context/CategoriasContext.tsx
+
 import { useCategoriasConPictogramas as useCategoriasHook } from '@/hooks/biblioteca/useCategoriasVisibles';
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
 

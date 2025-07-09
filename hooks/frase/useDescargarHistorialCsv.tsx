@@ -13,7 +13,7 @@ export const useDescargarHistorialCsv = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        responseType: 'text', // Muy importante: para recibir texto plano
+        responseType: 'text', 
       });
 
       const csvContent = response.data;

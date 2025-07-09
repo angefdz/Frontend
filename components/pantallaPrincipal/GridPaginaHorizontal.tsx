@@ -11,7 +11,7 @@ type Props<T extends { id?: string | number }> = {
   readonly itemsPerPage: number;
   readonly renderItem: (item: T | null, size: number) => React.ReactNode;
   readonly spacing?: number;
-  readonly availableHeight?: number; // NUEVO
+  readonly availableHeight?: number;
 };
 
 function GridPaginadoHorizontalInner<T extends { id?: string | number }>({

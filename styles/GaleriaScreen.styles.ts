@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
-    width: '100%', // ⬅️ se asegura de que el grid use todo el ancho
+    width: '100%',
   },
   
   item: {

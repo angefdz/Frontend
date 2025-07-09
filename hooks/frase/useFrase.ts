@@ -47,12 +47,10 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
 
     let texto = sugerenciaTexto.toLowerCase();
 
-    // Buscar pictograma exacto
     let sugerido = pictogramasDisponibles.find(
       p => p.nombre.toLowerCase() === texto
     );
 
-    // Si no lo encuentra, buscar si es una conjugación de un verbo irregular
     if (!sugerido) {
       const infinitivo = buscarInfinitivo(sugerenciaTexto);
       if (infinitivo) {

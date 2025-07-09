@@ -1,7 +1,7 @@
-// src/hooks/configuracion/useConfiguracionUsuario.ts
-import axiosInstance from '@/hooks/utils/axiosInstance'; // tu instancia personalizada
+
+import axiosInstance from '@/hooks/utils/axiosInstance';
 import { Configuracion } from '@/types';
-import { isAxiosError } from 'axios'; // función original para detectar errores de axios
+import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;

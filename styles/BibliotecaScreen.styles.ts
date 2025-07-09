@@ -1,8 +1,8 @@
-// BibliotecaScreen.styles.ts
+
 import { Dimensions, StyleSheet } from 'react-native';
 
 const { width } = Dimensions.get('window');
-const itemSize = (width - 20 * 2 - 10 * 3) / 4; // 4 items por fila con padding y gap
+const itemSize = (width - 20 * 2 - 10 * 3) / 4;
 
 export const styles = StyleSheet.create({
   container: {
@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     paddingTop: width * 0.08,
     backgroundColor: '#fff',
   },
-  // BibliotecaScreen.styles.ts
+
 sectionTitle: {
   fontSize: width * 0.055,
   fontWeight: 'bold',
@@ -20,19 +20,19 @@ sectionTitle: {
 },
 sectionHeader: {
   flexDirection: 'row',
-  alignItems: 'center', // ya está bien
+  alignItems: 'center', 
   justifyContent: 'space-between',
   paddingTop: 20,
   paddingBottom: 10,
 },
 
 addButton: {
-  fontSize: width * 0.07,            // antes era 28 fijo
+  fontSize: width * 0.07,            
   color: '#007AFF',
   fontWeight: 'bold',
   marginLeft: 10,
-  minHeight: width * 0.12,           // escalado proporcional
-  minWidth: width * 0.12,            // escalado proporcional
+  minHeight: width * 0.12,           
+  minWidth: width * 0.12,      
   textAlign: 'center',
   textAlignVertical: 'center',
 },
@@ -57,7 +57,7 @@ addButton: {
     textAlign: 'center',
   },
   itemText: {
-    fontSize: itemSize * 0.14, // antes era 16 fijo
+    fontSize: itemSize * 0.14, 
     color: '#1A1A1A',
     textAlign: 'center',
   },
@@ -77,7 +77,7 @@ addButton: {
   verMasText: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: width * 0.04, // o ajusta 0.04 según el tamaño que quieras
+    fontSize: width * 0.04, 
 
   },
   input: {
@@ -85,7 +85,7 @@ addButton: {
     borderColor: '#999',
     borderRadius: 8,
     padding: 12,
-    fontSize: width * 0.04, // o 0.045
+    fontSize: width * 0.04, 
 
     marginBottom: 15,
     backgroundColor: '#fff',

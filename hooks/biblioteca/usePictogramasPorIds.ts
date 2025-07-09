@@ -1,4 +1,4 @@
-import { useAuth } from '@/context/AuthContext'; // ✅ añadido
+import { useAuth } from '@/context/AuthContext';
 import { PictogramaSimple } from '@/types';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export function usePictogramasPorIds(ids: number[]) {
-  const { token } = useAuth(); // ✅ token desde contexto
+  const { token } = useAuth(); 
   const [pictogramas, setPictogramas] = useState<PictogramaSimple[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);

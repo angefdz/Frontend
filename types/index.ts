@@ -1,11 +1,11 @@
-// types/index.ts
+
 
 export type Pictograma = {
   id: number;
   nombre: string;
   imagen: string;
   tipo: string;
-  usuario?: any;// nueva relación opcional
+  usuario?: any;
   categorias: [ ];
 
 };
@@ -15,10 +15,9 @@ export type Categoria = {
   nombre: string;
   imagen: string;
   usuario?: any;
-  pictogramas: PictogramaSimple[]; // nueva relación opcional
+  pictogramas: PictogramaSimple[]; 
 };
 
-// Tipos simplificados para evitar recursividad infinita
 export type CategoriaSimple = {
   id: number;
   nombre: string;
@@ -56,7 +55,7 @@ export type ConfiguracionPayload  = {
   id: number;
   botonesPorPantalla: number;
   mostrarPorCategoria: boolean;
-  tipoVoz: string; // permitir cualquier valor que venga del backend
+  tipoVoz: string; 
 }
 
 export interface CategoriaConPictogramas {
@@ -64,7 +63,7 @@ export interface CategoriaConPictogramas {
   nombre: string;
   imagen: string;
   pictogramas: PictogramaSimple[];
-  usuarioId: number | null; // No es opcional si siempre se devuelve (aunque sea null)
+  usuarioId: number | null; 
 }
 
 

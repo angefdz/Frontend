@@ -34,10 +34,10 @@ export const crearCategoriaUsuario = async (
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error('❌ Error al crear la categoría:', error.response?.data);
-      throw error; // para que lo capture el componente
+      console.error('Error al crear la categoría:', error.response?.data);
+      throw error; 
     } else {
-      console.error('❌ Error desconocido:', error);
+      console.error('Error desconocido:', error);
       throw error;
     }
   }

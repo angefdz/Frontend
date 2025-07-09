@@ -86,7 +86,7 @@ export default function CrearPictogramaScreen() {
       Alert.alert('Éxito', 'Pictograma creado correctamente');
       router.back();
     } catch (error) {
-      console.error('❌ Error al crear pictograma:', error);
+      console.error('Error al crear pictograma:', error);
       Alert.alert('Error', 'No se pudo crear el pictograma');
     } finally {
       setSubiendo(false);

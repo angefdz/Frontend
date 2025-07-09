@@ -1,4 +1,4 @@
-// components/biblioteca/pictogramas/ImagenPictograma.tsx
+
 import { Dimensions, Image, View } from 'react-native';
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { width } = Dimensions.get('window');
-const tamanyo = width * 0.5; // Puedes ajustar este porcentaje según necesites
+const tamanyo = width * 0.5; 
 
 export default function ImagenPictograma({ uri, nombre }: Props) {
   return (

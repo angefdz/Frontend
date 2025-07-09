@@ -110,7 +110,7 @@ export const styles = StyleSheet.create({
   botonConEtiqueta: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 200, // o el mismo valor que el ancho de botonIcono
+    width: 200,
     marginHorizontal: 10,
     flex: 1,
   },

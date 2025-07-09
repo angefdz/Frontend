@@ -9,7 +9,7 @@ export interface UsuarioSimple {
 }
 
 export const useUsuarioActual = () => {
-  const { token } = useAuth(); // ✅ Solo token
+  const { token } = useAuth(); 
   const [usuario, setUsuario] = useState<UsuarioSimple | null>(null);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);

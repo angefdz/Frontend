@@ -1,6 +1,6 @@
 import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
-import { CategoriaSimple } from '@/types'; // <-- actualizado
+import { CategoriaSimple } from '@/types';
 import React from 'react';
 
 type Props = {

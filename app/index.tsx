@@ -1,4 +1,4 @@
-// src/app/index.tsx
+
 import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
 import { useEffect } from 'react';

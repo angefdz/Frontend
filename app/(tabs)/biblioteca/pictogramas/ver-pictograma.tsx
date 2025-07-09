@@ -150,7 +150,7 @@ export default function VerPictogramaScreen() {
       marcarPictogramasComoDesactualizados();
       marcarCategoriasComoDesactualizadas();
     } catch (err) {
-      console.error('❌ Error cambiando visibilidad:', err);
+      console.error('Error cambiando visibilidad:', err);
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };

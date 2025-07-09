@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: '#F0F0F0',
     borderRadius: 8,
-    minHeight: 48, // ✅ para accesibilidad táctil
+    minHeight: 48,
     justifyContent: 'center',
   },
   botonActivo: {
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   texto: {
     fontSize: 16,
-    color: '#1A1A1A', // contraste aún mejor
+    color: '#1A1A1A', 
   },
   textoActivo: {
     color: '#fff',

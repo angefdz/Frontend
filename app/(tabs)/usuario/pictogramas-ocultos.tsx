@@ -1,4 +1,4 @@
-// src/app/biblioteca/pictogramas/PictogramasOcultosScreen.tsx
+
 import { useFocusEffect } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';

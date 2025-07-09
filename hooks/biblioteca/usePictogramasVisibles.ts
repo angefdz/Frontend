@@ -6,15 +6,13 @@ import { useCallback, useEffect, useState } from 'react';
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const usePictogramasVisibles = () => {
-  const { token } = useAuth(); // ✅ CAMBIO
+  const { token } = useAuth(); 
   const [pictogramas, setPictogramas] = useState<PictogramaSimple[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const cargarPictogramas = useCallback(async () => {
-    //console.log('[usePictogramasVisibles] Intentando cargar pictogramas...');
     if (!token) {
-      //console.warn('[usePictogramasVisibles] Token no disponible, abortando carga.');
       setCargando(false);
       setError('Token no disponible');
       return;

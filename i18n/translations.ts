@@ -2,7 +2,8 @@ export type AppLanguage = 'es' | 'en';
 
 export const translations = {
   es: {
-    emptyPhrase: 'Tu frase aparecerá aquí', suggestion: 'Sugerencia',
+    emptyPhrase: 'Tu frase aparecerá aquí', suggestion: 'Sugerencia', suggestions: 'Sugerencias',
+    mostLikely: 'Más probable', addSuggestedPictogram: 'Añade este pictograma a la frase',
     preparing: 'Preparando tus pictogramas…', loadError: 'Error al cargar datos del usuario.',
     emptyCategory: 'No hay pictogramas en esta categoría.', conjugate: 'Conjugar verbo',
     tense: 'Tiempo', person: 'Persona', result: 'Resultado', cancel: 'Cancelar',
@@ -11,7 +12,8 @@ export const translations = {
     back: 'Volver', pictograms: 'pictogramas', saved: 'Frase guardada', speechError: 'Error al guardar o reproducir la frase',
   },
   en: {
-    emptyPhrase: 'Your sentence will appear here', suggestion: 'Suggestion',
+    emptyPhrase: 'Your sentence will appear here', suggestion: 'Suggestion', suggestions: 'Suggestions',
+    mostLikely: 'Most likely', addSuggestedPictogram: 'Adds this pictogram to the sentence',
     preparing: 'Preparing your pictograms…', loadError: 'Could not load the user data.',
     emptyCategory: 'There are no pictograms in this category.', conjugate: 'Conjugate verb',
     tense: 'Tense', person: 'Person', result: 'Result', cancel: 'Cancel',

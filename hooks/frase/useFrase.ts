@@ -4,27 +4,10 @@ import Toast from 'react-native-toast-message';
 
 import { useAuth } from '@/context/AuthContext';
 import { useVoz } from '@/context/VozContext';
-import verbos from '@/data/verbosIrregulares.json';
 import { guardarFrase } from '@/hooks/frase/useGuardarFrase';
 import { PalabraFrase, PictogramaSimple } from '@/types';
 import { useLanguage } from '@/context/LanguageContext';
 import { usePrediccionPictograma } from '../utils/prediccion';
-
-export function buscarInfinitivo(palabra: string): string | null {
-  const palabraLimpia = palabra.trim().toLowerCase();
-
-  for (const [infinitivo, tiempos] of Object.entries(verbos)) {
-    for (const formas of Object.values(tiempos)) {
-      for (const forma of formas) {
-        if (forma.toLowerCase().includes(palabraLimpia)) {
-          return infinitivo;
-        }
-      }
-    }
-  }
-
-  return null;
-}
 
 export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   const { language, localize, t } = useLanguage();
@@ -42,38 +25,19 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   );
 
   const [frase, setFrase] = useState<PalabraFrase[]>([]);
-  const [sugerencia, setSugerencia] = useState<PictogramaSimple | undefined>(pictogramaInicial);
   const [vozMasculina, setVozMasculina] = useState<string | undefined>();
 
   const lemasPrediccion = frase.map(p => p.lema);
-  const lemasPrediccionKey = lemasPrediccion.join('\u0000');
   const pictogramaIdsPrediccion = frase.map(p => p.pictogramaId);
   const textoPrediccion = frase.map(p => p.texto).join(' ');
-  const { sugerencia: sugerenciaTexto } = usePrediccionPictograma(pictogramaIdsPrediccion, lemasPrediccion, textoPrediccion, language);
-
-  useEffect(() => {
-    if (!sugerenciaTexto || frase.length === 0) {
-      setSugerencia(pictogramaInicial);
-      return;
-    }
-
-    let texto = sugerenciaTexto.toLowerCase();
-
-    let sugerido = pictogramasDisponibles.find(
-      p => p.nombre.toLowerCase() === texto || localize(p).toLowerCase() === texto
-    );
-
-    if (!sugerido) {
-      const infinitivo = buscarInfinitivo(sugerenciaTexto);
-      if (infinitivo) {
-        sugerido = pictogramasDisponibles.find(
-          p => p.nombre.toLowerCase() === infinitivo.toLowerCase()
-        );
-      }
-    }
-
-    setSugerencia(sugerido ?? pictogramaInicial);
-  }, [frase.length, lemasPrediccionKey, sugerenciaTexto, pictogramasDisponibles, pictogramaInicial, localize, language]);
+  const { sugerenciasIds } = usePrediccionPictograma(
+    pictogramaIdsPrediccion, lemasPrediccion, textoPrediccion, language
+  );
+  const sugerencias = useMemo(() => {
+    if (frase.length === 0) return pictogramaInicial ? [pictogramaInicial] : [];
+    const disponibles = new Map(pictogramasDisponibles.map(pictograma => [pictograma.id, pictograma]));
+    return sugerenciasIds.map(id => disponibles.get(id)).filter((item): item is PictogramaSimple => Boolean(item));
+  }, [frase.length, pictogramaInicial, pictogramasDisponibles, sugerenciasIds]);
 
   useEffect(() => {
     if (tipoVoz === 'masculina') {
@@ -146,19 +110,12 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
     }
   };
 
-  const usarSugerencia = () => {
-    if (sugerencia) {
-      añadirPictograma(sugerencia);
-    }
-  };
-
   return {
     frase,
-    sugerencia,
+    sugerencias,
     añadirPictograma,
     borrarUltimo,
     resetearFrase,
     reproducirFrase,
-    usarSugerencia,
   };
 };

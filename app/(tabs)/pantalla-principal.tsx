@@ -36,7 +36,7 @@ export default function PantallaPrincipal() {
 
   const {
     frase,
-    sugerencia,
+    sugerencias,
     añadirPictograma,
     borrarUltimo,
     resetearFrase,
@@ -199,15 +199,12 @@ export default function PantallaPrincipal() {
           reproducirFrase={reproducirFrase}
         />
 
-{sugerencia && (
+{sugerencias.length > 0 && (
   <SugerenciaPictograma
-    sugerencia={sugerencia}
-    usarSugerencia={() =>
-      sugerencia.tipo === 'verbo'
-        ? setVerboModal(sugerencia)
-        : añadirPictograma(sugerencia)
+    sugerencias={sugerencias}
+    usarSugerencia={(sugerencia) =>
+      sugerencia.tipo === 'verbo' ? setVerboModal(sugerencia) : añadirPictograma(sugerencia)
     }
-    itemsPerPage={itemsPerPage}
   />
 )}
 

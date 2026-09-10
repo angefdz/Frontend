@@ -8,17 +8,21 @@ import {
 } from 'react-native';
 
 import { Dimensions } from 'react-native';
+import { palette, radius, shadow } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
+import { PalabraFrase } from '@/types';
 const {width} = Dimensions.get('window')
 interface Props {
-  readonly frase: string[];
+  readonly frase: PalabraFrase[];
 }
 
 export default function TextoFraseExpandibleAnimado({ frase }: Props) {
+  const { t } = useLanguage();
   const alturaInicial = Dimensions.get('window').height * 0.07; 
 const [contenidoAltura, setContenidoAltura] = useState(alturaInicial);
 const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
 
-  const fraseTexto = frase.join(' ');
+  const fraseTexto = frase.map(palabra => palabra.texto).join(' ');
 
   useEffect(() => {
     Animated.timing(alturaAnimada, {
@@ -38,7 +42,9 @@ const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
   return (
     <Animated.View style={[styles.container, { height: alturaAnimada }]}>
       <View onLayout={manejarCambioLayout} style={styles.medidor}>
-        <Text style={styles.texto}>{fraseTexto}</Text>
+        <Text style={[styles.texto, !fraseTexto && styles.textoPredeterminado]}>
+          {fraseTexto || t('emptyPhrase')}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -51,11 +57,12 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 16,
     borderWidth: 1.5,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    backgroundColor: '#fdfdfd',
+    borderColor: palette.primary,
+    borderRadius: radius.medium,
+    backgroundColor: palette.surface,
     overflow: 'hidden',
     minHeight: 50,
+    ...shadow.card,
   },
   medidor: {
     position: 'absolute',
@@ -69,6 +76,10 @@ const styles = StyleSheet.create({
     lineHeight: width * 0.055,
     fontWeight: '500',
     flexWrap: 'wrap',
-    color: '#333',
+    color: palette.text,
+  },
+  textoPredeterminado: {
+    color: palette.placeholder,
+    fontWeight: '400',
   },
 });

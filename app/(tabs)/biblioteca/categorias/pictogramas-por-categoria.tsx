@@ -14,11 +14,13 @@ import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasPorCategoria } from '@/hooks/pantallaPrincipal/usePictogramasPorCategoria';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
+import { useLanguage } from '@/context/LanguageContext';
 
 const { width } = Dimensions.get('window');
 const fontSizeResponsive = width * 0.04;
 
 export default function PictogramasPorCategoriaScreen() {
+  const { tr, language, localize, localizeCategory } = useLanguage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { token } = useAuth();
@@ -104,14 +106,14 @@ export default function PictogramasPorCategoriaScreen() {
             marginTop: 32,
           }}
         >
-          Cargando...
+          {tr('Cargando...')}
         </Text>
       </View>
     );
   }
 
   const filtrados = pictogramas.filter((p) =>
-    p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    localize(p).toLowerCase().includes(busqueda.toLowerCase())
   );
 
   let contenidoPictogramas;
@@ -143,7 +145,7 @@ export default function PictogramasPorCategoriaScreen() {
   accessibilityRole="text"
   accessibilityLabel="No hay pictogramas que coincidan con tu búsqueda."
 >
-  No hay pictogramas que coincidan con tu búsqueda.
+  {language === 'en' ? 'No pictograms match your search.' : 'No hay pictogramas que coincidan con tu búsqueda.'}
 </Text>
 
       </View>
@@ -155,7 +157,7 @@ export default function PictogramasPorCategoriaScreen() {
         renderItem={(p) => (
           <ItemClicable
             key={p.id}
-            nombre={p.nombre}
+            nombre={localize(p)}
             imagen={p.imagen}
             itemStyle={styles.item}
             textStyle={styles.itemText}
@@ -175,7 +177,7 @@ export default function PictogramasPorCategoriaScreen() {
   return (
     <View style={styles.container}>
       <CabeceraCategoria
-        titulo={categoria.nombre}
+        titulo={localizeCategory(categoria)}
         onEditar={manejarEditarCategoria}
         onEliminar={manejarEliminarCategoria}
       />
@@ -192,7 +194,7 @@ export default function PictogramasPorCategoriaScreen() {
         accessibilityRole="text"
         accessibilityLabel="Aviso: esta es una categoría general. Solo puedes modificar los pictogramas asociados."
       >
-        Esta es una categoría general. Solo puedes modificar los pictogramas asociados.
+        {language === 'en' ? 'This is a general category. You can only change its associated pictograms.' : 'Esta es una categoría general. Solo puedes modificar los pictogramas asociados.'}
       </Text>
       
       )}

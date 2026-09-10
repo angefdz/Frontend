@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   },
   
   botonFlotanteResponsive: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#3157A4',
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,

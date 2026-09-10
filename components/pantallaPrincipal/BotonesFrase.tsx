@@ -2,6 +2,7 @@ import { styles } from '@/styles/InicioScreen.styles';
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Props = {
   readonly borrarUltimo: () => void;
@@ -14,6 +15,8 @@ export default function BotonesFrase({
   resetearFrase,
   reproducirFrase,
 }: Props) {
+  const { language } = useLanguage();
+  const labels = language === 'en' ? ['Delete', 'Reset', 'Speak'] : ['Borrar', 'Resetear', 'Reproducir'];
   return (
     <View style={styles.botonesFrase}>
       <View style={styles.botonConEtiqueta}>
@@ -26,7 +29,7 @@ export default function BotonesFrase({
         >
           <Feather name="delete" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.etiquetaBoton}>Borrar</Text>
+        <Text style={styles.etiquetaBoton}>{labels[0]}</Text>
       </View>
 
       <View style={styles.botonConEtiqueta}>
@@ -38,7 +41,7 @@ export default function BotonesFrase({
         >
           <Feather name="rotate-ccw" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.etiquetaBoton}>Resetear</Text>
+        <Text style={styles.etiquetaBoton}>{labels[1]}</Text>
       </View>
 
       <View style={styles.botonConEtiqueta}>
@@ -50,7 +53,7 @@ export default function BotonesFrase({
         >
           <Feather name="volume-2" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.etiquetaBoton}>Reproducir</Text>
+        <Text style={styles.etiquetaBoton}>{labels[2]}</Text>
       </View>
     </View>
   );

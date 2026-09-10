@@ -13,7 +13,6 @@ export const guardarFrase = async (token: string, texto: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error('Error al guardar la frase:', error);
     throw error;
   }
 };

@@ -5,6 +5,7 @@ import { styles } from '@/styles/GaleriaScreen.styles';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   ActivityIndicator,
   Dimensions,
@@ -18,12 +19,13 @@ const { width } = Dimensions.get('window');
 const tamanyoBoton = width * 0.14;
 
 export default function CategoriasScreen() {
+  const { tr, localizeCategory } = useLanguage();
   const router = useRouter();
   const { categorias, cargando, error } = useCategoriasContext();
   const [busqueda, setBusqueda] = useState('');
 
   const filtradas = categorias.filter((item) =>
-    item.nombre.toLowerCase().includes(busqueda.toLowerCase())
+    localizeCategory(item).toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
@@ -34,13 +36,13 @@ export default function CategoriasScreen() {
           style={styles.sectionTitle}
           accessibilityRole="header"
         >
-          Todas las categorías
+          {tr('Todas las categorías')}
         </Text>
 
         <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
         {cargando ? (
-          <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
+          <ActivityIndicator size="large" color="#3157A4" style={{ marginTop: 20 }} />
         ) : error ? (
           <Text
             style={{ color: 'red', marginTop: 20 }}
@@ -56,7 +58,7 @@ export default function CategoriasScreen() {
                 {filtradas.map((item) => (
                   <ItemClicable
                     key={item.id}
-                    nombre={item.nombre}
+                    nombre={localizeCategory(item)}
                     imagen={item.imagen}
                     itemStyle={styles.item}
                     textStyle={styles.itemText}
@@ -78,7 +80,7 @@ export default function CategoriasScreen() {
           position: 'absolute',
           bottom: '5%',
           right: '5%',
-          backgroundColor: '#007AFF',
+          backgroundColor: '#3157A4',
           width: tamanyoBoton,
           height: tamanyoBoton,
           borderRadius: tamanyoBoton / 2,

@@ -10,6 +10,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { CategoriasProvider } from '@/context/CategoriasContext';
 import { PictogramasProvider } from '@/context/PictogramasContext';
 import { VozProvider } from '@/context/VozContext';
+import { LanguageProvider } from '@/context/LanguageContext';
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -25,6 +26,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       
+      <LanguageProvider>
       <AuthProvider> 
         <VozProvider>
         <CategoriasProvider>
@@ -36,6 +38,7 @@ export default function RootLayout() {
         </CategoriasProvider>
         </VozProvider>
       </AuthProvider>
+      </LanguageProvider>
       
     </ThemeProvider>
   );

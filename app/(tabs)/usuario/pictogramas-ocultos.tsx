@@ -8,8 +8,10 @@ import ListaGenerica from '@/components/comunes/ListaItems';
 import ModalVerPictograma from '@/components/ocultos/ModalVerPictograma';
 import { usePictogramasOcultos } from '@/hooks/ocultos/usePictogramasOcultos';
 import { styles } from '@/styles/BibliotecaScreen.styles';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function PictogramasOcultosScreen() {
+  const { tr, localize } = useLanguage();
   const { pictogramas, cargando, error, recargarPictogramas } = usePictogramasOcultos();
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -19,7 +21,7 @@ export default function PictogramasOcultosScreen() {
     useCallback(() => {
       recargarPictogramas();
     }, [recargarPictogramas])
-  );
+  ); 
 
   const abrirModal = (id: number) => {
     setPictogramaSeleccionadoId(id);
@@ -36,7 +38,7 @@ export default function PictogramasOcultosScreen() {
     return (
       <View style={styles.container}>
         <Text style={{ fontSize: 16, color: '#666', textAlign: 'center', marginTop: 32 }}>
-          Cargando...
+          {tr('Cargando...')}
         </Text>
       </View>
     );
@@ -54,12 +56,12 @@ export default function PictogramasOcultosScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Pictogramas ocultos</Text>
+      <Text style={styles.sectionTitle}>{tr('Pictogramas ocultos')}</Text>
 
       {pictogramas.length === 0 ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ fontSize: 16, color: '#666', textAlign: 'center' }}>
-            No tienes pictogramas ocultos.
+            {tr('No tienes pictogramas ocultos.')}
           </Text>
         </View>
       ) : (
@@ -68,7 +70,7 @@ export default function PictogramasOcultosScreen() {
           renderItem={(p) => (
             <ItemClicable
               key={p.id}
-              nombre={p.nombre}
+              nombre={localize(p)}
               imagen={p.imagen}
               itemStyle={styles.item}
               textStyle={styles.itemText}

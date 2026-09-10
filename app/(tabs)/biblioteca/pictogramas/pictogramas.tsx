@@ -7,6 +7,7 @@ import { Feather } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 import {
   ActivityIndicator,
   Dimensions,
@@ -19,6 +20,7 @@ const { width, height } = Dimensions.get('window');
 const tamanyoBoton = width * 0.14;
 
 export default function PictogramasScreen() {
+  const { tr, localize } = useLanguage();
   const router = useRouter();
   const { token } = useAuth();
 
@@ -40,17 +42,17 @@ export default function PictogramasScreen() {
   );
 
   const filtrados = pictogramas.filter(item =>
-    item?.nombre?.toLowerCase().includes(busqueda.toLowerCase())
+    localize(item).toLowerCase().includes(busqueda.toLowerCase())
   );
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Todos los pictogramas</Text>
+      <Text style={styles.sectionTitle}>{tr('Todos los pictogramas')}</Text>
 
       <BarraBusqueda valor={busqueda} setValor={setBusqueda} />
 
       {cargando ? (
-        <ActivityIndicator size="large" color="#999" style={{ marginTop: 20 }} />
+        <ActivityIndicator size="large" color="#3157A4" style={{ marginTop: 20 }} />
       ) : (
         <ListaFiltrada
           items={filtrados}
@@ -72,7 +74,7 @@ export default function PictogramasScreen() {
           position: 'absolute',
           bottom: height * 0.03,
           right: width * 0.05,
-          backgroundColor: '#007AFF',
+          backgroundColor: '#3157A4',
           borderRadius: tamanyoBoton / 2,
           width: tamanyoBoton,
           height: tamanyoBoton,
@@ -82,7 +84,7 @@ export default function PictogramasScreen() {
         }}
         onPress={() => router.push('/biblioteca/pictogramas/crear-pictograma')}
         accessibilityRole="button"
-        accessibilityLabel="Crear pictograma"
+        accessibilityLabel={tr('Crear pictograma')}
       >
         <Feather name="plus" size={tamanyoBoton * 0.5} color="white" />
       </TouchableOpacity>

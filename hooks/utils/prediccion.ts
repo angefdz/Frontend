@@ -4,20 +4,23 @@ import { useAutorizarAcceso } from '../auth/autorizacion/useAutorizarAcceso';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
-export const usePrediccionPictograma = (frase: string[]) => {
+export const usePrediccionPictograma = (pictogramaIds: number[], lemas: string[], texto: string, idioma: 'es' | 'en') => {
   const { token, cargandoToken } = useAutorizarAcceso();
   const [sugerencia, setSugerencia] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const predecir = async () => {
-      if (!token || cargandoToken || frase.length === 0) return;
+      if (!token || cargandoToken || lemas.length === 0) return;
 
       try {
-        const texto = frase.join(' ');
-
         const response = await axios.get(`${API_BASE_URL}/prediccion`, {
-          params: { frase: texto },
+          params: {
+            pictogramas: pictogramaIds.join(','),
+            lemas: lemas.join('\u001f'),
+            texto,
+            idioma,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -26,13 +29,12 @@ export const usePrediccionPictograma = (frase: string[]) => {
         setSugerencia(response.data); 
         setError(null);
       } catch (err: any) {
-        console.error('Error al predecir pictograma:', err);
         setError('No se pudo predecir el pictograma');
       }
     };
 
     predecir();
-  }, [frase, token, cargandoToken]);
+  }, [pictogramaIds.join(','), lemas.join('\u0000'), texto, idioma, token, cargandoToken]);
 
   return { sugerencia, error };
 };

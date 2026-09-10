@@ -44,7 +44,6 @@ const ocultos: PictogramaConCategorias[] = ocultosRes.data ?? [];
 
       setPictogramas(visibles);
     } catch (err: any) {
-      console.error('Error al cargar pictogramas:', err.message);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

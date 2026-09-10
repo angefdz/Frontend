@@ -7,7 +7,7 @@ type AuthData = {
   usuarioId: number | null;
 };
 
-type AuthContextType = {
+type AuthContextType = { 
   token: string | null;
   usuarioId: number | null;
   cargandoAuth: boolean;

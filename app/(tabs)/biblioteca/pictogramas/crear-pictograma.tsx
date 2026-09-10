@@ -26,8 +26,10 @@ import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CrearPictogramaScreen() {
+  const { tr, language, localizeCategory } = useLanguage();
   const router = useRouter();
   const { token, usuarioId } = useAuth();
   const cargandoToken = !token || !usuarioId;
@@ -37,6 +39,7 @@ export default function CrearPictogramaScreen() {
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
 
   const [nombre, setNombre] = useState('');
+  const [nombreEn, setNombreEn] = useState('');
   const [imagen, setImagen] = useState('');
   const [tipo, setTipo] = useState<'verbo' | 'sustantivo'>('sustantivo');
 
@@ -77,16 +80,16 @@ export default function CrearPictogramaScreen() {
         urlFinalImagen,
         tipo,
         categoriasSeleccionadas,
-        token
+        token,
+        nombreEn
       );
 
       marcarPictogramasComoDesactualizados();
-      marcarCategoriasComoDesactualizadas();
+      marcarCategoriasComoDesactualizadas(); 
 
       Alert.alert('Éxito', 'Pictograma creado correctamente');
       router.back();
     } catch (error) {
-      console.error('Error al crear pictograma:', error);
       Alert.alert('Error', 'No se pudo crear el pictograma');
     } finally {
       setSubiendo(false);
@@ -105,17 +108,22 @@ export default function CrearPictogramaScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.sectionTitle}>Crear nuevo pictograma</Text>
+      <Text style={styles.sectionTitle}>{tr('Crear nuevo pictograma')}</Text>
 
       <SelectorImagen uriImagen={imagen} setUriImagen={setImagen} />
 
       <InputTexto
-        placeholder="Nombre del pictograma"
+        placeholder={tr('Nombre del pictograma')}
         valor={nombre}
         setValor={setNombre}
       />
+      <InputTexto
+        placeholder={tr('Nombre en inglés (opcional)')}
+        valor={nombreEn}
+        setValor={setNombreEn}
+      />
 
-      <Text style={styles.sectionTitle}>Tipo</Text>
+      <Text style={styles.sectionTitle}>{tr('Tipo')}</Text>
       <View
   style={{
     flexDirection: 'row',
@@ -136,8 +144,8 @@ export default function CrearPictogramaScreen() {
         paddingVertical: 12,
         borderRadius: 8,
         borderWidth: 1,
-        borderColor: tipo === opcion ? '#007AFF' : '#ccc',
-        backgroundColor: tipo === opcion ? '#007AFF' : '#fff',
+        borderColor: tipo === opcion ? '#3157A4' : '#ccc',
+        backgroundColor: tipo === opcion ? '#3157A4' : '#fff',
         alignItems: 'center',
       }}
       accessibilityRole="button"
@@ -150,13 +158,13 @@ export default function CrearPictogramaScreen() {
           fontSize: width*0.04,
         }}
       >
-        {opcion.charAt(0).toUpperCase() + opcion.slice(1)}
+        {language === 'en' ? (opcion === 'verbo' ? 'Verb' : 'Noun') : opcion.charAt(0).toUpperCase() + opcion.slice(1)}
       </Text>
     </TouchableOpacity>
   ))}
 </View>
 
-      <Text style={styles.sectionTitle}>Categorías asignadas</Text>
+      <Text style={styles.sectionTitle}>{tr('Categorías asignadas')}</Text>
 
       {categoriasAsignadas.length === 0 ? (
         <Text
@@ -167,7 +175,7 @@ export default function CrearPictogramaScreen() {
           paddingBottom: 10
         }}
       >
-        No hay categorías añadidas aún.
+        {tr('No hay categorías añadidas aún.')}
       </Text>
       ) : (
         <ListaItems
@@ -176,7 +184,7 @@ export default function CrearPictogramaScreen() {
           renderItem={(cat) => (
             <ItemSeleccionable
               key={cat.id}
-              nombre={cat.nombre}
+              nombre={localizeCategory(cat)}
               imagen={cat.imagen}
               seleccionado={true}
               onPress={() => quitarCategoria(cat.id)}
@@ -193,7 +201,7 @@ export default function CrearPictogramaScreen() {
         accessibilityLabel="Botón para añadir categorías"
         accessibilityRole="button"
       >
-        <Text style={styles.verMasText}>+ Añadir categorías</Text>
+        <Text style={styles.verMasText}>{tr('+ Añadir categorías')}</Text>
       </TouchableOpacity>
 
       <SelectorItemsModal
@@ -203,13 +211,13 @@ export default function CrearPictogramaScreen() {
         seleccionados={categoriasSeleccionadas}
         setSeleccionados={setCategoriasSeleccionadas}
         getId={(c) => c.id}
-        getNombre={(c) => c.nombre}
+        getNombre={(c) => localizeCategory(c)}
         getImagen={(c) => c.imagen}
-        titulo="Selecciona categorías"
+        titulo={tr('Selecciona categorías')}
       />
 
       <BotonPrincipal
-        texto={subiendo ? 'Creando...' : 'Crear pictograma'}
+        texto={subiendo ? tr('Creando...') : tr('Crear pictograma')}
         onPress={manejarCrear}
       />
     </ScrollView>

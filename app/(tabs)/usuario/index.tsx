@@ -18,8 +18,11 @@ import {
 
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
 const { width } = Dimensions.get('window');
 export default function PerfilScreen() {
+  const { tr, language } = useLanguage();
   const router = useRouter();
   const { token, cerrarSesion } = useAuth();
   const { usuario, recargarUsuario, error: errorUsuario } = useUsuarioActual();
@@ -40,10 +43,10 @@ export default function PerfilScreen() {
   };
 
   const manejarCerrarSesion = () => {
-    Alert.alert('Cerrar sesión', '¿Estás segura de que quieres cerrar sesión?', [
-      { text: 'Cancelar', style: 'cancel' },
+    Alert.alert(tr('Cerrar sesión'), language === 'en' ? 'Are you sure you want to sign out?' : '¿Estás segura de que quieres cerrar sesión?', [
+      { text: tr('Cancelar'), style: 'cancel' },
       {
-        text: 'Sí',
+        text: tr('Sí'),
         style: 'destructive',
         onPress: () => {
           cerrarSesion();
@@ -61,12 +64,12 @@ export default function PerfilScreen() {
 
   const manejarEliminarCuenta = () => {
     Alert.alert(
-      'Eliminar cuenta',
-      '¿Estás segura de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
+      tr('Eliminar cuenta'),
+      language === 'en' ? 'Are you sure you want to delete your account? This action cannot be undone.' : '¿Estás segura de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
       [
-        { text: 'Cancelar', style: 'cancel' },
+        { text: tr('Cancelar'), style: 'cancel' },
         {
-          text: 'Eliminar',
+          text: tr('Eliminar'),
           style: 'destructive',
           onPress: async () => {
             try {
@@ -81,13 +84,12 @@ export default function PerfilScreen() {
               );
 
               if (response.status === 204) {
-                Alert.alert('Cuenta eliminada', 'Tu cuenta ha sido eliminada correctamente.');
+                Alert.alert(tr('Cuenta eliminada'), tr('Tu cuenta ha sido eliminada correctamente.'));
                 router.replace('/inicio-sesion');
               } else {
                 Alert.alert('Error', 'No se pudo eliminar la cuenta.');
-              }
+              } 
             } catch (error) {
-              console.error('Error al eliminar cuenta:', error);
               Alert.alert('Error', 'Hubo un problema al eliminar la cuenta.');
             }
           },
@@ -108,7 +110,7 @@ export default function PerfilScreen() {
       {errorActual && (
         <View style={{ padding: 16, alignItems: 'center' }}>
           <Text style={{ color: 'red', marginBottom: 8 }}>{errorActual}</Text>
-          <Button title="Reintentar" onPress={recargarTodo} />
+          <Button title={tr('Reintentar')} onPress={recargarTodo} />
         </View>
       )}
 
@@ -116,54 +118,54 @@ export default function PerfilScreen() {
         <TouchableOpacity
           onPress={() => router.push('/usuario/editar-perfil')}
           accessibilityRole="button"
-          accessibilityLabel="Editar perfil"
+          accessibilityLabel={tr('Editar perfil')}
         >
-          <Feather name="edit-2" size={width * 0.06} color="#007AFF" />
+          <Feather name="edit-2" size={width * 0.06} color={palette.primary} />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.label}>Nombre</Text>
+      <Text style={styles.label}>{tr('Nombre')}</Text>
       <TextInput
         style={styles.input}
         value={usuario?.nombre ?? ''}
         editable={false}
-        placeholder="Nombre"
+        placeholder={tr('Nombre')}
       />
 
-      <Text style={styles.label}>Correo electrónico</Text>
+      <Text style={styles.label}>{tr('Correo electrónico')}</Text>
       <TextInput
         style={styles.input}
         value={usuario?.correo ?? ''}
         editable={false}
-        placeholder="Correo"
+        placeholder={tr('Correo')}
       />
 
-      <Text style={styles.label}>Voz</Text>
+      <Text style={styles.label}>{tr('Voz')}</Text>
       <TextInput
         style={styles.input}
-        value={configuracion?.tipoVoz ?? ''}
+        value={configuracion?.tipoVoz ? (language === 'en' ? (configuracion.tipoVoz === 'masculina' ? 'Male' : 'Female') : configuracion.tipoVoz) : ''}
         editable={false}
-        placeholder="Tipo de voz"
+        placeholder={tr('Tipo de voz')}
       />
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/usuario/pictogramas-ocultos')}>
-        <Text style={styles.buttonText}>Pictogramas ocultos</Text>
+        <Text style={styles.buttonText}>{tr('Pictogramas ocultos')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={manejarDescargarHistorial}>
-        <Text style={styles.buttonText}>Historial</Text>
+        <Text style={styles.buttonText}>{tr('Historial')}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={() => router.push('/usuario/cambiar-password')}>
-        <Text style={styles.buttonText}>Cambiar contraseña</Text>
+        <Text style={styles.buttonText}>{tr('Cambiar contraseña')}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, { backgroundColor: '#FF3B30' }]} onPress={manejarCerrarSesion}>
-        <Text style={[styles.buttonText, { color: '#fff' }]}>Cerrar sesión</Text>
+      <TouchableOpacity style={[styles.button, { backgroundColor: palette.secondary }]} onPress={manejarCerrarSesion}>
+        <Text style={[styles.buttonText, { color: '#fff' }]}>{tr('Cerrar sesión')}</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, { backgroundColor: '#8E8E93' }]} onPress={manejarEliminarCuenta}>
-        <Text style={[styles.buttonText, { color: '#fff' }]}>Eliminar cuenta</Text>
+      <TouchableOpacity style={[styles.button, { backgroundColor: palette.destructive }]} onPress={manejarEliminarCuenta}>
+        <Text style={[styles.buttonText, { color: '#fff' }]}>{tr('Eliminar cuenta')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

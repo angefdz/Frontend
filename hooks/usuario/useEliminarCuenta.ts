@@ -36,7 +36,6 @@ export const useEliminarCuenta = () => {
                 Alert.alert('Error', 'No se pudo eliminar la cuenta.');
               }
             } catch (error) {
-              console.error('Error al eliminar cuenta:', error);
               Alert.alert('Error', 'Hubo un problema al eliminar la cuenta.');
             }
           },

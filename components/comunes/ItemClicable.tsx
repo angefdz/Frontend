@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ViewStyle,
 } from 'react-native';
+import { palette, radius, shadow } from '@/constants/Theme';
 
 const { width } = Dimensions.get('window');
 const itemSize = (width - 20 * 2 - 10 * 3) / 4;
@@ -65,13 +66,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: palette.surface,
+    borderRadius: radius.medium,
+    borderWidth: 1,
+    borderColor: palette.border,
+    ...shadow.card,
   },
   imagen: {
-    borderRadius: 10,
+    borderRadius: radius.small,
   },
   texto: {
     textAlign: 'center',
     marginTop: 6,
-    color: '#1A1A1A',
+    color: palette.text,
+    fontWeight: '600',
   },
 });

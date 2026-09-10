@@ -37,6 +37,7 @@ import { useCategoriasConPictogramas } from '@/hooks/biblioteca/useCategoriasCon
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { PictogramaConCategorias } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
 function SelectorTipo({
   tipo,
@@ -69,8 +70,8 @@ function SelectorTipo({
         paddingHorizontal,
         borderRadius,
         borderWidth: 1,
-        borderColor: seleccionada ? '#007AFF' : '#ccc',
-        backgroundColor: seleccionada ? '#007AFF' : '#fff',
+        borderColor: seleccionada ? '#3157A4' : '#ccc',
+        backgroundColor: seleccionada ? '#3157A4' : '#fff',
         marginHorizontal: width * 0.015,
       }}
       disabled={!esPersonalizado}
@@ -94,6 +95,7 @@ function SelectorTipo({
 }
 
 export default function EditarPictogramaScreen() {
+  const { tr } = useLanguage();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { token } = useAuth();
@@ -104,6 +106,7 @@ export default function EditarPictogramaScreen() {
 
   const [pictograma, setPictograma] = useState<PictogramaConCategorias | null>(null);
   const [nombre, setNombre] = useState('');
+  const [nombreEn, setNombreEn] = useState('');
   const [imagen, setImagen] = useState('');
   const [tipo, setTipo] = useState<'verbo' | 'sustantivo'>('sustantivo');
   const [categoriasSeleccionadas, setCategoriasSeleccionadas] = useState<number[]>([]);
@@ -134,11 +137,11 @@ export default function EditarPictogramaScreen() {
 
         setPictograma(data);
         setNombre(data.nombre);
-        setImagen(data.imagen);
+        setNombreEn(data.traducciones?.en ?? '');
+        setImagen(data.imagen); 
         setTipo(data.tipo as 'verbo' | 'sustantivo');
         setCategoriasSeleccionadas(data.categorias.map((c) => c.id));
       } catch (error) {
-        console.error('❌ Error al cargar el pictograma:', error);
         Alert.alert('Error', 'No se pudo cargar el pictograma');
         router.back();
       } finally {
@@ -163,6 +166,7 @@ export default function EditarPictogramaScreen() {
           imagen,
           tipo,
           categorias: categoriasSeleccionadas,
+          traducciones: nombreEn.trim() ? { ...pictograma?.traducciones, en: nombreEn.trim() } : pictograma?.traducciones,
         },
         {
           headers: {
@@ -230,7 +234,7 @@ export default function EditarPictogramaScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <CabeceraSeccion texto="Editar pictograma" />
+      <CabeceraSeccion texto={tr('Editar pictograma')} />
 
       {!esPersonalizado && (
   <Text
@@ -258,16 +262,22 @@ export default function EditarPictogramaScreen() {
       />
 
       <InputTexto
-        placeholder="Nombre del pictograma"
+        placeholder={tr('Nombre del pictograma')}
         valor={nombre}
         setValor={setNombre}
         disabled={!esPersonalizado}
       />
+      <InputTexto
+        placeholder={tr('Nombre en inglés (opcional)')}
+        valor={nombreEn}
+        setValor={setNombreEn}
+        disabled={!esPersonalizado}
+      />
 
-      <Text style={styles.sectionTitle}>Tipo</Text>
+      <Text style={styles.sectionTitle}>{tr('Tipo')}</Text>
       <SelectorTipo tipo={tipo} setTipo={setTipo} esPersonalizado={esPersonalizado} />
 
-      <CabeceraSeccion texto="Categorías asignadas" />
+      <CabeceraSeccion texto={tr('Categorías asignadas')} />
       {contenidoCategorias}
 
       <TouchableOpacity
@@ -276,7 +286,7 @@ export default function EditarPictogramaScreen() {
         accessibilityRole="button"
         accessibilityLabel="Añadir categorías"
       >
-        <Text style={styles.verMasText}>+ Añadir categorías</Text>
+        <Text style={styles.verMasText}>{tr('+ Añadir categorías')}</Text>
       </TouchableOpacity>
 
       <BotonPrincipal texto="Guardar" onPress={manejarGuardar} />

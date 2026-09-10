@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   },
 
   recoverButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#3157A4',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
 
   backButtonText: {
-    color: '#007AFF',
+    color: '#3157A4',
     fontSize: 16,
   },
 });

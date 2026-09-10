@@ -1,5 +1,6 @@
 
 import { Dimensions, StyleSheet } from 'react-native';
+import { palette, radius, shadow } from '../constants/Theme';
 
 const { width } = Dimensions.get('window');
 const baseFont = width * 0.045;
@@ -8,20 +9,20 @@ export const styles = StyleSheet.create({
   inner: {
     padding: width * 0.05,
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
   },
   container: {
     flex: 1,
     paddingTop: width * 0.05,
     paddingHorizontal: width * 0.05,
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
     alignItems: 'center',
   },
   scrollContainer: {
     flexGrow: 1,
     paddingTop: width * 0.05,
     paddingHorizontal: width * 0.05,
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
     alignItems: 'center',
   },
   
@@ -30,16 +31,18 @@ export const styles = StyleSheet.create({
     marginBottom: width * 0.01,
     fontWeight: '600',
     fontSize: baseFont,
+    color: palette.text,
   },
   input: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 8,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     padding: width * 0.03,
     marginBottom: width * 0.04,
     fontSize: baseFont,
-    backgroundColor: '#F9F9F9',
+    backgroundColor: palette.surface,
+    color: palette.text,
   },
   voiceOptions: {
     flexDirection: 'row',
@@ -51,17 +54,17 @@ export const styles = StyleSheet.create({
   voiceButton: {
     paddingVertical: width * 0.025,
     paddingHorizontal: width * 0.04,
-    borderRadius: 8,
+    borderRadius: radius.medium,
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#f9f9f9',
+    borderColor: palette.border,
+    backgroundColor: palette.surface,
   },
   voiceButtonSelected: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
+    backgroundColor: palette.primary,
+    borderColor: palette.primary,
   },
   voiceButtonText: {
-    color: '#333',
+    color: palette.text,
     fontSize: baseFont,
   },
   voiceButtonTextSelected: {
@@ -71,8 +74,11 @@ export const styles = StyleSheet.create({
   button: {
     width: '100%',
     paddingVertical: width * 0.035,
-    borderRadius: 8,
-    backgroundColor: '#007AFF',
+    minHeight: 54,
+    justifyContent: 'center',
+    borderRadius: radius.medium,
+    backgroundColor: palette.primary,
+    ...shadow.card,
     marginBottom: width * 0.03,
     alignItems: 'center',
   },

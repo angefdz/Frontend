@@ -13,7 +13,6 @@ export async function fetchImagen(palabra: string): Promise<string | null> {
 
       return `https://static.arasaac.org/pictograms/${pictogramaId}/500/1_1_1.png`;
     } catch (error) {
-      console.error(`Error buscando "${palabra}" en ARASAAC:`, error);
       return null;
     }
   }

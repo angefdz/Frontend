@@ -9,7 +9,7 @@ type CategoriasContextType = {
   readonly recargar: () => void;
   readonly marcarCategoriasComoDesactualizadas: () => void;
 };
-
+ 
 const CategoriasContext = createContext<CategoriasContextType | undefined>(undefined);
 
 export const CategoriasProvider = ({ children }: { children: React.ReactNode }) => {

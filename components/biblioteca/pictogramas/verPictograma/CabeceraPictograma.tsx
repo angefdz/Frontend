@@ -1,6 +1,7 @@
 import { styles } from '@/styles/CabeceraPictograma.styles';
 import { Feather } from '@expo/vector-icons';
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 interface Props {
   readonly titulo: string;
   readonly id: number;
@@ -19,6 +20,7 @@ export default function CabeceraPictograma({
   onEditar,
   onEliminar,
 }: Props) {
+  const { tr } = useLanguage();
   return (
     <View style={{flexDirection: 'row',
       justifyContent: 'space-between',
@@ -29,12 +31,12 @@ export default function CabeceraPictograma({
           onPress={onToggleVisibilidad}
           style={styles.botonIcono}
           accessibilityRole="button"
-          accessibilityLabel={oculto ? 'Mostrar pictograma' : 'Ocultar pictograma'}
+          accessibilityLabel={tr(oculto ? 'Mostrar pictograma' : 'Ocultar pictograma')}
         >
           {oculto ? (
-            <Feather name="eye" size={width*0.06} color="#28A745" />
+            <Feather name="eye" size={width*0.06} color="#0F766E" />
           ) : (
-            <Feather name="eye-off" size={width*0.06} color="#DC3545" />
+            <Feather name="eye-off" size={width*0.06} color="#B42318" />
           )}
         </TouchableOpacity>
 
@@ -43,9 +45,9 @@ export default function CabeceraPictograma({
             onPress={onEditar}
             style={styles.botonIcono}
             accessibilityRole="button"
-            accessibilityLabel="Editar pictograma"
+            accessibilityLabel={tr('Editar pictograma')}
           >
-            <Feather name="edit-3" size={width*0.06} color="#28A745" />
+            <Feather name="edit-3" size={width*0.06} color="#0F766E" />
           </TouchableOpacity>
         )}
 
@@ -56,7 +58,7 @@ export default function CabeceraPictograma({
             accessibilityRole="button"
             accessibilityLabel="Eliminar pictograma"
           >
-            <Feather name="trash-2" size={width*0.06} color="#DC3545" />
+            <Feather name="trash-2" size={width*0.06} color="#B42318" />
           </TouchableOpacity>
         )}
       </View>

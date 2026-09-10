@@ -1,11 +1,14 @@
 import React from 'react';
 import { ScrollView, Text, TextStyle, View, ViewStyle } from 'react-native';
 import ItemClicable from './ItemClicable';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Item = {
   id: string | number;
   nombre: string;
   imagen: string;
+  tipo?: string;
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 };
 
 type Props = {
@@ -27,6 +30,7 @@ export default function ListaFiltrada({
   onItemPress,
   error,
 }: Props) {
+  const { localize } = useLanguage();
   if (error) {
     return <Text style={{ color: 'red', marginTop: 20 }}>{error}</Text>;
   }
@@ -38,7 +42,7 @@ export default function ListaFiltrada({
           {items.map((item) => (
             <ItemClicable
               key={item.id}
-              nombre={item.nombre}
+              nombre={localize(item)}
               imagen={item.imagen}
               itemStyle={itemStyle}
               textStyle={itemTextStyle}

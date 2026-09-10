@@ -1,4 +1,5 @@
 import React from 'react';
+import { palette, radius, shadow } from '@/constants/Theme';
 import {
   Dimensions,
   StyleSheet,
@@ -37,20 +38,22 @@ export default function BotonPrincipal({ texto, onPress, hint }: Props) {
 
 const styles = StyleSheet.create({
   boton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: width * 0.02,
+    backgroundColor: palette.primary,
+    paddingVertical: Math.max(14, width * 0.025),
     paddingHorizontal: width * 0.06,
-    borderRadius: 10,
+    borderRadius: radius.medium,
     alignItems: 'center',
     marginTop: width * 0.05,
     width: '100%',
     maxWidth: 500,
     alignSelf: 'center',
     marginBottom: 20,
+    minHeight: 52,
+    ...shadow.card,
   },
   texto: {
     color: '#FFFFFF',
-    fontSize: width * 0.04,
-    fontWeight: 'bold',
+    fontSize: Math.max(16, width * 0.04),
+    fontWeight: '700',
   },
 });

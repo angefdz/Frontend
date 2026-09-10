@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 import { useInicioSesion } from '../../hooks/auth/login/useInicioSesion';
 import { styles } from '../../styles/LoginScreen.styles';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/comunes/LanguageSwitcher';
 
 export const options = {
   title: 'Iniciar sesión',
@@ -20,6 +23,7 @@ export const options = {
 const { width } = Dimensions.get('window');
 
 export default function InicioSesion() {
+  const { tr } = useLanguage();
   const {
     correo,
     contrasena,
@@ -38,17 +42,16 @@ export default function InicioSesion() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
-      
+      <LanguageSwitcher />
 
       <View style={styles.content}>
-      
         <Text accessibilityRole="header" style={styles.title}>
-        Inicio de sesión
+        {tr('Te damos la bienvenida')}
       </Text>
         <TextInput
           style={styles.input}
-          placeholder="Correo electrónico"
-          placeholderTextColor="#444"
+          placeholder={tr('Correo electrónico')}
+          placeholderTextColor={palette.textMuted}
           value={correo}
           onChangeText={manejarCambioCorreo}
           keyboardType="email-address"
@@ -56,6 +59,8 @@ export default function InicioSesion() {
           autoComplete="email"
           accessibilityLabel="Correo electrónico"
           accessibilityHint="Introduce tu dirección de correo electrónico"
+          textContentType="oneTimeCode"
+
         />
 
         <View
@@ -71,9 +76,9 @@ export default function InicioSesion() {
         >
           <View style={{ flex: 1 }}>
             <TextInput
-              style={{ fontSize: width * 0.04 }}
-              placeholder="Contraseña"
-              placeholderTextColor="#444"
+              style={{ fontSize: 17, color: palette.text }}
+              placeholder={tr('Contraseña')}
+              placeholderTextColor={palette.textMuted}
               value={contrasena}
               onChangeText={manejarCambioContrasena}
               secureTextEntry={!mostrarContrasena}
@@ -86,13 +91,14 @@ export default function InicioSesion() {
           <TouchableOpacity
             onPress={() => setMostrarContrasena((prev) => !prev)}
             accessible={true}
-            accessibilityLabel={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            accessibilityLabel={tr(mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña')}
             accessibilityRole="button"
+            style={{ minWidth: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}
           >
             <AntDesign
               name={mostrarContrasena ? 'eye' : 'eyeo'}
               size={width * 0.06}
-              color="#666"
+              color={palette.primary}
             />
           </TouchableOpacity>
         </View>
@@ -112,18 +118,18 @@ export default function InicioSesion() {
           onPress={manejarInicioSesion}
           disabled={cargando}
           accessible={true}
-          accessibilityLabel="Iniciar sesión"
+          accessibilityLabel={tr('Iniciar sesión')}
           accessibilityHint="Presiona para iniciar sesión con tu correo y contraseña"
           accessibilityRole="button"
         >
           {cargando ? (
             <ActivityIndicator
               color="white"
-              accessibilityLabel="Cargando"
+              accessibilityLabel={tr('Cargando')}
               accessibilityRole="progressbar"
             />
           ) : (
-            <Text style={styles.loginButtonText}>Iniciar sesión</Text>
+            <Text style={styles.loginButtonText}>{tr('Iniciar sesión')}</Text>
           )}
         </TouchableOpacity>
 
@@ -131,12 +137,12 @@ export default function InicioSesion() {
           onPress={manejarIrARegistro}
           style={styles.registerButton}
           accessible={true}
-          accessibilityLabel="Registrarse"
+          accessibilityLabel={tr('Registrarse')}
           accessibilityHint="Presiona para crear una nueva cuenta"
           accessibilityRole="button"
         >
           <Text style={styles.registerButtonText}>
-            ¿No tienes cuenta? Regístrate
+            {tr('¿No tienes cuenta? Regístrate')}
           </Text>
         </TouchableOpacity>
       </View>

@@ -9,7 +9,7 @@ export default function Index() {
 
   useEffect(() => {
     if (!cargandoAuth) {
-      if (token) {
+      if (token) { 
         router.replace('/(tabs)/pantalla-principal');
       } else {
         router.replace('/inicio-sesion');

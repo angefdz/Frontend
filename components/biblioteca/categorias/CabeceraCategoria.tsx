@@ -1,6 +1,7 @@
 import { styles } from '@/styles/CabeceraPictograma.styles';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
 const { width } = Dimensions.get('window');
 const iconSize = width * 0.06; // responsive
@@ -16,6 +17,7 @@ export default function CabeceraCategoria({
   onEditar,
   onEliminar,
 }: Props) {
+  const { tr } = useLanguage();
   return (
     <View style={styles.container}>
       <Text style={styles.titulo}>{titulo}</Text>
@@ -25,9 +27,9 @@ export default function CabeceraCategoria({
           style={styles.botonIcono}
           accessible
           accessibilityRole="button"
-          accessibilityLabel="Editar categoría"
+          accessibilityLabel={tr('Editar categoría')}
         >
-          <Feather name="edit-3" size={iconSize} color="#007AFF" />
+          <Feather name="edit-3" size={iconSize} color="#3157A4" />
         </TouchableOpacity>
         <TouchableOpacity
           onPress={onEliminar}
@@ -39,7 +41,7 @@ export default function CabeceraCategoria({
           <MaterialCommunityIcons
             name="trash-can-outline"
             size={iconSize}
-            color="#FF3B30"
+            color="#B42318"
           />
         </TouchableOpacity>
       </View>

@@ -31,7 +31,7 @@ export const VozProvider = ({ children }: { children: React.ReactNode }) => {
     </VozContext.Provider>
   );
 };
-
+ 
 export const useVoz = () => {
   const context = useContext(VozContext);
   if (!context) {

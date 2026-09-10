@@ -48,7 +48,7 @@ export const PictogramasProvider = ({ children }: { children: React.ReactNode })
     </PictogramasContext.Provider>
   );
 };
-
+ 
 export const usePictogramasContext = () => {
   const context = useContext(PictogramasContext);
   if (!context) {

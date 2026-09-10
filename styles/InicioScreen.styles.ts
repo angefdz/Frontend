@@ -1,4 +1,5 @@
 import { Dimensions, StyleSheet } from 'react-native';
+import { palette, radius, shadow } from '../constants/Theme';
 
 const { width } = Dimensions.get('window');
 const MARGIN = 8;
@@ -8,7 +9,7 @@ const PICTO_WIDTH = (width - MARGIN * 2 * NUM_COLUMNS) / NUM_COLUMNS;
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
   },
   fraseContainer: {
     flexDirection: 'row',
@@ -20,8 +21,8 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     paddingHorizontal: 8,
     paddingVertical: 5,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
+    backgroundColor: palette.primarySoft,
+    borderRadius: radius.small,
     marginRight: 5,
     marginBottom: 5,
   },
@@ -31,10 +32,10 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   botonFrase: {
-    backgroundColor: '#007AFF',
+    backgroundColor: palette.primary,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    borderRadius: 8,
+    borderRadius: radius.medium,
     marginHorizontal: 5,
   },
   botonFraseTexto: {
@@ -42,7 +43,7 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   botonIcono: {
-    backgroundColor: '#007AFF',
+    backgroundColor: palette.primary,
     padding: 12,
     borderRadius: 50,
     marginHorizontal: 10,
@@ -59,10 +60,13 @@ export const styles = StyleSheet.create({
   pictograma: {
     width: PICTO_WIDTH,
     height: PICTO_WIDTH,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: palette.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: radius.medium,
+    borderWidth: 1,
+    borderColor: palette.border,
+    ...shadow.card,
     padding: 8,
     overflow: 'hidden',
   },
@@ -73,7 +77,8 @@ export const styles = StyleSheet.create({
   pictogramaTexto: {
     fontSize: 14,
     marginTop: 5,
-    color: '#333',
+    color: palette.text,
+    fontWeight: '600',
     textAlign: 'center',
     flexShrink: 1,
     maxWidth: '100%',
@@ -81,10 +86,10 @@ export const styles = StyleSheet.create({
   pictogramaSugerido: {
     width: 100,
     height: 100,
-    backgroundColor: '#f2f2f2',
+    backgroundColor: palette.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: radius.medium,
     padding: 10,
     overflow: 'hidden',
   },
@@ -105,7 +110,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
   },
   botonConEtiqueta: {
     alignItems: 'center',
@@ -117,8 +122,9 @@ export const styles = StyleSheet.create({
   
   etiquetaBoton: {
     marginTop: 4,
-    color: 'black',
-    fontSize: width*0.05,
+    color: palette.text,
+    fontSize: Math.max(15, width * 0.04),
+    fontWeight: '600',
   },
   
 });

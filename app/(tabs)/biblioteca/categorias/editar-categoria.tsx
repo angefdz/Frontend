@@ -24,10 +24,12 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { CategoriaConPictogramas } from '@/types';
 import { Dimensions } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 const { width } = Dimensions.get('window');
 const textoSize = width * 0.035;
 
 export default function EditarCategoriaScreen() {
+  const { tr, language, localize } = useLanguage();
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { token } = useAuth();
@@ -95,7 +97,7 @@ export default function EditarCategoriaScreen() {
   if (!categoria) {
     return (
       <View style={styles.container}>
-        <Text style={{ textAlign: 'center', marginTop: 32 }}>Cargando...</Text>
+        <Text style={{ textAlign: 'center', marginTop: 32 }}>{tr('Cargando...')}</Text>
       </View>
     );
   }
@@ -113,7 +115,7 @@ export default function EditarCategoriaScreen() {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <CabeceraSeccion texto="Editar categoría" />
+      <CabeceraSeccion texto={tr('Editar categoría')} />
 
       {esGeneral && (
   <View
@@ -135,7 +137,7 @@ export default function EditarCategoriaScreen() {
       accessibilityRole="text"
       accessibilityLabel="Aviso: esta es una categoría general. Solo puedes modificar los pictogramas."
     >
-      Esta es una categoría general. No puedes editar su nombre ni imagen, pero sí puedes modificar los pictogramas.
+      {language === 'en' ? 'This is a general category. You cannot edit its name or image, but you can change its pictograms.' : 'Esta es una categoría general. No puedes editar su nombre ni imagen, pero sí puedes modificar los pictogramas.'}
     </Text>
   </View>
 )}
@@ -147,13 +149,13 @@ export default function EditarCategoriaScreen() {
       />
 
       <InputTexto
-        placeholder="Nombre de la categoría"
+        placeholder={tr('Nombre de la categoría')}
         valor={nombre}
         setValor={setNombre}
         disabled={esGeneral}
       />
 
-      <CabeceraSeccion texto="Pictogramas asignados" />
+      <CabeceraSeccion texto={language === 'en' ? 'Assigned pictograms' : 'Pictogramas asignados'} />
 
       {pictogramasSeleccionadosDatos.length === 0 ? (
         <Text
@@ -161,7 +163,7 @@ export default function EditarCategoriaScreen() {
         accessibilityRole="text"
         accessibilityLabel="Aviso: no hay pictogramas añadidos aún"
       >
-        No hay pictogramas añadidos aún.
+        {language === 'en' ? 'No pictograms have been added yet.' : 'No hay pictogramas añadidos aún.'}
       </Text>
       
       ) : (
@@ -171,7 +173,7 @@ export default function EditarCategoriaScreen() {
           renderItem={(pic) => (
             <ItemSeleccionable
               key={pic.id}
-              nombre={pic.nombre}
+              nombre={localize(pic)}
               imagen={pic.imagen}
               seleccionado={true}
               onPress={() => handleQuitarPictograma(pic.id)}
@@ -189,11 +191,11 @@ export default function EditarCategoriaScreen() {
   accessibilityLabel="Añadir pictogramas"
   accessibilityHint="Abre el selector de pictogramas para añadir nuevos a la categoría"
 >
-  <Text style={styles.verMasText}>+ Añadir pictogramas</Text>
+  <Text style={styles.verMasText}>{language === 'en' ? '+ Add pictograms' : '+ Añadir pictogramas'}</Text>
 </TouchableOpacity>
 
 
-      <BotonPrincipal texto="Guardar" onPress={manejarGuardar} />
+      <BotonPrincipal texto={language === 'en' ? 'Save' : 'Guardar'} onPress={manejarGuardar} />
 
       <SelectorItemsModal
         visible={mostrarModal}
@@ -202,9 +204,9 @@ export default function EditarCategoriaScreen() {
         seleccionados={pictogramasSeleccionados}
         setSeleccionados={setPictogramasSeleccionados}
         getId={(p) => p.id}
-        getNombre={(p) => p.nombre}
+        getNombre={(p) => localize(p)}
         getImagen={(p) => p.imagen}
-        titulo="Selecciona pictogramas"
+        titulo={language === 'en' ? 'Select pictograms' : 'Selecciona pictogramas'}
       />
     </ScrollView>
   );

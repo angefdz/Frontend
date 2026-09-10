@@ -26,7 +26,6 @@ export const useUsuarioActual = () => {
     } catch (err) {
       setError('No se pudo cargar el usuario');
       setUsuario(null);
-      console.error(err);
     } finally {
       setCargando(false);
     }

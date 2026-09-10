@@ -1,57 +1,68 @@
 import { Dimensions, StyleSheet } from 'react-native';
+import { palette, radius, shadow } from '../constants/Theme';
 
 const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
   },
   content: {
     flex: 1,
-    padding: width * 0.03,
+    marginHorizontal: 20,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
     justifyContent: 'center',
+    backgroundColor: palette.surface,
+    borderRadius: radius.large,
+    ...shadow.card,
   },
   title: {
-    fontSize: width * 0.05,
-    fontWeight: 'bold',
-    marginBottom: 25,
+    fontSize: Math.max(28, width * 0.07),
+    fontWeight: '800',
+    marginBottom: 30,
     textAlign: 'center',
-    color: '#333',
+    color: palette.text,
   },
   input: {
-    height: width * 0.12,
-    borderWidth: width * 0.004,
-    borderColor: '#ddd',
-    borderRadius: 8,
+    minHeight: 56,
+    borderWidth: 1.5,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     paddingHorizontal: 15,
     marginBottom: 15,
-    fontSize: width * 0.04,
+    fontSize: 17,
+    color: palette.text,
+    backgroundColor: palette.surface,
   },
   errorText: {
-    color: 'red',
+    color: palette.error,
+    backgroundColor: palette.errorSoft,
+    borderRadius: radius.small,
+    padding: 12,
     marginBottom: 15,
     textAlign: 'center',
   },
   loginButton: {
-    backgroundColor: '#007AFF',
-    height: width * 0.1,
-    borderRadius: 8,
+    backgroundColor: palette.primary,
+    minHeight: 56,
+    borderRadius: radius.medium,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 15,
   },
   loginButtonText: {
     color: 'white',
-    fontSize: width * 0.04,
-    fontWeight: '600',
+    fontSize: 17,
+    fontWeight: '700',
   },
   forgotPassword: {
     alignItems: 'center',
     marginBottom: 20,
   },
   forgotPasswordText: {
-    color: '#007AFF',
+    color: palette.primary,
     fontSize: 14,
   },
   separator: {
@@ -90,8 +101,10 @@ export const styles = StyleSheet.create({
   },
   
   registerButtonText: {
-    color: '#007AFF',
-    fontSize: width * 0.04,
+    color: palette.primary,
+    fontSize: 16,
+    fontWeight: '700',
+    paddingVertical: 12,
   }
   
 }); 

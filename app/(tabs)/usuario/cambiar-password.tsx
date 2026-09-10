@@ -10,9 +10,11 @@ import {
 
 import { useCambiarPassword } from '@/hooks/usuario/useCambiarPassword';
 import { styles } from '@/styles/PerfilScreen.styles';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function CambiarPasswordScreen() {
-  const router = useRouter();
+  const { tr } = useLanguage();
+  const router = useRouter(); 
   const { cambiarPassword } = useCambiarPassword(); 
 
   const [passwordActual, setPasswordActual] = useState('');
@@ -36,42 +38,42 @@ export default function CambiarPasswordScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <Text style={styles.label}>Contraseña actual</Text>
+      <Text style={styles.label}>{tr('Contraseña actual')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
-        placeholder="Contraseña actual"
+        placeholder={tr('Contraseña actual')}
         value={passwordActual}
         onChangeText={setPasswordActual}
         accessibilityLabel="Campo de contraseña actual"
   accessibilityHint="Introduce tu contraseña actual"
       />
 
-      <Text style={styles.label}>Nueva contraseña</Text>
+      <Text style={styles.label}>{tr('Nueva contraseña')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
-        placeholder="Nueva contraseña"
+        placeholder={tr('Nueva contraseña')}
         value={nuevaPassword}
         onChangeText={setNuevaPassword}
         accessibilityLabel="Campo de nueva contraseña"
   accessibilityHint="Introduce tu nueva contraseña"
       />
 
-      <Text style={styles.label}>Confirmar nueva contraseña</Text>
+      <Text style={styles.label}>{tr('Confirmar nueva contraseña')}</Text>
       <TextInput
         style={styles.input}
         secureTextEntry
-        placeholder="Confirmar contraseña"
+        placeholder={tr('Confirmar contraseña')}
         value={confirmarPassword}
         onChangeText={setConfirmarPassword}
         accessibilityLabel="Campo para confirmar la nueva contraseña"
   accessibilityHint="Vuelve a escribir tu nueva contraseña para confirmar"
       />
 
-      <TouchableOpacity style={styles.button} onPress={manejarCambioPassword} accessibilityLabel="Actualizar contraseña"
+      <TouchableOpacity style={styles.button} onPress={manejarCambioPassword} accessibilityLabel={tr('Actualizar contraseña')}
   accessibilityRole="button">
-        <Text style={styles.buttonText}>Actualizar contraseña</Text>
+        <Text style={styles.buttonText}>{tr('Actualizar contraseña')}</Text>
       </TouchableOpacity>
     </KeyboardAvoidingView>
   );

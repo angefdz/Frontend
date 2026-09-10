@@ -1,4 +1,5 @@
 import React from 'react';
+import { palette, radius } from '@/constants/Theme';
 import {
   Dimensions,
   StyleSheet,
@@ -29,7 +30,7 @@ export default function InputTexto({
       accessibilityHint={hint || `Introduce ${placeholder.toLowerCase()}`}
       style={[styles.input, disabled && styles.inputDisabled]}
       placeholder={placeholder}
-      placeholderTextColor="#555"
+      placeholderTextColor={palette.textMuted}
       value={valor}
       onChangeText={setValor}
       editable={!disabled}
@@ -41,18 +42,18 @@ export default function InputTexto({
 const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
-    borderColor: '#999',
-    borderRadius: 10,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     padding: width * 0.035,
     marginVertical: width * 0.03,
     fontSize: width * 0.045,
-    backgroundColor: '#FFF',
-    minHeight: 48,
-    color: '#1A1A1A',
+    backgroundColor: palette.surface,
+    minHeight: 54,
+    color: palette.text,
   },
   inputDisabled: {
-    backgroundColor: '#F0F0F0',
-    color: '#1A1A1A',
-    borderColor: '#CCC',
+    backgroundColor: palette.surfaceMuted,
+    color: palette.textMuted,
+    borderColor: palette.border,
   },
 });

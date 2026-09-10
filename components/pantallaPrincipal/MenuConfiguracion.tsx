@@ -1,6 +1,8 @@
 import { Feather } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
 
 import {
   Menu,
@@ -24,6 +26,7 @@ export default function MenuConfiguracion({
   setItemsPerPage,
   itemsPerPage,
 }: Props) {
+  const { language, setLanguage, t } = useLanguage();
   const { width } = Dimensions.get('window');
 const iconSize = width * 0.045; 
 
@@ -72,7 +75,7 @@ const iconSize = width * 0.045;
             <Feather
               name={menuVisible ? 'x' : 'settings'}
               size={iconSize}
-              color="#aaa"
+              color={palette.primary}
             />
           </View>
         </MenuTrigger>
@@ -91,8 +94,8 @@ const iconSize = width * 0.045;
               >
                 <Text style={styles.menuOptionText}>
                   {modoAgrupado
-                    ? 'Desagrupar pictogramas'
-                    : 'Agrupar por categorías'}
+                    ? t('ungroup')
+                    : t('group')}
                 </Text>
               </View>
             </MenuOption>
@@ -104,9 +107,14 @@ const iconSize = width * 0.045;
                 accessibilityLabel="Cambiar el número de pictogramas visibles en el teclado"
               >
                 <Text style={styles.menuOptionText}>
-                  Reajustar número de pictogramas
+                  {t('resize')}
                 </Text>
               </View>
+            </MenuOption>
+            <MenuOption onSelect={() => setLanguage(language === 'es' ? 'en' : 'es')}>
+              <Text style={styles.menuOptionText}>
+                {t('language')}: {language === 'es' ? t('spanish') : t('english')} → {language === 'es' ? t('english') : t('spanish')}
+              </Text>
             </MenuOption>
           </MenuOptions>
         )}
@@ -132,7 +140,7 @@ const iconSize = width * 0.045;
                       itemsPerPage === cantidad && styles.selectedOption,
                     ]}
                   >
-                    {cantidad} pictogramas
+                    {cantidad} {t('pictograms')}
                   </Text>
                 </View>
               </MenuOption>
@@ -145,7 +153,7 @@ const iconSize = width * 0.045;
                 accessibilityLabel="Volver al menú anterior"
               >
                 <Text style={[styles.menuOptionText, { fontWeight: 'bold' }]}>
-                  ← Volver
+                  ← {t('back')}
                 </Text>
               </View>
             </MenuOption>
@@ -165,7 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   selectedOption: {
-    color: '#007AFF',
+    color: '#3157A4',
     fontWeight: 'bold',
   },
 });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { palette } from '@/constants/Theme';
 import {
   Dimensions,
   Image,
@@ -53,7 +54,9 @@ function ItemSeleccionable({
           },
           itemStyle,
           {
-            backgroundColor: seleccionado ? '#007AFF' : '#eee',
+            backgroundColor: seleccionado ? palette.primarySoft : palette.surfaceMuted,
+            borderWidth: seleccionado ? 3 : 1,
+            borderColor: seleccionado ? palette.primary : palette.border,
           },
         ]}
       >
@@ -73,7 +76,8 @@ function ItemSeleccionable({
             {
               fontSize,
               textAlign: 'center',
-              color: seleccionado ? 'white' : '#1A1A1A',
+              color: palette.text,
+              fontWeight: seleccionado ? '800' : '600',
             },
             textStyle,
           ]}

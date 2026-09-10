@@ -23,7 +23,6 @@ export const useCategoriasConPictogramas = () => {
       });
       setCategorias(res.data);
     } catch (err: any) {
-      console.error('Error al cargar categorías con pictogramas:', err);
       setError('No se pudieron cargar las categorías');
     } finally {
       setCargando(false);

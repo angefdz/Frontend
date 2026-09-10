@@ -24,7 +24,6 @@ export const guardarUsuarioActual = async (
 
     return response.data;
   } catch (error) {
-    console.error('Error al actualizar datos del usuario:', error);
     throw error;
   }
 };

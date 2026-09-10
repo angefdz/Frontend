@@ -22,8 +22,11 @@ import { usePictogramasContext } from '@/context/PictogramasContext';
 import { useVoz } from '@/context/VozContext';
 import { styles } from '@/styles/InicioScreen.styles';
 import { PictogramaSimple } from '@/types';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function PantallaPrincipal() {
+  const { t, localize } = useLanguage();
   const { token, usuarioId } = useAuth();
   const navigation = useNavigation();
 
@@ -44,7 +47,7 @@ export default function PantallaPrincipal() {
   const [transicionando, setTransicionando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(9);
-  const [verboModal, setVerboModal] = useState<string | null>(null);
+  const [verboModal, setVerboModal] = useState<PictogramaSimple | null>(null);
   const [configAplicada, setConfigAplicada] = useState(false);
   const [todoListo, setTodoListo] = useState(false);
 
@@ -122,7 +125,6 @@ export default function PantallaPrincipal() {
 
     guardarConfiguracionUsuario(token, nuevaConfig)
       .catch((err) => {
-        console.error('Error al actualizar configuración:', err);
       })
       .finally(() => {
         setTimeout(() => setTransicionando(false), 200);
@@ -163,30 +165,31 @@ export default function PantallaPrincipal() {
 
   const manejarSeleccion = (p: PictogramaSimple) => {
     if (p.tipo === 'verbo') {
-      setVerboModal(p.nombre);
+      setVerboModal(p);
     } else {
-      añadirPictograma(p.nombre);
+      añadirPictograma(p);
     }
   };
 
   if (!todoListo) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
-        <Text>Cargando configuración...</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: palette.background }}>
+        <ActivityIndicator size="large" color={palette.primary} accessibilityLabel="Cargando configuración" />
+        <Text style={{ color: palette.textMuted, marginTop: 12 }}>{t('preparing')}</Text>
       </View>
     );
   }
 
   if (!token || !usuarioId || errorConfiguracion || errorCategorias || errorPictogramas) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: '#fff' }}>
-        <Text style={{ color: 'red' }}>Error al cargar datos del usuario.</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 24, backgroundColor: palette.background }}>
+        <Text accessibilityRole="alert" style={{ color: palette.error }}>{t('loadError')}</Text>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#fff' }}>
+    <View style={{ flex: 1, backgroundColor: palette.background }}>
       <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         <TextoFraseExpandibleAnimado frase={frase} />
 
@@ -201,8 +204,8 @@ export default function PantallaPrincipal() {
     sugerencia={sugerencia}
     usarSugerencia={() =>
       sugerencia.tipo === 'verbo'
-        ? setVerboModal(sugerencia.nombre)
-        : añadirPictograma(sugerencia.nombre)
+        ? setVerboModal(sugerencia)
+        : añadirPictograma(sugerencia)
     }
     itemsPerPage={itemsPerPage}
   />
@@ -211,7 +214,7 @@ export default function PantallaPrincipal() {
 
         {transicionando ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>
-            <ActivityIndicator size="large" color="#666" />
+            <ActivityIndicator size="large" color={palette.primary} />
           </View>
         ) : (
           <View>
@@ -220,15 +223,15 @@ export default function PantallaPrincipal() {
                 categorias={categorias}
                 itemsPerPage={itemsPerPage}
                 onSeleccionar={manejarSeleccionCategoria}
-              />
+              /> 
             )}
             {modoAgrupado && categoriaSeleccionada && (
               <>
                 <BotonVolverCategorias onPress={manejarVolverCategorias} />
                 {pictogramas.length === 0 ? (
                   <View style={{ alignItems: 'center', marginTop: 20 }}>
-                    <Text style={{ fontSize: 16, color: '#666', fontStyle: 'italic' }}>
-                      No hay pictogramas en esta categoría.
+                    <Text style={{ fontSize: 20, color: '#666', fontStyle: 'italic' }}>
+                      {t('emptyCategory')}
                     </Text>
                   </View>
                 ) : (
@@ -254,9 +257,9 @@ export default function PantallaPrincipal() {
       {verboModal && (
         <ModalConjugadorVerbo
           visible={true}
-          verbo={verboModal}
+          verbo={localize(verboModal)}
           onClose={() => setVerboModal(null)}
-          onConfirm={(forma) => añadirPictograma(forma)}
+          onConfirm={(forma) => añadirPictograma(verboModal, forma)}
         />
       )}
     </View>

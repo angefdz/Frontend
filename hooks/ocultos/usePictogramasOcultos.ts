@@ -24,7 +24,6 @@ export const usePictogramasOcultos = () => {
       setPictogramas(res.data);
       setError(null);
     } catch (err: any) {
-      console.error('Error al cargar pictogramas ocultos:', err);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

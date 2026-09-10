@@ -2,6 +2,7 @@ import CabeceraSeccion from '@/components/biblioteca/pantallaPrincipal/CabeceraS
 import ListaScrollHorizontal from '@/components/biblioteca/pantallaPrincipal/ListaScrollHorizontal';
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { Text, TouchableOpacity, View } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
 interface Props<T> {
   readonly titulo: string;
@@ -22,6 +23,9 @@ export default function SeccionBiblioteca<T>({
   textoVerMas = `Ver más ${titulo.toLowerCase()}`,
   mensajeVacio = `No hay ${titulo.toLowerCase()} disponibles.`,
 }: Props<T>) {
+  const { language } = useLanguage();
+  const verMas = textoVerMas === `Ver más ${titulo.toLowerCase()}` && language === 'en' ? `See more ${titulo.toLowerCase()}` : textoVerMas;
+  const vacio = mensajeVacio === `No hay ${titulo.toLowerCase()} disponibles.` && language === 'en' ? `No ${titulo.toLowerCase()} available.` : mensajeVacio;
   return (
     <View>
       <CabeceraSeccion
@@ -37,7 +41,7 @@ export default function SeccionBiblioteca<T>({
           accessibilityRole="text"
           accessibilityLiveRegion="polite"
         >
-          {mensajeVacio}
+          {vacio}
         </Text>
       ) : (
         <View>
@@ -56,7 +60,7 @@ export default function SeccionBiblioteca<T>({
               allowFontScaling={true}
               adjustsFontSizeToFit={false}
             >
-              {textoVerMas}
+              {verMas}
             </Text>
           </TouchableOpacity>
         </View>

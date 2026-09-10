@@ -22,7 +22,6 @@ export const usePictogramasPorCategoria = (categoriaId: string | null) => {
       setPictogramas(res.data);
       setError(null);
     } catch (err: any) {
-      console.error('Error al cargar pictogramas por categoría:', err.message);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

@@ -20,7 +20,6 @@ export const useCategorias = () => {
         });
         setCategorias(res.data);
       } catch (err: any) {
-        console.error('Error al cargar categorías generales:', err.message);
         setError('No se pudieron cargar las categorías generales');
       } finally {
         setCargando(false);

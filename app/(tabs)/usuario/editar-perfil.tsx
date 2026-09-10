@@ -22,8 +22,10 @@ import { useConfiguracionUsuario } from '@/hooks/configuracion/useConfiguracionU
 import { useOpcionesTipoVoz } from '@/hooks/configuracion/useOpcionesTipoVoz';
 import { guardarUsuarioActual } from '@/hooks/usuario/guardarUsuarioActual';
 import { useUsuarioActual } from '@/hooks/usuario/useUsuarioActual';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function EditarPerfilScreen() {
+  const { tr } = useLanguage();
   const router = useRouter();
   const { token, usuarioId } = useAuth();
   const { setTipoVoz } = useVoz();
@@ -68,7 +70,7 @@ export default function EditarPerfilScreen() {
       setTipoVoz(voz);
       recargarUsuario();
 
-      Alert.alert('Perfil actualizado', 'Los cambios se han guardado correctamente');
+      Alert.alert(tr('Perfil actualizado'), tr('Los cambios se han guardado correctamente'));
       router.back();
     } catch (error) {
       Alert.alert('Error', 'No se pudo guardar los cambios.');
@@ -81,12 +83,12 @@ export default function EditarPerfilScreen() {
       key: 'nombre',
       render: () => (
         <View>
-          <Text style={styles.label}>Nombre</Text>
+          <Text style={styles.label}>{tr('Nombre')}</Text>
           <TextInput
             style={styles.input}
             value={nombre}
             onChangeText={setNombre}
-            placeholder="Nombre del usuario"
+            placeholder={tr('Nombre del usuario')}
             accessibilityRole="text"
             accessibilityLabel={`Nombre: ${nombre ?? 'no disponible'}`}
 
@@ -98,7 +100,7 @@ export default function EditarPerfilScreen() {
       key: 'correo',
       render: () => (
         <View>
-          <Text style={styles.label}>Correo electrónico</Text>
+          <Text style={styles.label}>{tr('Correo electrónico')}</Text>
           <TextInput
             style={[styles.input, { color: '#555' }]}
             value={usuario?.correo ?? ''}
@@ -115,7 +117,7 @@ export default function EditarPerfilScreen() {
       key: 'voz',
       render: () => (
         <View>
-          <Text style={styles.label}>Voz</Text>
+          <Text style={styles.label}>{tr('Voz')}</Text>
           <DropDownPicker
             open={open}
             value={voz}
@@ -123,7 +125,7 @@ export default function EditarPerfilScreen() {
             setOpen={setOpen}
             setValue={setVoz}
             setItems={() => {}}
-            placeholder="Selecciona un tipo de voz"
+            placeholder={tr('Selecciona un tipo de voz')}
             style={styles.dropdown}
             dropDownContainerStyle={styles.dropdownContainer}
             textStyle={styles.dropdownText}
@@ -139,9 +141,9 @@ export default function EditarPerfilScreen() {
           style={[styles.button, { marginTop: 30 }]}
           onPress={guardarCambios}
           accessibilityRole="button"
-        accessibilityLabel="Guardar cambios del perfil"
+        accessibilityLabel={tr('Guardar cambios')}
         >
-          <Text style={styles.buttonText}>Guardar cambios</Text>
+          <Text style={styles.buttonText}>{tr('Guardar cambios')}</Text>
         </TouchableOpacity>
       ),
     },

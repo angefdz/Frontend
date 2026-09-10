@@ -26,7 +26,6 @@ export const usePictogramas = () => {
       });
       setPictogramas(res.data);
     } catch (e: any) {
-      console.error('Error cargando pictogramas:', e.message);
       setError('No se pudieron cargar los pictogramas');
     } finally {
       setCargando(false);

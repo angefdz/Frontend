@@ -5,10 +5,12 @@ import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
+import { useLanguage } from '@/context/LanguageContext';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const useInicioSesion = () => {
+  const { language } = useLanguage();
   const router = useRouter();
 
   const [correo, setCorreo] = useState('');
@@ -33,7 +35,7 @@ export const useInicioSesion = () => {
 
   const manejarInicioSesion = async () => {
     if (!correo.trim() || !contrasena.trim()) {
-      setError('Por favor, completa todos los campos.');
+      setError(language === 'en' ? 'Please complete all fields.' : 'Por favor, completa todos los campos.');
       return;
     }
 
@@ -49,7 +51,7 @@ export const useInicioSesion = () => {
 
       if (!response.ok) {
         const body = await response.json();
-        throw new Error(body?.error || 'Credenciales inválidas');
+        throw new Error(language === 'en' ? 'Invalid email or password.' : (body?.error || 'Credenciales inválidas'));
       }
       
 
@@ -63,8 +65,7 @@ export const useInicioSesion = () => {
 
       router.replace('/pantalla-principal');
     } catch (e: any) {
-      console.error('Error al iniciar sesión:', e);
-      setError(e.message || 'Error al iniciar sesión. Intenta de nuevo.');
+      setError(e.message || (language === 'en' ? 'Could not sign in. Try again.' : 'Error al iniciar sesión. Intenta de nuevo.'));
     }
     finally {
       setCargando(false);

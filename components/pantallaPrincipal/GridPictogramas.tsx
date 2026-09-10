@@ -3,6 +3,7 @@ import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHor
 import { PictogramaSimple } from '@/types';
 import React, { useCallback } from 'react';
 import { useWindowDimensions } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Props = {
   readonly pictogramas: PictogramaSimple[];
@@ -16,18 +17,19 @@ function GridPictogramas({
   onSeleccionar,
 }: Props) {
   const { height } = useWindowDimensions();
+  const { localize, language } = useLanguage();
 
   const renderItem = useCallback(
     (p: PictogramaSimple | null, itemSize: number) =>
       p ? (
         <GridItem
           imagen={p.imagen}
-          nombre={p.nombre}
+          nombre={localize(p)}
           itemSize={itemSize}
           onPress={() => onSeleccionar(p)}
         />
       ) : null,
-    [onSeleccionar]
+    [onSeleccionar, language]
   );
 
   return (

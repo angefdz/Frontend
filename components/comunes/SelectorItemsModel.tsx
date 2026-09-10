@@ -12,6 +12,7 @@ import { TouchableOpacity } from 'react-native';
 import BarraBusqueda from './BarraBusqueda';
 import BotonPrincipal from './BotonPrincipal';
 import ItemSeleccionable from './ItemSeleccionable';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Props<T> = {
   readonly visible: boolean;
@@ -36,6 +37,7 @@ export default function SelectorItemsModal<T>({
   getImagen,
   titulo = 'Selecciona elementos',
 }: Props<T>) {
+  const { tr } = useLanguage();
   const [busqueda, setBusqueda] = useState('');
 
   const filtrados = useMemo(() => {
@@ -88,7 +90,7 @@ export default function SelectorItemsModal<T>({
   accessibilityLabel="Cerrar selector"
   style={modalStyles.botonCerrar}
 >
-  <Text style={modalStyles.textoCerrar}>Cerrar</Text>
+  <Text style={modalStyles.textoCerrar}>{tr('Cerrar')}</Text>
 </TouchableOpacity>
 
   <Text
@@ -155,7 +157,7 @@ const modalStyles = StyleSheet.create({
   
   textoCerrar: {
     fontSize: width * 0.04,
-    color: '#007AFF',
+    color: '#3157A4',
     fontWeight: 'bold',
   },
   

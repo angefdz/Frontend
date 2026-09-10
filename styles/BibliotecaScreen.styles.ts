@@ -1,5 +1,6 @@
 
 import { Dimensions, StyleSheet } from 'react-native';
+import { palette, radius, shadow } from '../constants/Theme';
 
 const { width } = Dimensions.get('window');
 const itemSize = (width - 20 * 2 - 10 * 3) / 4;
@@ -9,13 +10,13 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: width * 0.05,
     paddingTop: width * 0.08,
-    backgroundColor: '#fff',
+    backgroundColor: palette.background,
   },
 
 sectionTitle: {
   fontSize: width * 0.055,
   fontWeight: 'bold',
-  color: '#1A1A1A',
+  color: palette.text,
   marginBottom: width * 0.03,
 },
 sectionHeader: {
@@ -28,7 +29,7 @@ sectionHeader: {
 
 addButton: {
   fontSize: width * 0.07,            
-  color: '#007AFF',
+  color: palette.primary,
   fontWeight: 'bold',
   marginLeft: 10,
   minHeight: width * 0.12,           
@@ -44,8 +45,11 @@ addButton: {
   item: {
     width: itemSize,
     height: itemSize,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 10,
+    backgroundColor: palette.surface,
+    borderRadius: radius.medium,
+    borderWidth: 1,
+    borderColor: palette.border,
+    ...shadow.card,
     justifyContent: 'center',
     alignItems: 'center',
     minHeight: 48,
@@ -58,7 +62,8 @@ addButton: {
   },
   itemText: {
     fontSize: itemSize * 0.14, 
-    color: '#1A1A1A',
+    color: palette.text,
+    fontWeight: '600',
     textAlign: 'center',
   },
   
@@ -67,8 +72,8 @@ addButton: {
     marginBottom: 10,
     paddingVertical: 10,
     paddingHorizontal: 16,
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
+    backgroundColor: palette.primary,
+    borderRadius: radius.pill,
     alignSelf: 'flex-start',
     minHeight: 48,
     justifyContent: 'center',
@@ -82,32 +87,32 @@ addButton: {
   },
   input: {
     borderWidth: 1,
-    borderColor: '#999',
-    borderRadius: 8,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     padding: 12,
     fontSize: width * 0.04, 
 
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: palette.surface,
     minHeight: 48,
-    color: '#1A1A1A',
+    color: palette.text,
   },
   dropdown: {
-    borderColor: '#999',
-    borderRadius: 8,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     paddingHorizontal: 12,
-    backgroundColor: '#fff',
+    backgroundColor: palette.surface,
     marginBottom: 15,
     zIndex: 10,
   },
   dropdownContainer: {
-    borderColor: '#999',
-    borderRadius: 8,
+    borderColor: palette.border,
+    borderRadius: radius.medium,
     zIndex: 1000,
   },
   dropdownText: {
     fontSize: 16,
-    color: '#1A1A1A',
+    color: palette.text,
   },
   grid: {
     flexDirection: 'row',

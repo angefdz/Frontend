@@ -7,13 +7,15 @@ export async function crearPictogramaUsuario(
   imagen: string,
   tipo: 'verbo' | 'sustantivo',
   categorias: number[],
-  token: string
+  token: string,
+  nombreEn?: string
 ) {
   const payload = {
     nombre,
     imagen,
     tipo,
     categorias,
+    traducciones: nombreEn?.trim() ? { en: nombreEn.trim() } : {},
   };
 
   const response = await axios.post(

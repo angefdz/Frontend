@@ -16,6 +16,7 @@ export type Categoria = {
   imagen: string;
   usuario?: any;
   pictogramas: PictogramaSimple[]; 
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 };
 
 export type CategoriaSimple = {
@@ -23,6 +24,7 @@ export type CategoriaSimple = {
   nombre: string;
   imagen: string;
   usuarioId: number | null;
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 };
 
 
@@ -32,7 +34,14 @@ export type PictogramaSimple = {
   imagen: string;
   tipo: string;
   usuarioId?: number | null;
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 
+};
+
+export type PalabraFrase = {
+  pictogramaId: number;
+  lema: string;
+  texto: string;
 };
 
 export type PictogramaConCategorias = {
@@ -42,6 +51,7 @@ export type PictogramaConCategorias = {
   tipo: string;
   categorias: CategoriaSimple[];
   usuarioId?: any ;
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 };
 export interface Configuracion {
   id: number;
@@ -64,6 +74,7 @@ export interface CategoriaConPictogramas {
   imagen: string;
   pictogramas: PictogramaSimple[];
   usuarioId: number | null; 
+  traducciones?: Partial<Record<'es' | 'en', string>>;
 }
 
 
@@ -72,6 +83,3 @@ export interface UsuarioSimple{
   correo: string;
   nombre: string;
 }
-
-
-

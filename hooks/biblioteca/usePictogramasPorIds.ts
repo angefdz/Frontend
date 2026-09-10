@@ -32,7 +32,6 @@ export function usePictogramasPorIds(ids: number[]) {
         );
         setPictogramas(response.data);
       } catch (err) {
-        console.error('Error al obtener pictogramas por IDs:', err);
         setError('No se pudieron cargar los pictogramas seleccionados.');
         setPictogramas([]);
       } finally {

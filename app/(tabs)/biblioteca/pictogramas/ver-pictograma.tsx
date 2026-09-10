@@ -26,8 +26,10 @@ import { useEliminarPictograma } from '@/hooks/biblioteca/useEliminarPictograma'
 
 import { styles } from '@/styles/BibliotecaScreen.styles';
 import { CategoriaConPictogramas, PictogramaSimple } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
 export default function VerPictogramaScreen() {
+  const { tr, language, localize, localizeCategory } = useLanguage();
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
 
@@ -56,7 +58,6 @@ export default function VerPictogramaScreen() {
           setEsPersonalizado(true);
         }
       } catch (err) {
-        console.error('❌ Error al comprobar si el pictograma es personalizado:', err);
       }
     };
 
@@ -77,7 +78,6 @@ export default function VerPictogramaScreen() {
         const data = await res.json();
         setOculto(data === true);
       } catch (error) {
-        console.error('Error al comprobar visibilidad del pictograma', error);
       }
     };
 
@@ -148,9 +148,8 @@ export default function VerPictogramaScreen() {
       }
 
       marcarPictogramasComoDesactualizados();
-      marcarCategoriasComoDesactualizadas();
+      marcarCategoriasComoDesactualizadas(); 
     } catch (err) {
-      console.error('Error cambiando visibilidad:', err);
       Alert.alert('Error', 'No se pudo cambiar la visibilidad.');
     }
   };
@@ -159,7 +158,7 @@ export default function VerPictogramaScreen() {
     return (
       <View style={styles.container}>
         <Text style={{ textAlign: 'center', marginTop: 32, color: 'red' }}>
-          Cargando pictograma...
+          {language === 'en' ? 'Loading pictogram…' : 'Cargando pictograma...'}
         </Text>
       </View>
     );
@@ -185,7 +184,7 @@ export default function VerPictogramaScreen() {
     color: '#555',
   }}
 >
-  Este pictograma no está asignado a ninguna categoría.
+  {language === 'en' ? 'This pictogram is not assigned to any category.' : 'Este pictograma no está asignado a ninguna categoría.'}
 </Text>
     );
   } else {
@@ -194,7 +193,7 @@ export default function VerPictogramaScreen() {
         {categoriasDelPictograma.map((cat) => (
           <ItemClicable
             key={cat.id}
-            nombre={cat.nombre}
+            nombre={localizeCategory(cat)}
             imagen={cat.imagen}
             itemStyle={styles.item}
             textStyle={styles.itemText}
@@ -213,7 +212,7 @@ export default function VerPictogramaScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <CabeceraPictograma
-        titulo={pictograma.nombre}
+        titulo={localize(pictograma)}
         id={pictograma.id}
         oculto={oculto}
         onToggleVisibilidad={manejarToggleVisibilidad}
@@ -237,19 +236,19 @@ export default function VerPictogramaScreen() {
     accessible
     accessibilityRole="text"
   >
-    Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.
+    {language === 'en' ? 'This is a general pictogram. You cannot edit its name, image or type, but you can change its categories.' : 'Este es un pictograma general. No puedes editar su nombre, imagen ni tipo, pero sí puedes modificar sus categorías.'}
   </Text>
 )}
 
 
-      <ImagenPictograma uri={pictograma.imagen} nombre={pictograma.nombre} />
+      <ImagenPictograma uri={pictograma.imagen} nombre={localize(pictograma)} />
 
-      <Text style={styles.sectionTitle}>Tipo:</Text>
+      <Text style={styles.sectionTitle}>{tr('Tipo')}:</Text>
       <Text style={{ fontSize: width* 0.035, marginLeft:8}}>
-        {pictograma.tipo === 'verbo' ? 'Verbo' : 'Sustantivo'}
+        {pictograma.tipo === 'verbo' ? tr('Verbo') : tr('Sustantivo')}
       </Text>
 
-      <CabeceraSeccion texto="Categorías del pictograma" />
+      <CabeceraSeccion texto={language === 'en' ? 'Pictogram categories' : 'Categorías del pictograma'} />
 
       {contenidoCategorias}
     </ScrollView>

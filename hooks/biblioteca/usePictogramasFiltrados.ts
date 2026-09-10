@@ -24,7 +24,7 @@ export const usePictogramasFiltrados = (categoriaId: string | null) => {
         setError(null);
       } catch (e: any) {
         setError('Error cargando pictogramas');
-        console.error(e);
+        
       } finally {
         setCargando(false);
       }

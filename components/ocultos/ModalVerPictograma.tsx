@@ -18,6 +18,7 @@ import { useCategoriasContext } from '@/context/CategoriasContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 
 import { PictogramaConCategorias } from '@/types';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Props = {
   readonly visible: boolean;
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export default function ModalVerPictograma({ visible, onClose, pictogramaId }: Props) {
+  const { language, tr, localize } = useLanguage();
   const { token, usuarioId } = useAuth();
   const { marcarPictogramasComoDesactualizados } = usePictogramasContext();
   const { marcarCategoriasComoDesactualizadas } = useCategoriasContext();
@@ -78,12 +80,12 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
         await axios.delete(url, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('Pictograma visible', 'El pictograma se ha desocultado.');
+        Alert.alert(tr('Pictograma visible'), language === 'en' ? 'The pictogram is now visible.' : 'El pictograma se ha desocultado.');
       } else {
         await axios.post(url, null, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        Alert.alert('Pictograma oculto', 'El pictograma se ha ocultado.');
+        Alert.alert(tr('Pictograma oculto'), language === 'en' ? 'The pictogram has been hidden.' : 'El pictograma se ha ocultado.');
       }
 
       setOculto((prev) => !prev);
@@ -104,16 +106,16 @@ export default function ModalVerPictograma({ visible, onClose, pictogramaId }: P
     contenido = (
       <ScrollView style={{ padding: 16 }}>
         <CabeceraPictograma
-          titulo={pictograma.nombre}
+          titulo={localize(pictograma)}
           id={pictograma.id}
           oculto={oculto}
           onToggleVisibilidad={manejarToggleVisibilidad}
         />
-        <ImagenPictograma uri={pictograma.imagen} nombre={pictograma.nombre} />
+        <ImagenPictograma uri={pictograma.imagen} nombre={localize(pictograma)} />
       </ScrollView>
     );
   } else {
-    contenido = <Text>No hay datos</Text>;
+    contenido = <Text>{language === 'en' ? 'No data' : 'No hay datos'}</Text>;
   }
 
   return (

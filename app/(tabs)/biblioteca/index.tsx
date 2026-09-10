@@ -7,8 +7,10 @@ import { styles } from '@/styles/BibliotecaScreen.styles';
 import { useRouter } from 'expo-router';
 import { useEffect } from 'react';
 import { Button, ScrollView, Text, View } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
-export default function BibliotecaScreen() {
+export default function BibliotecaScreen() { 
+  const { tr, localize, localizeCategory } = useLanguage();
   const router = useRouter();
   const { token, usuarioId, cargandoAuth } = useAuth();
 
@@ -36,7 +38,7 @@ export default function BibliotecaScreen() {
   if (cargandoAuth) {
     return (
       <View style={styles.container}>
-        <Text>Cargando datos de usuario...</Text>
+        <Text>{tr('Cargando datos de usuario...')}</Text>
       </View>
     );
   }
@@ -44,14 +46,14 @@ export default function BibliotecaScreen() {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <SeccionHorizontal
-        titulo="Categorías"
+        titulo={tr('Categorías')}
         datos={cargandoCategorias ? [] : categorias.slice(0, 30)}
         onAddPress={() => router.push('/biblioteca/categorias/crear-categoria')}
         onVerMasPress={() => router.push('/biblioteca/categorias/categorias')}
         renderItem={(item) => (
           <ItemClicable
             key={item.id}
-            nombre={item.nombre}
+            nombre={localizeCategory(item)}
             imagen={item.imagen}
             itemStyle={styles.item}
             textStyle={styles.itemText}
@@ -67,21 +69,21 @@ export default function BibliotecaScreen() {
       {errorCategorias && (
         <View style={{ padding: 16, alignItems: 'center' }}>
           <Text style={{ color: 'red', marginBottom: 8 }}>
-            Error al cargar las categorías disponibles
+            {tr('Error al cargar las categorías disponibles')}
           </Text>
-          <Button title="Reintentar" onPress={recargarCategorias} />
+          <Button title={tr('Reintentar')} onPress={recargarCategorias} />
         </View>
       )}
 
       <SeccionHorizontal
-        titulo="Pictogramas"
+        titulo={tr('Pictogramas')}
         datos={cargandoPictogramas ? [] : pictogramas.slice(0, 30)}
         onAddPress={() => router.push('/biblioteca/pictogramas/crear-pictograma')}
         onVerMasPress={() => router.push('/biblioteca/pictogramas/pictogramas')}
         renderItem={(item) => (
           <ItemClicable
             key={item.id}
-            nombre={item.nombre}
+            nombre={localize(item)}
             imagen={item.imagen}
             itemStyle={styles.item}
             textStyle={styles.itemText}
@@ -97,9 +99,9 @@ export default function BibliotecaScreen() {
       {errorPictogramas && (
         <View style={{ padding: 16, alignItems: 'center' }}>
           <Text style={{ color: 'red', marginBottom: 8 }}>
-            Error al cargar los pictogramas disponibles
+            {tr('Error al cargar los pictogramas disponibles')}
           </Text>
-          <Button title="Reintentar" onPress={recargarPictogramas} />
+          <Button title={tr('Reintentar')} onPress={recargarPictogramas} />
         </View>
       )}
     </ScrollView>

@@ -13,10 +13,14 @@ import {
 } from 'react-native';
 import { useRegistro } from '../../hooks/auth/registro/useRegistro';
 import { styles } from '../../styles/RegistroScreen.styles';
+import { palette, radius } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
+import LanguageSwitcher from '@/components/comunes/LanguageSwitcher';
 
 const { width } = Dimensions.get('window');
 
 export default function Registro() {
+  const { tr, language } = useLanguage();
   const {
     nombre,
     correo,
@@ -40,15 +44,16 @@ export default function Registro() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.container}
     >
+      <LanguageSwitcher />
       <View style={styles.content}>
         <Text style={styles.title} accessibilityRole="header">
-          Crear Cuenta
+          {tr('Crea tu cuenta')}
         </Text>
 
         <TextInput
           style={styles.input}
-          placeholder="Nombre"
-          placeholderTextColor="#444"
+          placeholder={tr('Nombre')}
+          placeholderTextColor={palette.textMuted}
           value={nombre}
           onChangeText={setNombre}
           accessibilityLabel="Nombre"
@@ -57,8 +62,8 @@ export default function Registro() {
 
         <TextInput
           style={styles.input}
-          placeholder="Correo electrónico"
-          placeholderTextColor="#444"
+          placeholder={tr('Correo electrónico')}
+          placeholderTextColor={palette.textMuted}
           value={correo}
           onChangeText={setCorreo}
           keyboardType="email-address"
@@ -69,61 +74,64 @@ export default function Registro() {
 
         <TextInput
           style={styles.input}
-          placeholder="Contraseña"
-          placeholderTextColor="#444"
+          placeholder={tr('Contraseña')}
+          placeholderTextColor={palette.textMuted}
           value={contrasena}
           onChangeText={setContrasena}
           secureTextEntry
           autoCapitalize="none"
           accessibilityLabel="Contraseña"
           accessibilityHint="Introduce una nueva contraseña segura"
+          textContentType="oneTimeCode"
+
         />
 
         <TextInput
           style={styles.input}
-          placeholder="Repetir contraseña"
-          placeholderTextColor="#444"
+          placeholder={tr('Repetir contraseña')}
+          placeholderTextColor={palette.textMuted}
           value={confirmacion}
           onChangeText={setConfirmacion}
           secureTextEntry
           autoCapitalize="none"
           accessibilityLabel="Confirmar contraseña"
           accessibilityHint="Vuelve a introducir tu contraseña"
+          textContentType="oneTimeCode"
+
         />
 
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginTop: 10 }}>
           <TouchableOpacity
             onPress={() => setAceptaPolitica(!aceptaPolitica)}
             style={{
-              width: 24,
-              height: 24,
+              width: 48,
+              height: 48,
               borderWidth: 2,
-              borderColor: '#444',
+              borderColor: palette.primary,
               marginRight: 10,
               alignItems: 'center',
               justifyContent: 'center',
-              marginTop: 4,
+              borderRadius: radius.small,
             }}
-            accessibilityLabel="Aceptar política de privacidad"
+            accessibilityLabel={tr('Aceptar política de privacidad')}
             accessibilityRole="checkbox"
             accessibilityState={{ checked: aceptaPolitica }}
           >
-            {aceptaPolitica && <Feather name="check" size={18} color="#444" />}
+            {aceptaPolitica && <Feather name="check" size={24} color={palette.primary} />}
           </TouchableOpacity>
-
+ 
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: width * 0.03, color: '#444' }}>
-              Al registrarte, aceptas nuestra{' '}
+            <Text style={{ fontSize: Math.max(14, width * 0.035), lineHeight: 21, color: palette.textMuted }}>
+              {language === 'en' ? 'By signing up, you accept our ' : 'Al registrarte, aceptas nuestra '}
               <Text
                 onPress={() => setMostrarModalPolitica(true)}
-                style={{ color: '#007AFF', textDecorationLine: 'underline' }}
+                style={{ color: palette.primary, fontWeight: '700', textDecorationLine: 'underline' }}
                 accessibilityRole="button"
-                accessibilityLabel="Leer política de privacidad"
+                accessibilityLabel={tr('Leer política de privacidad')}
               >
-                política de privacidad
+                {tr('política de privacidad')}
               </Text>{' '}
-              y das tu consentimiento para el tratamiento de tus datos. Si eres menor de edad,
-              asegúrate de contar con la supervisión de una persona adulta.
+              {language === 'en' ? ' and consent to the processing of your data. If you are under age, make sure you have adult supervision.' : ' y das tu consentimiento para el tratamiento de tus datos. Si eres menor de edad, asegúrate de contar con la supervisión de una persona adulta.'}
             </Text>
           </View>
         </View>
@@ -144,17 +152,17 @@ export default function Registro() {
           disabled={cargando || !aceptaPolitica}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel="Registrarse"
+          accessibilityLabel={tr('Registrarse')}
           accessibilityHint="Presiona para crear tu cuenta"
         >
           {cargando ? (
             <ActivityIndicator
               color="white"
-              accessibilityLabel="Cargando"
+              accessibilityLabel={tr('Cargando')}
               accessibilityRole="progressbar"
             />
           ) : (
-            <Text style={styles.buttonText}>Registrarse</Text>
+            <Text style={styles.buttonText}>{tr('Registrarse')}</Text>
           )}
         </TouchableOpacity>
 
@@ -163,10 +171,10 @@ export default function Registro() {
           style={styles.backButton}
           accessible={true}
           accessibilityRole="button"
-          accessibilityLabel="Volver a Iniciar Sesión"
+          accessibilityLabel={tr('Volver a Iniciar Sesión')}
           accessibilityHint="Presiona para regresar a la pantalla de inicio de sesión"
         >
-          <Text style={styles.backButtonText}>Volver a Iniciar Sesión</Text>
+          <Text style={styles.backButtonText}>{tr('Volver a Iniciar Sesión')}</Text>
         </TouchableOpacity>
       </View>
 

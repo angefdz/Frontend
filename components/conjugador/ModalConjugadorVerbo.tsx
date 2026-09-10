@@ -12,6 +12,9 @@ import {
   View,
 } from 'react-native';
 import { getConjugation } from 'spanish-verbs';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
+import { conjugateEnglish } from '@/utils/grammar';
 
 interface Props {
   readonly visible: boolean;
@@ -26,11 +29,15 @@ export default function ModalConjugadorVerbo({
   onClose,
   onConfirm,
 }: Props) {
+  const { language, t } = useLanguage();
   const [tiempoIndex, setTiempoIndex] = useState(1); 
   const [personaIndex, setPersonaIndex] = useState(0); 
 
   const formaConjugada = useMemo(() => {
     try {
+      if (language === 'en') {
+        return conjugateEnglish(verbo, tiemposVerbales[tiempoIndex].key, personaIndex);
+      }
       const personaIdx = personaIndex as 0 | 1 | 2 | 3 | 4 | 5;
       const tiempoKey = `INDICATIVE_${tiemposVerbales[tiempoIndex].key.toUpperCase()}`;
 
@@ -52,15 +59,20 @@ export default function ModalConjugadorVerbo({
       console.error('Error al conjugar el verbo:', err);
       return '';
     }
-  }, [verbo, tiempoIndex, personaIndex]);
+  }, [verbo, tiempoIndex, personaIndex, language]);
+
+  const tenseLabels = language === 'en' ? ['Past', 'Present', 'Future'] : ['Pasado', 'Presente', 'Futuro'];
+  const personLabels = language === 'en'
+    ? ['I', 'You', 'He/She', 'We', 'You', 'They']
+    : personasGramaticales.map(persona => persona.label);
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View style={styles.modal}>
-          <Text style={styles.titulo}>Conjugar verbo "{verbo}"</Text>
+          <Text style={styles.titulo}>{`${t('conjugate')} “${verbo}”`}</Text>
 
-          <Text style={styles.label}>Tiempo</Text>
+          <Text style={styles.label}>{t('tense')}</Text>
           <View style={styles.tiempoContainer}>
             {tiemposVerbales.map((t, index) => (
               <TouchableOpacity
@@ -72,12 +84,12 @@ export default function ModalConjugadorVerbo({
                 ]}
               >
                 <Image source={{ uri: t.imagen }} style={styles.icono} resizeMode="contain" />
-                <Text style={styles.opcionTexto}>{t.label}</Text>
+                <Text style={styles.opcionTexto}>{tenseLabels[index]}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          <Text style={styles.label}>Persona</Text>
+          <Text style={styles.label}>{t('person')}</Text>
           <ScrollView
             horizontal
             contentContainerStyle={styles.personasGrid}
@@ -93,18 +105,18 @@ export default function ModalConjugadorVerbo({
                 ]}
               >
                 <Image source={{ uri: p.imagen }} style={styles.icono} resizeMode="contain" />
-                <Text style={styles.opcionTexto}>{p.label}</Text>
+                <Text style={styles.opcionTexto}>{personLabels[index]}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
 
           <Text style={styles.conjugacion}>
-            Resultado: <Text style={styles.verbo}>{formaConjugada.trim() ? formaConjugada : '-'}</Text>
+            {t('result')}: <Text style={styles.verbo}>{formaConjugada.trim() ? formaConjugada : '-'}</Text>
           </Text>
 
           <View style={styles.botones}>
             <TouchableOpacity style={styles.botonCancelar} onPress={onClose}>
-              <Text style={styles.botonTexto}>Cancelar</Text>
+              <Text style={styles.botonTexto}>{t('cancel')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.botonConfirmar}
@@ -114,7 +126,7 @@ export default function ModalConjugadorVerbo({
               }}
               disabled={!formaConjugada}
             >
-              <Text style={styles.botonTexto}>Añadir a frase</Text>
+              <Text style={styles.botonTexto}>{t('addToPhrase')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -174,12 +186,14 @@ const styles = StyleSheet.create({
     width: 100,
   },
   opcionSeleccionada: {
-    backgroundColor: '#007AFF',
+    backgroundColor: palette.primarySoft,
+    borderWidth: 3,
+    borderColor: palette.primary,
   },
   opcionTexto: {
     marginTop: 4,
     textAlign: 'center',
-    color: '#000',
+    color: palette.text,
     fontSize: 12,
   },
   icono: {
@@ -193,7 +207,7 @@ const styles = StyleSheet.create({
   },
   verbo: {
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: palette.primary,
   },
   botones: {
     flexDirection: 'row',
@@ -205,7 +219,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#ccc',
+    backgroundColor: palette.secondary,
     alignItems: 'center',
   },
   botonConfirmar: {
@@ -213,7 +227,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     padding: 12,
     borderRadius: 8,
-    backgroundColor: '#007AFF',
+    backgroundColor: palette.primary,
     alignItems: 'center',
   },
   botonTexto: {

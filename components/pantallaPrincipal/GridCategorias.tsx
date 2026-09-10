@@ -2,6 +2,7 @@ import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
 import { CategoriaSimple } from '@/types';
 import React from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 type Props = {
   readonly categorias: CategoriaSimple[]; 
@@ -14,6 +15,7 @@ export default function GridCategorias({
   itemsPerPage,
   onSeleccionar,
 }: Props) {
+  const { localizeCategory } = useLanguage();
   return (
     <GridPaginadoHorizontal
       items={categorias ?? []}
@@ -22,7 +24,7 @@ export default function GridCategorias({
         cat ? (
           <GridItem
             imagen={cat.imagen}
-            nombre={cat.nombre}
+            nombre={localizeCategory(cat)}
             itemSize={itemSize}
             onPress={() => onSeleccionar(cat.id.toString())}
           />

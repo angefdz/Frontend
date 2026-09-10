@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useLanguage } from '@/context/LanguageContext';
 
 const { width } = Dimensions.get('window');
 const imagenSize = width * 0.5;
@@ -22,6 +23,7 @@ export default function SelectorImagen({
   readonly setUriImagen: (uri: string) => void;
   readonly disabled?: boolean;
 }) {
+  const { tr, language } = useLanguage();
   useEffect(() => {
     (async () => {
       const galeria = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -35,10 +37,10 @@ export default function SelectorImagen({
   const mostrarOpcionesImagen = () => {
     if (disabled) return;
 
-    Alert.alert('Seleccionar imagen', '¿De dónde quieres sacar la imagen?', [
-      { text: 'Cancelar', style: 'cancel' },
-      { text: 'Galería', onPress: elegirDesdeGaleria },
-      { text: 'Cámara', onPress: tomarFoto },
+    Alert.alert(tr('Seleccionar imagen'), language === 'en' ? 'Where would you like to get the image from?' : '¿De dónde quieres sacar la imagen?', [
+      { text: tr('Cancelar'), style: 'cancel' },
+      { text: language === 'en' ? 'Gallery' : 'Galería', onPress: elegirDesdeGaleria },
+      { text: language === 'en' ? 'Camera' : 'Cámara', onPress: tomarFoto },
     ]);
   };
 
@@ -82,16 +84,16 @@ export default function SelectorImagen({
           accessibilityRole="text"
           accessibilityLiveRegion="polite"
         >
-          Imagen no editable
+          {language === 'en' ? 'Image cannot be edited' : 'Imagen no editable'}
         </Text>
       ) : (
         <TouchableOpacity
           onPress={mostrarOpcionesImagen}
           accessibilityRole="button"
-          accessibilityLabel="Seleccionar imagen"
+          accessibilityLabel={tr('Seleccionar imagen')}
           accessibilityHint="Presiona para elegir una imagen desde la galería o tomar una foto"
         >
-          <Text style={styles.textoLink}>Seleccionar imagen</Text>
+          <Text style={styles.textoLink}>{tr('Seleccionar imagen')}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -111,13 +113,13 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   textoDeshabilitado: {
-    color: '#888',
+    color: '#526178',
     fontStyle: 'italic',
     marginBottom: width * 0.03,
     fontSize: width * 0.04,
   },
   textoLink: {
-    color: '#007AFF',
+    color: '#3157A4',
     fontSize: width * 0.045,
     fontWeight: 'bold',
     textAlign: 'center',

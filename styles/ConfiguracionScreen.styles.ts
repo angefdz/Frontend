@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   botonActivo: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#3157A4',
   },
   texto: {
     fontSize: 16,

@@ -1,4 +1,5 @@
 import { Platform, StyleSheet } from 'react-native';
+import { palette, radius, shadow } from '../constants/Theme';
 
 export const tabBarStyles = StyleSheet.create({
   tabBar: {
@@ -6,16 +7,13 @@ export const tabBarStyles = StyleSheet.create({
     bottom: 20,
     left: 20,
     right: 20,
-    backgroundColor: '#fff',
-    borderRadius: 30,
+    backgroundColor: palette.surface,
+    borderRadius: radius.large,
     height: 70,
     paddingBottom: Platform.OS === 'android' ? 10 : 20,
     paddingTop: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 10 },
-    shadowRadius: 10,
-    elevation: 5,
+    borderTopWidth: 0,
+    ...shadow.card,
   },
   iconContainer: {
     alignItems: 'center',

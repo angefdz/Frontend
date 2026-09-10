@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useLanguage } from '@/context/LanguageContext';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL;
 
 export const useRegistro = () => {
+  const { language } = useLanguage();
   const router = useRouter();
   const [nombre, setNombre] = useState('');
   const [correo, setCorreo] = useState('');
@@ -19,15 +21,15 @@ export const useRegistro = () => {
 
   const manejarRegistro = async () => {
     if (!nombre || !correo || !contrasena || !confirmacion) {
-      setError('Todos los campos son obligatorios.');
+      setError(language === 'en' ? 'All fields are required.' : 'Todos los campos son obligatorios.');
       return;
     }
     if (!esCorreoValido(correo)) {
-      setError('El correo no tiene un formato válido.');
+      setError(language === 'en' ? 'Enter a valid email address.' : 'El correo no tiene un formato válido.');
       return;
     }
     if (contrasena !== confirmacion) {
-      setError('Las contraseñas no coinciden.');
+      setError(language === 'en' ? 'Passwords do not match.' : 'Las contraseñas no coinciden.');
       return;
     }
 
@@ -64,8 +66,7 @@ export const useRegistro = () => {
       setCargando(false);
       router.replace('/inicio-sesion');
     } catch (e) {
-      console.error('Error en la conexión con el servidor:', e);
-      setError('Error en la conexión con el servidor. Por favor, intenta de nuevo.');
+      setError(language === 'en' ? 'Could not connect to the server. Please try again.' : 'Error en la conexión con el servidor. Por favor, intenta de nuevo.');
       setCargando(false);
     }
   };

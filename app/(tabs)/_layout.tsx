@@ -3,18 +3,21 @@ import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { MenuProvider } from 'react-native-popup-menu';
+import { palette } from '@/constants/Theme';
+import { useLanguage } from '@/context/LanguageContext';
 
-const HomeIcon = (size: number) => ({ color }: { color: string }) => (
-  <Feather name="home" color={color} size={size} />
-);
-const BibliotecaIcon = (size: number) => ({ color }: { color: string }) => (
-  <Feather name="book" color={color} size={size} />
-);
-const UsuarioIcon = (size: number) => ({ color }: { color: string }) => (
-  <Feather name="user" color={color} size={size} />
-);
+const HomeIcon = (size: number) => function HomeTabIcon({ color }: { color: string }) {
+  return <Feather name="home" color={color} size={size} />;
+};
+const BibliotecaIcon = (size: number) => function LibraryTabIcon({ color }: { color: string }) {
+  return <Feather name="book" color={color} size={size} />;
+};
+const UsuarioIcon = (size: number) => function UserTabIcon({ color }: { color: string }) {
+  return <Feather name="user" color={color} size={size} />;
+};
 
 export default function TabsLayout() {
+  const { tr } = useLanguage();
   const { scaleFont, scaleSpacing, scaleIcon } = useResponsive();
 
   const iconBaseSize = 24;
@@ -27,22 +30,30 @@ export default function TabsLayout() {
     <MenuProvider>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: '#007AFF',
+          tabBarActiveTintColor: palette.primary,
+          tabBarInactiveTintColor: palette.textMuted,
+          headerTintColor: palette.text,
+          headerStyle: { backgroundColor: palette.surface },
+          headerShadowVisible: false,
+          headerTitleStyle: { fontWeight: '800' },
           tabBarLabelStyle: {
             fontSize: scaledLabelSize,
             paddingBottom: 2,
+            fontWeight: '700',
           },
           tabBarStyle: {
             height: scaleSpacing(60),
             paddingTop: 4,
             paddingBottom: 6,
+            backgroundColor: palette.surface,
+            borderTopColor: palette.border,
           },
         }}
       >
         <Tabs.Screen
           name="pantalla-principal"
           options={{
-            title: 'Inicio',
+            title: tr('Inicio'),
             tabBarIcon: HomeIcon(scaledIconSize),
             headerShown: true,
           }}
@@ -50,7 +61,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="biblioteca"
           options={{
-            title: 'Biblioteca',
+            title: tr('Biblioteca'),
             tabBarIcon: BibliotecaIcon(scaledIconSize),
             headerShown: true,
           }}
@@ -58,7 +69,7 @@ export default function TabsLayout() {
         <Tabs.Screen
           name="usuario"
           options={{
-            title: 'Usuario',
+            title: tr('Usuario'),
             tabBarIcon: UsuarioIcon(scaledIconSize),
             headerShown: true,
           }}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { palette, radius, shadow } from '@/constants/Theme';
 
 type Props = {
   readonly imagen: string;
@@ -16,6 +17,7 @@ export default function GridItem({ imagen, nombre, itemSize, onPress }: Props) {
       accessible
       accessibilityRole="button"
       accessibilityLabel={`Seleccionar pictograma: ${nombre}`}
+      activeOpacity={0.72}
     >
       <Image
         source={{ uri: imagen }}
@@ -44,15 +46,20 @@ export default function GridItem({ imagen, nombre, itemSize, onPress }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f2f2f2',
-    borderRadius: 8,
+    backgroundColor: palette.surface,
+    borderRadius: radius.medium,
+    borderWidth: 1,
+    borderColor: palette.border,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 4,
     overflow: 'hidden',
+    ...shadow.card,
   },
   texto: {
     marginTop: 4,
     textAlign: 'center',
+    color: palette.text,
+    fontWeight: '700',
   },
 });

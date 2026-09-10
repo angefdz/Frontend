@@ -25,7 +25,6 @@ export const guardarConfiguracionUsuario = async (
 
     return response.data;
   } catch (error) {
-    console.error('Error al actualizar configuración del usuario:', error);
     throw error;
   }
 };

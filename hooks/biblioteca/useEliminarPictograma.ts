@@ -41,7 +41,6 @@ export const useEliminarPictograma = () => {
 
               if (onEliminado) onEliminado(); 
             } catch (err) {
-              console.error('Error al eliminar pictograma:', err);
               Alert.alert('Error', 'No se pudo eliminar el pictograma.');
             }
           },

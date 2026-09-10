@@ -14,15 +14,14 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   const { tipoVoz } = useVoz();
   const { token } = useAuth();
 
-  // La frase comienza habitualmente por el sujeto. Usamos el ID estable para
-  // que la sugerencia sea la misma aunque la interfaz esté traducida.
-  const pictogramaInicial = useMemo(
-    () => pictogramasDisponibles.find(p => p.id === 84)
-      ?? pictogramasDisponibles.find(p =>
-        ['yo', 'i'].includes(localize(p).trim().toLowerCase()) || p.nombre.trim().toLowerCase() === 'yo'
-      ),
-    [pictogramasDisponibles, localize]
-  );
+  // Atajos iniciales frecuentes. Los IDs estables mantienen las mismas
+  // sugerencias en español e inglés sin depender del texto traducido.
+  const sugerenciasIniciales = useMemo(() => {
+    const porId = new Map(pictogramasDisponibles.map(pictograma => [pictograma.id, pictograma]));
+    return [84, 43, 650]
+      .map(id => porId.get(id))
+      .filter((item): item is PictogramaSimple => Boolean(item));
+  }, [pictogramasDisponibles]);
 
   const [frase, setFrase] = useState<PalabraFrase[]>([]);
   const [vozMasculina, setVozMasculina] = useState<string | undefined>();
@@ -30,14 +29,14 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   const lemasPrediccion = frase.map(p => p.lema);
   const pictogramaIdsPrediccion = frase.map(p => p.pictogramaId);
   const textoPrediccion = frase.map(p => p.texto).join(' ');
-  const { sugerenciasIds } = usePrediccionPictograma(
+  const { sugerenciasIds, cargando: cargandoSugerencias } = usePrediccionPictograma(
     pictogramaIdsPrediccion, lemasPrediccion, textoPrediccion, language
   );
   const sugerencias = useMemo(() => {
-    if (frase.length === 0) return pictogramaInicial ? [pictogramaInicial] : [];
+    if (frase.length === 0) return sugerenciasIniciales;
     const disponibles = new Map(pictogramasDisponibles.map(pictograma => [pictograma.id, pictograma]));
     return sugerenciasIds.map(id => disponibles.get(id)).filter((item): item is PictogramaSimple => Boolean(item));
-  }, [frase.length, pictogramaInicial, pictogramasDisponibles, sugerenciasIds]);
+  }, [frase.length, pictogramasDisponibles, sugerenciasIds, sugerenciasIniciales]);
 
   useEffect(() => {
     if (tipoVoz === 'masculina') {
@@ -113,6 +112,7 @@ export const useFrase = (pictogramasDisponibles: PictogramaSimple[]) => {
   return {
     frase,
     sugerencias,
+    cargandoSugerencias,
     añadirPictograma,
     borrarUltimo,
     resetearFrase,

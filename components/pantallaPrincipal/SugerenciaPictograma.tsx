@@ -2,22 +2,28 @@ import { palette, radius, shadow } from '@/constants/Theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { PictogramaSimple } from '@/types';
 import React from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions } from 'react-native';
 
 interface Props {
   readonly sugerencias: PictogramaSimple[];
   readonly usarSugerencia: (sugerencia: PictogramaSimple) => void;
+  readonly cargando?: boolean;
 }
 
-export default function SugerenciaPictograma({ sugerencias, usarSugerencia }: Props) {
+export default function SugerenciaPictograma({ sugerencias, usarSugerencia, cargando = false }: Props) {
   const { width } = useWindowDimensions();
   const { t, localize, language } = useLanguage();
-  if (sugerencias.length === 0) return null;
+  if (sugerencias.length === 0 && !cargando) return null;
 
   const cardWidth = Math.min(126, Math.max(96, (width - 56) / 3));
   return (
     <View style={styles.container} accessibilityRole="summary">
       <Text style={styles.label}>{t('suggestions')}</Text>
+      {sugerencias.length === 0 && cargando ? (
+        <View style={styles.loading} accessibilityRole="progressbar" accessibilityLabel={t('suggestions')}>
+          <ActivityIndicator size="small" color={palette.primary} />
+        </View>
+      ) : (
       <ScrollView horizontal showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.row} accessibilityLabel={t('suggestions')}>
         {sugerencias.slice(0, 3).map((sugerencia, index) => {
@@ -41,6 +47,7 @@ export default function SugerenciaPictograma({ sugerencias, usarSugerencia }: Pr
           );
         })}
       </ScrollView>
+      )}
     </View>
   );
 }
@@ -49,6 +56,7 @@ const styles = StyleSheet.create({
   container: { marginVertical: 12 },
   label: { color: palette.text, fontSize: 17, fontWeight: '800', marginBottom: 8, marginHorizontal: 16 },
   row: { gap: 10, paddingHorizontal: 16, paddingBottom: 5 },
+  loading: { height: 127, marginHorizontal: 16, justifyContent: 'center', alignItems: 'center' },
   item: { height: 122, backgroundColor: palette.surface, borderRadius: radius.medium, borderWidth: 1.5,
     borderColor: palette.border, padding: 7, justifyContent: 'center', alignItems: 'center', ...shadow.card },
   primary: { backgroundColor: palette.warningSoft, borderColor: palette.warning },

@@ -1,28 +1,39 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
+  Dimensions,
   LayoutChangeEvent,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
 
-import { Dimensions } from 'react-native';
 import { palette, radius, shadow } from '@/constants/Theme';
 import { useLanguage } from '@/context/LanguageContext';
 import { PalabraFrase } from '@/types';
-const {width} = Dimensions.get('window')
+const { width } = Dimensions.get('window');
+const ALTURA_VACIA = 68;
+const ALTURA_CON_FRASE = 88;
+const ESPACIADO_VERTICAL = 32;
+
 interface Props {
   readonly frase: PalabraFrase[];
 }
 
 export default function TextoFraseExpandibleAnimado({ frase }: Props) {
   const { t } = useLanguage();
-  const alturaInicial = Dimensions.get('window').height * 0.07; 
-const [contenidoAltura, setContenidoAltura] = useState(alturaInicial);
-const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
+  const alturaInicial = ALTURA_VACIA;
+  const [contenidoAltura, setContenidoAltura] = useState(alturaInicial);
+  const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
 
   const fraseTexto = frase.map(palabra => palabra.texto).join(' ');
+
+  useEffect(() => {
+    setContenidoAltura(altura => fraseTexto
+      ? Math.max(altura, ALTURA_CON_FRASE)
+      : ALTURA_VACIA
+    );
+  }, [fraseTexto]);
 
   useEffect(() => {
     Animated.timing(alturaAnimada, {
@@ -30,10 +41,13 @@ const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
       duration: 200,
       useNativeDriver: false,
     }).start();
-  }, [contenidoAltura]);
+  }, [alturaAnimada, contenidoAltura]);
 
   const manejarCambioLayout = (event: LayoutChangeEvent) => {
-    const nuevaAltura = event.nativeEvent.layout.height;
+    const nuevaAltura = Math.max(
+      fraseTexto ? ALTURA_CON_FRASE : ALTURA_VACIA,
+      event.nativeEvent.layout.height + ESPACIADO_VERTICAL
+    );
     if (nuevaAltura !== contenidoAltura) {
       setContenidoAltura(nuevaAltura);
     }
@@ -42,7 +56,16 @@ const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
   return (
     <Animated.View style={[styles.container, { height: alturaAnimada }]}>
       <View onLayout={manejarCambioLayout} style={styles.medidor}>
-        <Text style={[styles.texto, !fraseTexto && styles.textoPredeterminado]}>
+        <Text
+          style={[
+            styles.texto,
+            {
+              fontSize: Math.min(27, Math.max(21, width * 0.055)),
+              lineHeight: Math.min(36, Math.max(29, width * 0.074)),
+            },
+            !fraseTexto && styles.textoPredeterminado,
+          ]}
+        >
           {fraseTexto || t('emptyPhrase')}
         </Text>
       </View>
@@ -52,28 +75,24 @@ const alturaAnimada = useRef(new Animated.Value(alturaInicial)).current;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginHorizontal: 16,
-    marginBottom: 16,
-    padding: 16,
+    marginTop: 24,
+    marginHorizontal: 20,
+    marginBottom: 22,
     borderWidth: 1.5,
     borderColor: palette.primary,
     borderRadius: radius.medium,
     backgroundColor: palette.surface,
     overflow: 'hidden',
-    minHeight: 50,
+    minHeight: ALTURA_VACIA,
     ...shadow.card,
   },
   medidor: {
     position: 'absolute',
-    left: 0,
-    right: 0,
-    top: 0,
+    left: 20,
+    right: 20,
+    top: 16,
   },
   texto: {
-    fontSize: width *0.06,
-    paddingTop: width * 0.02,
-    lineHeight: width * 0.055,
     fontWeight: '500',
     flexWrap: 'wrap',
     color: palette.text,

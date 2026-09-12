@@ -2,17 +2,18 @@ import useResponsive from '@/hooks/utils/useResponsive';
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
+import type { ColorValue } from 'react-native';
 import { MenuProvider } from 'react-native-popup-menu';
 import { palette } from '@/constants/Theme';
 import { useLanguage } from '@/context/LanguageContext';
 
-const HomeIcon = (size: number) => function HomeTabIcon({ color }: { color: string }) {
+const HomeIcon = (size: number) => function HomeTabIcon({ color }: { color: ColorValue }) {
   return <Feather name="home" color={color} size={size} />;
 };
-const BibliotecaIcon = (size: number) => function LibraryTabIcon({ color }: { color: string }) {
+const BibliotecaIcon = (size: number) => function LibraryTabIcon({ color }: { color: ColorValue }) {
   return <Feather name="book" color={color} size={size} />;
 };
-const UsuarioIcon = (size: number) => function UserTabIcon({ color }: { color: string }) {
+const UsuarioIcon = (size: number) => function UserTabIcon({ color }: { color: ColorValue }) {
   return <Feather name="user" color={color} size={size} />;
 };
 

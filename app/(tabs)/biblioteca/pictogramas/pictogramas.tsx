@@ -4,7 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { usePictogramasContext } from '@/context/PictogramasContext';
 import { styles } from '@/styles/GaleriaScreen.styles';
 import { Feather } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from 'expo-router/react-navigation';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { useLanguage } from '@/context/LanguageContext';

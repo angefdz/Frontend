@@ -96,7 +96,7 @@ export default function InicioSesion() {
             style={{ minWidth: 48, minHeight: 48, alignItems: 'center', justifyContent: 'center' }}
           >
             <AntDesign
-              name={mostrarContrasena ? 'eye' : 'eyeo'}
+              name={mostrarContrasena ? 'eye' : 'eye-invisible'}
               size={width * 0.06}
               color={palette.primary}
             />

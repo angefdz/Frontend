@@ -1,6 +1,9 @@
+import { ordered } from '@/utils/pictogramOrder';
+import { useOrdenPictogramas } from '@/hooks/pantallaPrincipal/useOrdenPictogramas';
+import LayoutAuthentication from '@/components/pantallaPrincipal/LayoutAuthentication';
 import { useNavigation } from 'expo-router';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 
 import ModalConjugadorVerbo from '@/components/conjugador/ModalConjugadorVerbo';
 import BotonesFrase from '@/components/pantallaPrincipal/BotonesFrase';
@@ -29,6 +32,8 @@ export default function PantallaPrincipal() {
   const { t, localize } = useLanguage();
   const { token, usuarioId } = useAuth();
   const navigation = useNavigation();
+  const editor = useOrdenPictogramas();
+  const [dragging, setDragging] = useState(false);
 
   const { configuracion, cargandoConfiguracion, errorConfiguracion } = useConfiguracionUsuario(token);
   const { categorias, cargando: cargandoCategorias, error: errorCategorias } = useCategoriasContext();
@@ -55,29 +60,32 @@ export default function PantallaPrincipal() {
   const { tipoVoz } = useVoz();
 
   const renderHeaderRight = () => (
-    <HeaderConfiguracion
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+    <Pressable accessibilityRole="button" disabled={!editor.ready || editor.busy || dragging}
+      onPress={editor.editing ? editor.done : editor.open} style={{ paddingHorizontal: 12, minHeight: 44, justifyContent: 'center' }}>
+      <Text style={{ color: palette.primary, fontWeight: '700' }}>{editor.busy ? '…' : editor.editing ? (editor.en ? 'Done' : 'Listo') : (editor.en ? 'Edit' : 'Editar')}</Text>
+    </Pressable>
+    {!editor.editing && <HeaderConfiguracion
       modoAgrupado={modoAgrupado}
       manejarCambioAgrupado={manejarCambioAgrupado}
       manejarVolverCategorias={manejarVolverCategorias}
       setItemsPerPage={setItemsPerPage}
       itemsPerPage={itemsPerPage}
-    />
+    />}
+    </View>
   );
 
-  const pictosFiltrados = categoriaSeleccionada
-    ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
-    : [];
-
-  const deduplicarPorId = (pictos: PictogramaSimple[]): PictogramaSimple[] => {
+  const pictogramas = useMemo(() => {
+    const source: PictogramaSimple[] = categoriaSeleccionada
+      ? categorias.find(c => c.id.toString() === categoriaSeleccionada)?.pictogramas ?? []
+      : pictosSinFiltro;
     const vistos = new Set<number>();
-    return pictos.filter((p) => {
+    return ordered(source.filter(p => {
       if (vistos.has(p.id)) return false;
       vistos.add(p.id);
       return true;
-    });
-  };
-
-  const pictogramas = deduplicarPorId(categoriaSeleccionada ? pictosFiltrados : pictosSinFiltro);
+    }), editor.ids);
+  }, [categoriaSeleccionada, categorias, pictosSinFiltro, editor.ids]);
 
   const cargandoPictos = categoriaSeleccionada ? false : cargandoSinFiltro;
   const errorPictogramas = categoriaSeleccionada ? null : errorSinFiltro;
@@ -162,9 +170,10 @@ export default function PantallaPrincipal() {
       headerShown: true,
       headerRight: renderHeaderRight,
     });
-  }, [navigation, modoAgrupado, itemsPerPage]);
+  }, [navigation, modoAgrupado, itemsPerPage, editor.editing, editor.ready, editor.busy, editor.ids, editor.dialog, editor.en, dragging]);
 
   const manejarSeleccion = (p: PictogramaSimple) => {
+    if (editor.editing) return;
     if (p.tipo === 'verbo') {
       setVerboModal(p);
     } else {
@@ -191,7 +200,7 @@ export default function PantallaPrincipal() {
 
   return (
     <View style={{ flex: 1, backgroundColor: palette.background }}>
-      <ScrollView style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
+      <ScrollView scrollEnabled={!dragging} style={[styles.container, { flex: 1 }]} contentContainerStyle={{ flexGrow: 1, paddingBottom: 80 }}>
         <TextoFraseExpandibleAnimado frase={frase} />
 
         <BotonesFrase
@@ -211,7 +220,16 @@ export default function PantallaPrincipal() {
 )}
 
 
-        {transicionando ? (
+        {!editor.dialog && !!editor.error && <Pressable onPress={() => { if (!editor.editing) void editor.load(); }} style={{ padding: 12 }}>
+          <Text accessibilityRole="alert" style={{ color: palette.error }}>{editor.error}</Text>
+        </Pressable>}
+        {editor.editing && <View style={{ padding: 10, backgroundColor: palette.surface }}>
+          <Text style={{ color: palette.primary }}>{editor.en ? 'Editing layout · Hold and drag. Hold at an edge to change page. Done saves your changes.' : 'Editando teclado · Mantén y arrastra. Mantén en un borde para cambiar de página. Listo guarda los cambios.'}</Text>
+          <Pressable onPress={editor.reset} disabled={editor.busy || dragging} accessibilityRole="button" style={{ minHeight: 44, justifyContent: 'center' }}>
+            <Text style={{ color: palette.primary }}>{editor.en ? 'Reset pictogram order' : 'Restablecer orden de pictogramas'}</Text>
+          </Pressable>
+        </View>}
+        {!editor.ready ? <ActivityIndicator color={palette.primary} /> : transicionando ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 40 }}>
             <ActivityIndicator size="large" color={palette.primary} />
           </View>
@@ -235,6 +253,9 @@ export default function PantallaPrincipal() {
                   </View>
                 ) : (
                   <GridPictogramas
+                    editing={editor.editing && !editor.busy}
+                    onReorder={editor.reorder}
+                    onDragging={setDragging}
                     pictogramas={pictogramas}
                     itemsPerPage={itemsPerPage}
                     onSeleccionar={manejarSeleccion}
@@ -244,6 +265,9 @@ export default function PantallaPrincipal() {
             )}
             {!modoAgrupado && (
               <GridPictogramas
+                editing={editor.editing && !editor.busy}
+                onReorder={editor.reorder}
+                onDragging={setDragging}
                 pictogramas={pictogramas}
                 itemsPerPage={itemsPerPage}
                 onSeleccionar={manejarSeleccion}
@@ -253,6 +277,7 @@ export default function PantallaPrincipal() {
         )}
       </ScrollView>
 
+      <LayoutAuthentication editor={editor} />
       {verboModal && (
         <ModalConjugadorVerbo
           visible={true}

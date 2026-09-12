@@ -13,7 +13,6 @@ import { useLanguage } from '@/context/LanguageContext';
 import { PalabraFrase } from '@/types';
 const { width } = Dimensions.get('window');
 const ALTURA_VACIA = 68;
-const ALTURA_CON_FRASE = 88;
 const ESPACIADO_VERTICAL = 32;
 
 interface Props {
@@ -29,10 +28,7 @@ export default function TextoFraseExpandibleAnimado({ frase }: Props) {
   const fraseTexto = frase.map(palabra => palabra.texto).join(' ');
 
   useEffect(() => {
-    setContenidoAltura(altura => fraseTexto
-      ? Math.max(altura, ALTURA_CON_FRASE)
-      : ALTURA_VACIA
-    );
+    if (!fraseTexto) setContenidoAltura(ALTURA_VACIA);
   }, [fraseTexto]);
 
   useEffect(() => {
@@ -45,7 +41,7 @@ export default function TextoFraseExpandibleAnimado({ frase }: Props) {
 
   const manejarCambioLayout = (event: LayoutChangeEvent) => {
     const nuevaAltura = Math.max(
-      fraseTexto ? ALTURA_CON_FRASE : ALTURA_VACIA,
+      ALTURA_VACIA,
       event.nativeEvent.layout.height + ESPACIADO_VERTICAL
     );
     if (nuevaAltura !== contenidoAltura) {

@@ -1,3 +1,4 @@
+import ReorderablePagedGrid from './ReorderablePagedGrid';
 import GridItem from '@/components/pantallaPrincipal/GridItem';
 import GridPaginadoHorizontal from '@/components/pantallaPrincipal/GridPaginaHorizontal';
 import { PictogramaSimple } from '@/types';
@@ -6,6 +7,9 @@ import { useWindowDimensions } from 'react-native';
 import { useLanguage } from '@/context/LanguageContext';
 
 type Props = {
+  readonly editing?: boolean;
+  readonly onReorder?: (ids: number[]) => void;
+  readonly onDragging?: (dragging: boolean) => void;
   readonly pictogramas: PictogramaSimple[];
   readonly itemsPerPage: number;
   readonly onSeleccionar: (pictograma: PictogramaSimple) => void;
@@ -14,10 +18,10 @@ type Props = {
 function GridPictogramas({
   pictogramas,
   itemsPerPage,
-  onSeleccionar,
+  onSeleccionar, editing = false, onReorder, onDragging,
 }: Props) {
   const { height } = useWindowDimensions();
-  const { localize, language } = useLanguage();
+  const { localize } = useLanguage();
 
   const renderItem = useCallback(
     (p: PictogramaSimple | null, itemSize: number) =>
@@ -26,10 +30,16 @@ function GridPictogramas({
           imagen={p.imagen}
           nombre={localize(p)}
           itemSize={itemSize}
-          onPress={() => onSeleccionar(p)}
+          onPress={() => { if (!editing) onSeleccionar(p); }}
         />
       ) : null,
-    [onSeleccionar, language]
+    [onSeleccionar, localize, editing]
+  );
+
+  if (editing && onReorder && onDragging) return (
+    <ReorderablePagedGrid items={pictogramas} itemsPerPage={itemsPerPage}
+      renderItem={renderItem} onReorder={items => onReorder(items.map(item => item.id))}
+      onDragging={onDragging} />
   );
 
   return (

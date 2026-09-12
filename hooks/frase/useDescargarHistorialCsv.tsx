@@ -1,6 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import axios from '@/hooks/utils/axiosInstance';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import { Alert } from 'react-native';
 
